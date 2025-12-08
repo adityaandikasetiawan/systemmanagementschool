@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { query } from '../config/database';
 import { AuthRequest } from '../middleware/auth';
 import { v4 as uuidv4 } from 'uuid';
@@ -22,6 +22,17 @@ const resolveExpires = (value?: string, fallbackSeconds?: number): number => {
  * Login user
  * POST /api/auth/login
  */
+type BasicUser = {
+  id: number;
+  username?: string;
+  email: string;
+  role: string;
+  full_name?: string | null;
+  phone?: string | null;
+  photo_url?: string | null;
+  password_hash?: string;
+};
+
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
@@ -48,12 +59,27 @@ export const login = async (req: Request, res: Response) => {
           process.env.JWT_REFRESH_SECRET || 'your_refresh_secret',
           { expiresIn: refreshExp }
         );
+        const csrfToken = uuidv4();
+        res.cookie('refresh_token', refreshToken, {
+          httpOnly: true,
+          secure: (process.env.NODE_ENV as string) === 'production',
+          sameSite: 'lax',
+          path: '/api/auth',
+          maxAge: refreshExp * 1000
+        });
+        res.cookie('csrf_token', csrfToken, {
+          httpOnly: false,
+          secure: (process.env.NODE_ENV as string) === 'production',
+          sameSite: 'lax',
+          path: '/'
+        });
         return res.json({
           success: true,
           message: 'Login successful',
           data: {
             token,
             refresh_token: refreshToken,
+            csrf_token: csrfToken,
             user: {
               id: 1,
               username: 'superadmin',
@@ -79,12 +105,27 @@ export const login = async (req: Request, res: Response) => {
           process.env.JWT_REFRESH_SECRET || 'your_refresh_secret',
           { expiresIn: refreshExp }
         );
+        const csrfToken = uuidv4();
+        res.cookie('refresh_token', refreshToken, {
+          httpOnly: true,
+          secure: (process.env.NODE_ENV as string) === 'production',
+          sameSite: 'lax',
+          path: '/api/auth',
+          maxAge: refreshExp * 1000
+        });
+        res.cookie('csrf_token', csrfToken, {
+          httpOnly: false,
+          secure: (process.env.NODE_ENV as string) === 'production',
+          sameSite: 'lax',
+          path: '/'
+        });
         return res.json({
           success: true,
           message: 'Login successful',
           data: {
             token,
             refresh_token: refreshToken,
+            csrf_token: csrfToken,
             user: {
               id: 101,
               username: 'studentdev',
@@ -110,12 +151,27 @@ export const login = async (req: Request, res: Response) => {
           process.env.JWT_REFRESH_SECRET || 'your_refresh_secret',
           { expiresIn: refreshExp }
         );
+        const csrfToken = uuidv4();
+        res.cookie('refresh_token', refreshToken, {
+          httpOnly: true,
+          secure: (process.env.NODE_ENV as string) === 'production',
+          sameSite: 'lax',
+          path: '/api/auth',
+          maxAge: refreshExp * 1000
+        });
+        res.cookie('csrf_token', csrfToken, {
+          httpOnly: false,
+          secure: (process.env.NODE_ENV as string) === 'production',
+          sameSite: 'lax',
+          path: '/'
+        });
         return res.json({
           success: true,
           message: 'Login successful',
           data: {
             token,
             refresh_token: refreshToken,
+            csrf_token: csrfToken,
             user: {
               id: 201,
               username: 'gurudev',
@@ -131,7 +187,7 @@ export const login = async (req: Request, res: Response) => {
     }
 
     // Find user by email
-    const users: any[] = await query(
+    const users = await query<Array<BasicUser & { password_hash: string }>>(
       `SELECT u.*, up.full_name, up.phone, up.photo_url 
        FROM users u 
        LEFT JOIN user_profiles up ON u.id = up.user_id 
@@ -180,25 +236,44 @@ export const login = async (req: Request, res: Response) => {
 
     const sessionId = uuidv4();
     const expiresAt = new Date(Date.now() + refreshExp * 1000);
-    await query(
-      `INSERT INTO sessions (id, user_id, token, ip_address, user_agent, expires_at)
-       VALUES (?, ?, ?, ?, ?, ?)`,
-      [
-        sessionId,
-        user.id,
-        refreshToken,
-        (req.headers['x-forwarded-for'] as string) || req.ip || null,
-        req.headers['user-agent'] || null,
-        expiresAt
-      ]
-    );
+    try {
+      await query(
+        `INSERT INTO sessions (id, user_id, token, ip_address, user_agent, expires_at)
+         VALUES (?, ?, ?, ?, ?, ?)`,
+        [
+          sessionId,
+          user.id,
+          refreshToken,
+          (req.headers['x-forwarded-for'] as string) || req.ip || null,
+          req.headers['user-agent'] || null,
+          expiresAt
+        ]
+      );
+    } catch (_) {
+      if (process.env.NODE_ENV !== 'development') {
+        throw _;
+      }
+    }
 
     // Update last login
     await query('UPDATE users SET last_login = NOW() WHERE id = ?', [user.id]);
 
-    // Remove sensitive data
-    delete user.password_hash;
+    // Remove sensitive data handled by explicit response fields
 
+    const csrfToken = uuidv4();
+    res.cookie('refresh_token', refreshToken, {
+      httpOnly: true,
+      secure: (process.env.NODE_ENV as string) === 'production',
+      sameSite: 'lax',
+      path: '/api/auth',
+      maxAge: refreshExp * 1000
+    });
+    res.cookie('csrf_token', csrfToken, {
+      httpOnly: false,
+      secure: (process.env.NODE_ENV as string) === 'production',
+      sameSite: 'lax',
+      path: '/'
+    });
     // Return response
     return res.json({
       success: true,
@@ -206,6 +281,7 @@ export const login = async (req: Request, res: Response) => {
       data: {
         token,
         refresh_token: refreshToken,
+        csrf_token: csrfToken,
         user: {
           id: user.id,
           username: user.username,
@@ -217,12 +293,12 @@ export const login = async (req: Request, res: Response) => {
         }
       }
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Login error:', error);
     return res.status(500).json({
       success: false,
       message: 'Login failed',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      error: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
     });
   }
 };
@@ -251,7 +327,7 @@ export const register = async (req: Request, res: Response) => {
     }
 
     // Check if user already exists
-    const existingUsers: any[] = await query(
+    const existingUsers = await query<Array<{ id: number }>>(
       'SELECT id FROM users WHERE email = ? OR username = ?',
       [email, username]
     );
@@ -268,7 +344,7 @@ export const register = async (req: Request, res: Response) => {
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
     // Insert user
-    const result: any = await query(
+    const result = await query<{ insertId: number }>(
       `INSERT INTO users (username, email, password_hash, role, status, email_verified)
        VALUES (?, ?, ?, ?, 'active', FALSE)`,
       [username, email, passwordHash, role]
@@ -284,7 +360,7 @@ export const register = async (req: Request, res: Response) => {
     );
 
     // Get created user
-    const newUsers: any[] = await query(
+    const newUsers = await query<BasicUser[]>(
       `SELECT u.id, u.username, u.email, u.role, up.full_name, up.phone
        FROM users u
        LEFT JOIN user_profiles up ON u.id = up.user_id
@@ -299,12 +375,12 @@ export const register = async (req: Request, res: Response) => {
         user: newUsers[0]
       }
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Register error:', error);
     return res.status(500).json({
       success: false,
       message: 'Registration failed',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      error: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
     });
   }
 };
@@ -346,7 +422,7 @@ export const getCurrentUser = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    const users: any[] = await query(
+    const users = await query<BasicUser[]>(
       `SELECT u.id, u.username, u.email, u.role, u.status,
               up.full_name, up.phone, up.address, up.city, up.province,
               up.birth_date, up.birth_place, up.gender, up.photo_url
@@ -369,12 +445,12 @@ export const getCurrentUser = async (req: AuthRequest, res: Response) => {
         user: users[0]
       }
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Get current user error:', error);
     return res.status(500).json({
       success: false,
       message: 'Failed to get user information',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      error: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
     });
   }
 };
@@ -418,7 +494,7 @@ export const getStudentProfile = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    const rows: any[] = await query(
+    const rows = await query<Array<Record<string, unknown>>>(
       `SELECT 
          u.id AS user_id,
          u.email,
@@ -452,7 +528,7 @@ export const getStudentProfile = async (req: AuthRequest, res: Response) => {
     }
 
     return res.json({ success: true, data: { profile: rows[0] } });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return res.status(500).json({ success: false, message: 'Failed to get student profile' });
   }
 };
@@ -464,18 +540,26 @@ export const getStudentProfile = async (req: AuthRequest, res: Response) => {
 export const logout = async (req: AuthRequest, res: Response) => {
   try {
     if (req.user) {
-      await query('DELETE FROM sessions WHERE user_id = ?', [req.user.id]);
+      try {
+        await query('DELETE FROM sessions WHERE user_id = ?', [req.user.id]);
+      } catch (e) {
+        if (process.env.NODE_ENV !== 'development') {
+          throw e;
+        }
+      }
     }
+    res.clearCookie('refresh_token', { path: '/api/auth' });
+    res.clearCookie('csrf_token', { path: '/' });
     return res.json({
       success: true,
       message: 'Logout successful'
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Logout error:', error);
     return res.status(500).json({
       success: false,
       message: 'Logout failed',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      error: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
     });
   }
 };
@@ -486,7 +570,13 @@ export const logout = async (req: AuthRequest, res: Response) => {
  */
 export const refreshToken = async (req: Request, res: Response) => {
   try {
-    const { refresh_token } = req.body;
+    const body = req.body as { refresh_token?: string };
+    let { refresh_token } = body;
+    if (!refresh_token) {
+      const cookieReq = req as Request & { cookies?: Record<string, string> };
+      const cookies = cookieReq.cookies || {};
+      refresh_token = cookies['refresh_token'];
+    }
 
     if (!refresh_token) {
       return res.status(400).json({
@@ -495,40 +585,70 @@ export const refreshToken = async (req: Request, res: Response) => {
       });
     }
 
-    const decoded = jwt.verify(
+    const verified = jwt.verify(
       refresh_token,
       process.env.JWT_REFRESH_SECRET || 'your_refresh_secret'
-    ) as any;
-
-    const sessions: any[] = await query(
-      'SELECT id, expires_at FROM sessions WHERE user_id = ? AND token = ? LIMIT 1',
-      [decoded.id, refresh_token]
     );
-
-    if (sessions.length === 0) {
+    if (typeof verified === 'string') {
       return res.status(401).json({ success: false, message: 'Invalid refresh token' });
     }
+    const decoded = verified as JwtPayload & { id: number };
 
-    const session = sessions[0];
-    if (new Date(session.expires_at).getTime() <= Date.now()) {
-      await query('DELETE FROM sessions WHERE id = ?', [session.id]);
-      return res.status(401).json({ success: false, message: 'Refresh token expired' });
+    let session: { id: string; expires_at: string | Date } | null = null;
+    try {
+      const sessions = await query<Array<{ id: string; expires_at: string | Date }>>(
+        'SELECT id, expires_at FROM sessions WHERE user_id = ? AND token = ? LIMIT 1',
+        [decoded.id, refresh_token]
+      );
+      if (sessions.length === 0) {
+        if (process.env.NODE_ENV !== 'development') {
+          return res.status(401).json({ success: false, message: 'Invalid refresh token' });
+        }
+      } else {
+        session = sessions[0];
+        if (new Date(session.expires_at).getTime() <= Date.now()) {
+          await query('DELETE FROM sessions WHERE id = ?', [session.id]);
+          return res.status(401).json({ success: false, message: 'Refresh token expired' });
+        }
+      }
+    } catch (_) {
+      if (process.env.NODE_ENV !== 'development') {
+        throw _;
+      }
     }
 
-    // Get user
-    const users: any[] = await query(
-      'SELECT id, email, role FROM users WHERE id = ? AND status = "active"',
-      [decoded.id]
-    );
+    // Get user (with dev fallback when DB is unavailable)
+    let user: { id: number; email: string; role: string } | null = null;
+    let users: Array<{ id: number; email: string; role: string }> = [];
+    try {
+      users = await query<Array<{ id: number; email: string; role: string }>>(
+        'SELECT id, email, role FROM users WHERE id = ? AND status = "active"',
+        [decoded.id]
+      );
+    } catch (e) {
+      if (process.env.NODE_ENV !== 'development') {
+        throw e;
+      }
+    }
 
     if (users.length === 0) {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid refresh token'
-      });
+      const isDev = process.env.NODE_ENV === 'development' && process.env.ALLOW_DEV_LOGIN === 'true';
+      if (!isDev) {
+        return res.status(401).json({ success: false, message: 'Invalid refresh token' });
+      }
+      // Dev-only user mapping based on known IDs
+      if (decoded.id === 1) {
+        user = { id: 1, email: 'admin@baituljannah.sch.id', role: 'super_admin' };
+      } else if (decoded.id === 101) {
+        user = { id: 101, email: 'student@baituljannah.sch.id', role: 'student' };
+      } else if (decoded.id === 201) {
+        user = { id: 201, email: 'guru@baituljannah.sch.id', role: 'teacher' };
+      } else {
+        user = { id: decoded.id, email: 'dev@baituljannah.sch.id', role: 'super_admin' };
+      }
+    } else {
+      user = users[0];
     }
-
-    const user = users[0];
 
     // Generate new access token
     const accessExp = resolveExpires(process.env.JWT_EXPIRES_IN, 7 * 24 * 3600);
@@ -548,13 +668,29 @@ export const refreshToken = async (req: Request, res: Response) => {
       process.env.JWT_REFRESH_SECRET || 'your_refresh_secret',
       { expiresIn: refreshExp }
     );
+    try {
+      if (session) {
+        const newExpiresAt = new Date(Date.now() + refreshExp * 1000);
+        await query('UPDATE sessions SET token = ?, expires_at = ? WHERE id = ?', [
+          newRefreshToken,
+          newExpiresAt,
+          session.id
+        ]);
+      }
+    } catch (e) {
+      if (process.env.NODE_ENV !== 'development') {
+        throw e;
+      }
+    }
 
-    const newExpiresAt = new Date(Date.now() + refreshExp * 1000);
-    await query('UPDATE sessions SET token = ?, expires_at = ? WHERE id = ?', [
-      newRefreshToken,
-      newExpiresAt,
-      session.id
-    ]);
+    // Rotate cookie with new refresh token
+    res.cookie('refresh_token', newRefreshToken, {
+      httpOnly: true,
+      secure: (process.env.NODE_ENV as string) === 'production',
+      sameSite: 'lax',
+      path: '/api/auth',
+      maxAge: refreshExp * 1000
+    });
 
     return res.json({
       success: true,
@@ -563,12 +699,12 @@ export const refreshToken = async (req: Request, res: Response) => {
         refresh_token: newRefreshToken
       }
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Refresh token error:', error);
     return res.status(401).json({
       success: false,
       message: 'Invalid or expired refresh token',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      error: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
     });
   }
 };

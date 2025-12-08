@@ -22,7 +22,7 @@ export const getReport = async (_req: Request, res: Response) => {
       return res.json({ success: true, data: report });
     }
     return res.json({ success: true, data: {} });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return res.status(500).json({ success: false, message: 'Failed to get report' });
   }
 };

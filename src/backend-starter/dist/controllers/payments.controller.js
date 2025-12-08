@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendMassReminders = exports.verifyPayment = exports.processPayment = exports.createPayment = exports.getStudentPayments = void 0;
 const getStudentPayments = async (req, res) => {
     try {
-        const studentIdParam = parseInt(req.params.studentId);
+        const studentIdParam = parseInt(String(req.params.studentId), 10);
         if (req.user && req.user.role === 'student') {
             if (Number.isFinite(studentIdParam) && req.user.id !== studentIdParam) {
                 return res.status(403).json({ success: false, message: 'Forbidden' });

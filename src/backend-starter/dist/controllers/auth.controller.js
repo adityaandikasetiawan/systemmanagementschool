@@ -26,10 +26,6 @@ const resolveExpires = (value, fallbackSeconds) => {
         return qty * 86400;
     return qty;
 };
-/**
- * Login user
- * POST /api/auth/login
- */
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -46,12 +42,27 @@ const login = async (req, res) => {
                 const refreshExp = resolveExpires(process.env.JWT_REFRESH_EXPIRES_IN, 30 * 24 * 3600);
                 const token = jsonwebtoken_1.default.sign({ id: 1, email: 'admin@baituljannah.sch.id', role: 'super_admin' }, process.env.JWT_SECRET || 'your_jwt_secret', { expiresIn: accessExp });
                 const refreshToken = jsonwebtoken_1.default.sign({ id: 1 }, process.env.JWT_REFRESH_SECRET || 'your_refresh_secret', { expiresIn: refreshExp });
+                const csrfToken = (0, uuid_1.v4)();
+                res.cookie('refresh_token', refreshToken, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production',
+                    sameSite: 'lax',
+                    path: '/api/auth',
+                    maxAge: refreshExp * 1000
+                });
+                res.cookie('csrf_token', csrfToken, {
+                    httpOnly: false,
+                    secure: process.env.NODE_ENV === 'production',
+                    sameSite: 'lax',
+                    path: '/'
+                });
                 return res.json({
                     success: true,
                     message: 'Login successful',
                     data: {
                         token,
                         refresh_token: refreshToken,
+                        csrf_token: csrfToken,
                         user: {
                             id: 1,
                             username: 'superadmin',
@@ -69,12 +80,27 @@ const login = async (req, res) => {
                 const refreshExp = resolveExpires(process.env.JWT_REFRESH_EXPIRES_IN, 30 * 24 * 3600);
                 const token = jsonwebtoken_1.default.sign({ id: 101, email: 'student@baituljannah.sch.id', role: 'student' }, process.env.JWT_SECRET || 'your_jwt_secret', { expiresIn: accessExp });
                 const refreshToken = jsonwebtoken_1.default.sign({ id: 101 }, process.env.JWT_REFRESH_SECRET || 'your_refresh_secret', { expiresIn: refreshExp });
+                const csrfToken = (0, uuid_1.v4)();
+                res.cookie('refresh_token', refreshToken, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production',
+                    sameSite: 'lax',
+                    path: '/api/auth',
+                    maxAge: refreshExp * 1000
+                });
+                res.cookie('csrf_token', csrfToken, {
+                    httpOnly: false,
+                    secure: process.env.NODE_ENV === 'production',
+                    sameSite: 'lax',
+                    path: '/'
+                });
                 return res.json({
                     success: true,
                     message: 'Login successful',
                     data: {
                         token,
                         refresh_token: refreshToken,
+                        csrf_token: csrfToken,
                         user: {
                             id: 101,
                             username: 'studentdev',
@@ -92,12 +118,27 @@ const login = async (req, res) => {
                 const refreshExp = resolveExpires(process.env.JWT_REFRESH_EXPIRES_IN, 30 * 24 * 3600);
                 const token = jsonwebtoken_1.default.sign({ id: 201, email: 'guru@baituljannah.sch.id', role: 'teacher' }, process.env.JWT_SECRET || 'your_jwt_secret', { expiresIn: accessExp });
                 const refreshToken = jsonwebtoken_1.default.sign({ id: 201 }, process.env.JWT_REFRESH_SECRET || 'your_refresh_secret', { expiresIn: refreshExp });
+                const csrfToken = (0, uuid_1.v4)();
+                res.cookie('refresh_token', refreshToken, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production',
+                    sameSite: 'lax',
+                    path: '/api/auth',
+                    maxAge: refreshExp * 1000
+                });
+                res.cookie('csrf_token', csrfToken, {
+                    httpOnly: false,
+                    secure: process.env.NODE_ENV === 'production',
+                    sameSite: 'lax',
+                    path: '/'
+                });
                 return res.json({
                     success: true,
                     message: 'Login successful',
                     data: {
                         token,
                         refresh_token: refreshToken,
+                        csrf_token: csrfToken,
                         user: {
                             id: 201,
                             username: 'gurudev',
@@ -143,19 +184,39 @@ const login = async (req, res) => {
         const refreshToken = jsonwebtoken_1.default.sign({ id: user.id }, process.env.JWT_REFRESH_SECRET || 'your_refresh_secret', { expiresIn: refreshExp });
         const sessionId = (0, uuid_1.v4)();
         const expiresAt = new Date(Date.now() + refreshExp * 1000);
-        await (0, database_1.query)(`INSERT INTO sessions (id, user_id, token, ip_address, user_agent, expires_at)
-       VALUES (?, ?, ?, ?, ?, ?)`, [
-            sessionId,
-            user.id,
-            refreshToken,
-            req.headers['x-forwarded-for'] || req.ip || null,
-            req.headers['user-agent'] || null,
-            expiresAt
-        ]);
+        try {
+            await (0, database_1.query)(`INSERT INTO sessions (id, user_id, token, ip_address, user_agent, expires_at)
+         VALUES (?, ?, ?, ?, ?, ?)`, [
+                sessionId,
+                user.id,
+                refreshToken,
+                req.headers['x-forwarded-for'] || req.ip || null,
+                req.headers['user-agent'] || null,
+                expiresAt
+            ]);
+        }
+        catch (_) {
+            if (process.env.NODE_ENV !== 'development') {
+                throw _;
+            }
+        }
         // Update last login
         await (0, database_1.query)('UPDATE users SET last_login = NOW() WHERE id = ?', [user.id]);
-        // Remove sensitive data
-        delete user.password_hash;
+        // Remove sensitive data handled by explicit response fields
+        const csrfToken = (0, uuid_1.v4)();
+        res.cookie('refresh_token', refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            path: '/api/auth',
+            maxAge: refreshExp * 1000
+        });
+        res.cookie('csrf_token', csrfToken, {
+            httpOnly: false,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            path: '/'
+        });
         // Return response
         return res.json({
             success: true,
@@ -163,6 +224,7 @@ const login = async (req, res) => {
             data: {
                 token,
                 refresh_token: refreshToken,
+                csrf_token: csrfToken,
                 user: {
                     id: user.id,
                     username: user.username,
@@ -180,7 +242,7 @@ const login = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: 'Login failed',
-            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+            error: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
         });
     }
 };
@@ -241,7 +303,7 @@ const register = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: 'Registration failed',
-            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+            error: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
         });
     }
 };
@@ -305,7 +367,7 @@ const getCurrentUser = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: 'Failed to get user information',
-            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+            error: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
         });
     }
 };
@@ -389,8 +451,17 @@ exports.getStudentProfile = getStudentProfile;
 const logout = async (req, res) => {
     try {
         if (req.user) {
-            await (0, database_1.query)('DELETE FROM sessions WHERE user_id = ?', [req.user.id]);
+            try {
+                await (0, database_1.query)('DELETE FROM sessions WHERE user_id = ?', [req.user.id]);
+            }
+            catch (e) {
+                if (process.env.NODE_ENV !== 'development') {
+                    throw e;
+                }
+            }
         }
+        res.clearCookie('refresh_token', { path: '/api/auth' });
+        res.clearCookie('csrf_token', { path: '/' });
         return res.json({
             success: true,
             message: 'Logout successful'
@@ -401,7 +472,7 @@ const logout = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: 'Logout failed',
-            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+            error: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
         });
     }
 };
@@ -412,32 +483,76 @@ exports.logout = logout;
  */
 const refreshToken = async (req, res) => {
     try {
-        const { refresh_token } = req.body;
+        let { refresh_token } = req.body;
+        if (!refresh_token) {
+            const cookies = req.cookies || {};
+            refresh_token = cookies['refresh_token'];
+        }
         if (!refresh_token) {
             return res.status(400).json({
                 success: false,
                 message: 'Refresh token is required'
             });
         }
-        const decoded = jsonwebtoken_1.default.verify(refresh_token, process.env.JWT_REFRESH_SECRET || 'your_refresh_secret');
-        const sessions = await (0, database_1.query)('SELECT id, expires_at FROM sessions WHERE user_id = ? AND token = ? LIMIT 1', [decoded.id, refresh_token]);
-        if (sessions.length === 0) {
+        const verified = jsonwebtoken_1.default.verify(refresh_token, process.env.JWT_REFRESH_SECRET || 'your_refresh_secret');
+        if (typeof verified === 'string') {
             return res.status(401).json({ success: false, message: 'Invalid refresh token' });
         }
-        const session = sessions[0];
-        if (new Date(session.expires_at).getTime() <= Date.now()) {
-            await (0, database_1.query)('DELETE FROM sessions WHERE id = ?', [session.id]);
-            return res.status(401).json({ success: false, message: 'Refresh token expired' });
+        const decoded = verified;
+        let session = null;
+        try {
+            const sessions = await (0, database_1.query)('SELECT id, expires_at FROM sessions WHERE user_id = ? AND token = ? LIMIT 1', [decoded.id, refresh_token]);
+            if (sessions.length === 0) {
+                if (process.env.NODE_ENV !== 'development') {
+                    return res.status(401).json({ success: false, message: 'Invalid refresh token' });
+                }
+            }
+            else {
+                session = sessions[0];
+                if (new Date(session.expires_at).getTime() <= Date.now()) {
+                    await (0, database_1.query)('DELETE FROM sessions WHERE id = ?', [session.id]);
+                    return res.status(401).json({ success: false, message: 'Refresh token expired' });
+                }
+            }
         }
-        // Get user
-        const users = await (0, database_1.query)('SELECT id, email, role FROM users WHERE id = ? AND status = "active"', [decoded.id]);
+        catch (_) {
+            if (process.env.NODE_ENV !== 'development') {
+                throw _;
+            }
+        }
+        // Get user (with dev fallback when DB is unavailable)
+        let user = null;
+        let users = [];
+        try {
+            users = await (0, database_1.query)('SELECT id, email, role FROM users WHERE id = ? AND status = "active"', [decoded.id]);
+        }
+        catch (e) {
+            if (process.env.NODE_ENV !== 'development') {
+                throw e;
+            }
+        }
         if (users.length === 0) {
-            return res.status(401).json({
-                success: false,
-                message: 'Invalid refresh token'
-            });
+            const isDev = process.env.NODE_ENV === 'development' && process.env.ALLOW_DEV_LOGIN === 'true';
+            if (!isDev) {
+                return res.status(401).json({ success: false, message: 'Invalid refresh token' });
+            }
+            // Dev-only user mapping based on known IDs
+            if (decoded.id === 1) {
+                user = { id: 1, email: 'admin@baituljannah.sch.id', role: 'super_admin' };
+            }
+            else if (decoded.id === 101) {
+                user = { id: 101, email: 'student@baituljannah.sch.id', role: 'student' };
+            }
+            else if (decoded.id === 201) {
+                user = { id: 201, email: 'guru@baituljannah.sch.id', role: 'teacher' };
+            }
+            else {
+                user = { id: decoded.id, email: 'dev@baituljannah.sch.id', role: 'super_admin' };
+            }
         }
-        const user = users[0];
+        else {
+            user = users[0];
+        }
         // Generate new access token
         const accessExp = resolveExpires(process.env.JWT_EXPIRES_IN, 7 * 24 * 3600);
         const refreshExp = resolveExpires(process.env.JWT_REFRESH_EXPIRES_IN, 30 * 24 * 3600);
@@ -447,12 +562,29 @@ const refreshToken = async (req, res) => {
             role: user.role
         }, process.env.JWT_SECRET || 'your_jwt_secret', { expiresIn: accessExp });
         const newRefreshToken = jsonwebtoken_1.default.sign({ id: user.id }, process.env.JWT_REFRESH_SECRET || 'your_refresh_secret', { expiresIn: refreshExp });
-        const newExpiresAt = new Date(Date.now() + refreshExp * 1000);
-        await (0, database_1.query)('UPDATE sessions SET token = ?, expires_at = ? WHERE id = ?', [
-            newRefreshToken,
-            newExpiresAt,
-            session.id
-        ]);
+        try {
+            if (session) {
+                const newExpiresAt = new Date(Date.now() + refreshExp * 1000);
+                await (0, database_1.query)('UPDATE sessions SET token = ?, expires_at = ? WHERE id = ?', [
+                    newRefreshToken,
+                    newExpiresAt,
+                    session.id
+                ]);
+            }
+        }
+        catch (e) {
+            if (process.env.NODE_ENV !== 'development') {
+                throw e;
+            }
+        }
+        // Rotate cookie with new refresh token
+        res.cookie('refresh_token', newRefreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            path: '/api/auth',
+            maxAge: refreshExp * 1000
+        });
         return res.json({
             success: true,
             data: {
@@ -466,7 +598,7 @@ const refreshToken = async (req, res) => {
         return res.status(401).json({
             success: false,
             message: 'Invalid or expired refresh token',
-            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+            error: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
         });
     }
 };

@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 import { testConnection } from './config/database';
 
 // Import routes
@@ -42,6 +43,7 @@ if (process.env.NODE_ENV === 'development') {
 // Body parser
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(cookieParser());
 
 // Static files for uploads
 app.use('/uploads', express.static('uploads'));
@@ -104,33 +106,13 @@ app.use('*', (req: Request, res: Response) => {
 });
 
 // Global error handler
-app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-  console.error('Error:', err);
-
-  // Handle specific error types
-  if (err.name === 'ValidationError') {
-    return res.status(400).json({
-      success: false,
-      message: 'Validation error',
-      errors: err.errors
-    });
-  }
-
-  if (err.name === 'UnauthorizedError') {
-    return res.status(401).json({
-      success: false,
-      message: 'Unauthorized access'
-    });
-  }
-
-  // Default error response
-  return res.status(err.status || 500).json({
+app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+  const message = err instanceof Error ? err.message : 'Internal server error';
+  void _next;
+  return res.status(500).json({
     success: false,
-    message: err.message || 'Internal server error',
-    ...(process.env.NODE_ENV === 'development' && { 
-      stack: err.stack,
-      details: err 
-    })
+    message,
+    ...(process.env.NODE_ENV === 'development' && err instanceof Error && { stack: err.stack })
   });
 });
 
@@ -185,21 +167,21 @@ const startServer = async () => {
         console.log('');
       }
     });
-  } catch (error: any) {
-    console.error('❌ Failed to start server:', error.message);
+  } catch (error: unknown) {
+    console.error('❌ Failed to start server:', error instanceof Error ? error.message : 'Unknown error');
     process.exit(1);
   }
 };
 
 // Handle unhandled promise rejections
-process.on('unhandledRejection', (err: any) => {
+process.on('unhandledRejection', (err: unknown) => {
   console.error('Unhandled Promise Rejection:', err);
   // Close server & exit process
   process.exit(1);
 });
 
 // Handle uncaught exceptions
-process.on('uncaughtException', (err: any) => {
+process.on('uncaughtException', (err: unknown) => {
   console.error('Uncaught Exception:', err);
   process.exit(1);
 });

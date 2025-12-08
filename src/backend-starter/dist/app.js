@@ -8,6 +8,7 @@ const cors_1 = __importDefault(require("cors"));
 const helmet_1 = __importDefault(require("helmet"));
 const morgan_1 = __importDefault(require("morgan"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const database_1 = require("./config/database");
 // Import routes
 const auth_routes_1 = __importDefault(require("./routes/auth.routes"));
@@ -40,6 +41,7 @@ else {
 // Body parser
 app.use(express_1.default.json({ limit: '10mb' }));
 app.use(express_1.default.urlencoded({ extended: true, limit: '10mb' }));
+app.use((0, cookie_parser_1.default)());
 // Static files for uploads
 app.use('/uploads', express_1.default.static('uploads'));
 // ============================================
@@ -95,29 +97,12 @@ app.use('*', (req, res) => {
 });
 // Global error handler
 app.use((err, _req, res, _next) => {
-    console.error('Error:', err);
-    // Handle specific error types
-    if (err.name === 'ValidationError') {
-        return res.status(400).json({
-            success: false,
-            message: 'Validation error',
-            errors: err.errors
-        });
-    }
-    if (err.name === 'UnauthorizedError') {
-        return res.status(401).json({
-            success: false,
-            message: 'Unauthorized access'
-        });
-    }
-    // Default error response
-    return res.status(err.status || 500).json({
+    const message = err instanceof Error ? err.message : 'Internal server error';
+    void _next;
+    return res.status(500).json({
         success: false,
-        message: err.message || 'Internal server error',
-        ...(process.env.NODE_ENV === 'development' && {
-            stack: err.stack,
-            details: err
-        })
+        message,
+        ...(process.env.NODE_ENV === 'development' && err instanceof Error && { stack: err.stack })
     });
 });
 // ============================================

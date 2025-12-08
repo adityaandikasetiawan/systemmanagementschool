@@ -3,7 +3,8 @@ import { AuthRequest } from '../middleware/auth';
 
 export const getStudentPayments = async (req: AuthRequest, res: Response) => {
   try {
-    const studentIdParam = parseInt((req.params as any).studentId);
+    const params = req.params as Record<string, string>;
+    const studentIdParam = parseInt(params.studentId, 10);
     if (req.user && req.user.role === 'student') {
       if (Number.isFinite(studentIdParam) && req.user.id !== studentIdParam) {
         return res.status(403).json({ success: false, message: 'Forbidden' });
@@ -23,7 +24,7 @@ export const getStudentPayments = async (req: AuthRequest, res: Response) => {
       return res.json({ success: true, data: { payments } });
     }
     return res.json({ success: true, data: { payments: [] } });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return res.status(500).json({ success: false, message: 'Failed to get payments' });
   }
 };
@@ -32,7 +33,7 @@ export const createPayment = async (req: AuthRequest, res: Response) => {
   try {
     const payment = { id: Date.now(), ...req.body };
     return res.status(201).json({ success: true, data: { payment } });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return res.status(500).json({ success: false, message: 'Failed to create payment' });
   }
 };
@@ -42,7 +43,7 @@ export const processPayment = async (req: AuthRequest, res: Response) => {
     const paymentId = parseInt(req.params.paymentId);
     const transaction = { id: Date.now(), paymentId, status: 'processed', method: req.body?.method || 'transfer' };
     return res.json({ success: true, data: { transaction } });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return res.status(500).json({ success: false, message: 'Failed to process payment' });
   }
 };
@@ -52,7 +53,7 @@ export const verifyPayment = async (req: AuthRequest, res: Response) => {
     const transactionId = parseInt(req.params.transactionId);
     const verification = { id: transactionId, status: req.body?.status || 'verified' };
     return res.json({ success: true, data: { verification } });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return res.status(500).json({ success: false, message: 'Failed to verify payment' });
   }
 };
@@ -61,7 +62,7 @@ export const sendMassReminders = async (req: AuthRequest, res: Response) => {
   try {
     const count = Array.isArray(req.body?.students) ? req.body.students.length : 0;
     return res.json({ success: true, message: 'Reminders sent', data: { count } });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return res.status(500).json({ success: false, message: 'Failed to send reminders' });
   }
 };

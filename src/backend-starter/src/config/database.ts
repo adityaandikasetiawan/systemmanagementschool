@@ -26,21 +26,26 @@ export const testConnection = async () => {
     console.log(`   Host: ${process.env.DB_HOST}:${process.env.DB_PORT}`);
     connection.release();
     return true;
-  } catch (error: any) {
-    console.error('❌ MySQL connection error:', error.message);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    console.error('❌ MySQL connection error:', message);
     console.error('   Please check your database configuration in .env file');
     return false;
   }
 };
 
 // Helper function for queries with error handling
-export const query = async <T = any>(sql: string, params?: any[]): Promise<T> => {
+export const query = async <T = unknown>(
+  sql: string,
+  params?: Array<string | number | Date | null>
+): Promise<T> => {
   try {
     const [rows] = await pool.query(sql, params);
-    return rows as T;
-  } catch (error: any) {
-    console.error('Database query error:', error.message);
-    throw new Error(`Database error: ${error.message}`);
+    return rows as unknown as T;
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    console.error('Database query error:', message);
+    throw new Error(`Database error: ${message}`);
   }
 };
 

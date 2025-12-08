@@ -44,8 +44,9 @@ const query = async (sql, params) => {
         return rows;
     }
     catch (error) {
-        console.error('Database query error:', error.message);
-        throw new Error(`Database error: ${error.message}`);
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        console.error('Database query error:', message);
+        throw new Error(`Database error: ${message}`);
     }
 };
 exports.query = query;

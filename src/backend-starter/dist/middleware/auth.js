@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.optionalAuth = exports.authorize = exports.authenticate = void 0;
+exports.requireCsrf = exports.optionalAuth = exports.authorize = exports.authenticate = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 /**
  * Middleware to authenticate JWT token
@@ -21,7 +21,14 @@ const authenticate = (req, res, next) => {
         // Extract token
         const token = authHeader.substring(7); // Remove 'Bearer ' prefix
         // Verify token
-        const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET || 'your_jwt_secret');
+        const verified = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET || 'your_jwt_secret');
+        if (typeof verified === 'string') {
+            return res.status(401).json({
+                success: false,
+                message: 'Invalid token. Please login again.'
+            });
+        }
+        const decoded = verified;
         // Attach user info to request
         req.user = {
             id: decoded.id,
@@ -74,12 +81,15 @@ const optionalAuth = (req, _res, next) => {
         const authHeader = req.headers.authorization;
         if (authHeader && authHeader.startsWith('Bearer ')) {
             const token = authHeader.substring(7);
-            const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET || 'your_jwt_secret');
-            req.user = {
-                id: decoded.id,
-                email: decoded.email,
-                role: decoded.role
-            };
+            const verified = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET || 'your_jwt_secret');
+            if (typeof verified !== 'string') {
+                const decoded = verified;
+                req.user = {
+                    id: decoded.id,
+                    email: decoded.email,
+                    role: decoded.role
+                };
+            }
         }
         return next();
     }
@@ -89,4 +99,22 @@ const optionalAuth = (req, _res, next) => {
     }
 };
 exports.optionalAuth = optionalAuth;
+const requireCsrf = (req, res, next) => {
+    try {
+        const headerToken = req.headers['x-csrf-token'] || '';
+        const cookies = req.cookies || {};
+        const cookieToken = cookies['csrf_token'] || '';
+        if (!headerToken || !cookieToken || headerToken !== cookieToken) {
+            return res.status(403).json({
+                success: false,
+                message: 'Forbidden. CSRF token invalid or missing.'
+            });
+        }
+        return next();
+    }
+    catch {
+        return res.status(403).json({ success: false, message: 'Forbidden.' });
+    }
+};
+exports.requireCsrf = requireCsrf;
 //# sourceMappingURL=auth.js.map

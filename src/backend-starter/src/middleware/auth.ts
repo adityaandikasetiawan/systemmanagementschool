@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 // Extend Express Request type
 export interface AuthRequest extends Request {
@@ -33,10 +33,21 @@ export const authenticate = (
     const token = authHeader.substring(7); // Remove 'Bearer ' prefix
 
     // Verify token
-    const decoded = jwt.verify(
+    const verified = jwt.verify(
       token,
       process.env.JWT_SECRET || 'your_jwt_secret'
-    ) as any;
+    );
+    if (typeof verified === 'string') {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid token. Please login again.'
+      });
+    }
+    const decoded = verified as JwtPayload & {
+      id: number;
+      email: string;
+      role: string;
+    };
 
     // Attach user info to request
     req.user = {
@@ -46,8 +57,8 @@ export const authenticate = (
     };
 
     return next();
-  } catch (error: any) {
-    if (error.name === 'TokenExpiredError') {
+  } catch (error: unknown) {
+    if (error instanceof Error && error.name === 'TokenExpiredError') {
       return res.status(401).json({
         success: false,
         message: 'Token expired. Please login again.'
@@ -98,21 +109,50 @@ export const optionalAuth = (
 
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.substring(7);
-      const decoded = jwt.verify(
+      const verified = jwt.verify(
         token,
         process.env.JWT_SECRET || 'your_jwt_secret'
-      ) as any;
+      );
+      if (typeof verified !== 'string') {
+        const decoded = verified as JwtPayload & {
+          id: number;
+          email: string;
+          role: string;
+        };
 
-      req.user = {
-        id: decoded.id,
-        email: decoded.email,
-        role: decoded.role
-      };
+        req.user = {
+          id: decoded.id,
+          email: decoded.email,
+          role: decoded.role
+        };
+      }
     }
 
     return next();
   } catch (error) {
     // Ignore errors, just proceed without user
     return next();
+  }
+};
+
+export const requireCsrf = (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const headerToken = (req.headers['x-csrf-token'] as string) || '';
+    const cookieReq = req as Request & { cookies?: Record<string, string> };
+    const cookies = cookieReq.cookies || {};
+    const cookieToken = cookies['csrf_token'] || '';
+    if (!headerToken || !cookieToken || headerToken !== cookieToken) {
+      return res.status(403).json({
+        success: false,
+        message: 'Forbidden. CSRF token invalid or missing.'
+      });
+    }
+    return next();
+  } catch {
+    return res.status(403).json({ success: false, message: 'Forbidden.' });
   }
 };

@@ -1,9 +1,5 @@
 import { Request, Response } from 'express';
 import { AuthRequest } from '../middleware/auth';
-/**
- * Login user
- * POST /api/auth/login
- */
 export declare const login: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
 /**
  * Register new user

@@ -19,4 +19,5 @@ export declare const authorize: (...allowedRoles: string[]) => (req: AuthRequest
  * Optional authentication - doesn't fail if no token
  */
 export declare const optionalAuth: (req: AuthRequest, _res: Response, next: NextFunction) => void;
+export declare const requireCsrf: (req: AuthRequest, res: Response, next: NextFunction) => void | Response<any, Record<string, any>>;
 //# sourceMappingURL=auth.d.ts.map
