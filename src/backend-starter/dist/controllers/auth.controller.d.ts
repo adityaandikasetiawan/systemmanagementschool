@@ -24,7 +24,7 @@ export declare const getStudentProfile: (req: AuthRequest, res: Response) => Pro
  * Logout user
  * POST /api/auth/logout
  */
-export declare const logout: (_req: AuthRequest, res: Response) => Promise<Response<any, Record<string, any>>>;
+export declare const logout: (req: AuthRequest, res: Response) => Promise<Response<any, Record<string, any>>>;
 /**
  * Refresh access token
  * POST /api/auth/refresh

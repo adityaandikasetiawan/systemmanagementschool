@@ -7,6 +7,6 @@ const express_1 = __importDefault(require("express"));
 const auth_1 = require("../middleware/auth");
 const finance_controller_1 = require("../controllers/finance.controller");
 const router = express_1.default.Router();
-router.get('/report', auth_1.authenticate, finance_controller_1.getReport);
+router.get('/report', auth_1.authenticate, (0, auth_1.authorize)('super_admin', 'admin', 'finance'), finance_controller_1.getReport);
 exports.default = router;
 //# sourceMappingURL=finance.routes.js.map

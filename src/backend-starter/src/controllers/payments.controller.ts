@@ -1,8 +1,14 @@
 import { Response } from 'express';
 import { AuthRequest } from '../middleware/auth';
 
-export const getStudentPayments = async (_req: AuthRequest, res: Response) => {
+export const getStudentPayments = async (req: AuthRequest, res: Response) => {
   try {
+    const studentIdParam = parseInt((req.params as any).studentId);
+    if (req.user && req.user.role === 'student') {
+      if (Number.isFinite(studentIdParam) && req.user.id !== studentIdParam) {
+        return res.status(403).json({ success: false, message: 'Forbidden' });
+      }
+    }
     const isDev = process.env.NODE_ENV === 'development' && process.env.ALLOW_DEV_LOGIN === 'true';
     if (isDev) {
       const payments = [

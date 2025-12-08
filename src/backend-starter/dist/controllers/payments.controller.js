@@ -1,8 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendMassReminders = exports.verifyPayment = exports.processPayment = exports.createPayment = exports.getStudentPayments = void 0;
-const getStudentPayments = async (_req, res) => {
+const getStudentPayments = async (req, res) => {
     try {
+        const studentIdParam = parseInt(req.params.studentId);
+        if (req.user && req.user.role === 'student') {
+            if (Number.isFinite(studentIdParam) && req.user.id !== studentIdParam) {
+                return res.status(403).json({ success: false, message: 'Forbidden' });
+            }
+        }
         const isDev = process.env.NODE_ENV === 'development' && process.env.ALLOW_DEV_LOGIN === 'true';
         if (isDev) {
             const payments = [

@@ -7,6 +7,7 @@ exports.refreshToken = exports.logout = exports.getStudentProfile = exports.getC
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const database_1 = require("../config/database");
+const uuid_1 = require("uuid");
 const resolveExpires = (value, fallbackSeconds) => {
     if (!value)
         return fallbackSeconds || 0;
@@ -139,8 +140,18 @@ const login = async (req, res) => {
             email: user.email,
             role: user.role
         }, process.env.JWT_SECRET || 'your_jwt_secret', { expiresIn: accessExp });
-        // Generate refresh token
         const refreshToken = jsonwebtoken_1.default.sign({ id: user.id }, process.env.JWT_REFRESH_SECRET || 'your_refresh_secret', { expiresIn: refreshExp });
+        const sessionId = (0, uuid_1.v4)();
+        const expiresAt = new Date(Date.now() + refreshExp * 1000);
+        await (0, database_1.query)(`INSERT INTO sessions (id, user_id, token, ip_address, user_agent, expires_at)
+       VALUES (?, ?, ?, ?, ?, ?)`, [
+            sessionId,
+            user.id,
+            refreshToken,
+            req.headers['x-forwarded-for'] || req.ip || null,
+            req.headers['user-agent'] || null,
+            expiresAt
+        ]);
         // Update last login
         await (0, database_1.query)('UPDATE users SET last_login = NOW() WHERE id = ?', [user.id]);
         // Remove sensitive data
@@ -181,11 +192,17 @@ exports.login = login;
 const register = async (req, res) => {
     try {
         const { username, email, password, role, full_name, phone } = req.body;
-        // Validate input
         if (!username || !email || !password || !role || !full_name) {
             return res.status(400).json({
                 success: false,
                 message: 'All required fields must be provided'
+            });
+        }
+        const allowedRoles = ['super_admin', 'admin', 'teacher', 'student', 'finance', 'parent', 'operator', 'support'];
+        if (!allowedRoles.includes(role)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid role'
             });
         }
         // Check if user already exists
@@ -369,10 +386,11 @@ exports.getStudentProfile = getStudentProfile;
  * Logout user
  * POST /api/auth/logout
  */
-const logout = async (_req, res) => {
+const logout = async (req, res) => {
     try {
-        // In a stateless JWT setup, logout is handled client-side by removing token
-        // Optionally, you can blacklist the token in Redis or database
+        if (req.user) {
+            await (0, database_1.query)('DELETE FROM sessions WHERE user_id = ?', [req.user.id]);
+        }
         return res.json({
             success: true,
             message: 'Logout successful'
@@ -401,8 +419,16 @@ const refreshToken = async (req, res) => {
                 message: 'Refresh token is required'
             });
         }
-        // Verify refresh token
         const decoded = jsonwebtoken_1.default.verify(refresh_token, process.env.JWT_REFRESH_SECRET || 'your_refresh_secret');
+        const sessions = await (0, database_1.query)('SELECT id, expires_at FROM sessions WHERE user_id = ? AND token = ? LIMIT 1', [decoded.id, refresh_token]);
+        if (sessions.length === 0) {
+            return res.status(401).json({ success: false, message: 'Invalid refresh token' });
+        }
+        const session = sessions[0];
+        if (new Date(session.expires_at).getTime() <= Date.now()) {
+            await (0, database_1.query)('DELETE FROM sessions WHERE id = ?', [session.id]);
+            return res.status(401).json({ success: false, message: 'Refresh token expired' });
+        }
         // Get user
         const users = await (0, database_1.query)('SELECT id, email, role FROM users WHERE id = ? AND status = "active"', [decoded.id]);
         if (users.length === 0) {
@@ -420,8 +446,13 @@ const refreshToken = async (req, res) => {
             email: user.email,
             role: user.role
         }, process.env.JWT_SECRET || 'your_jwt_secret', { expiresIn: accessExp });
-        // Generate new refresh token
         const newRefreshToken = jsonwebtoken_1.default.sign({ id: user.id }, process.env.JWT_REFRESH_SECRET || 'your_refresh_secret', { expiresIn: refreshExp });
+        const newExpiresAt = new Date(Date.now() + refreshExp * 1000);
+        await (0, database_1.query)('UPDATE sessions SET token = ?, expires_at = ? WHERE id = ?', [
+            newRefreshToken,
+            newExpiresAt,
+            session.id
+        ]);
         return res.json({
             success: true,
             data: {
