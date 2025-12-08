@@ -1,0 +1,662 @@
+{
+  "common": {
+    "login": "Login",
+    "logout": "Logout",
+    "or": "atau",
+    "back_home": "Kembali ke Beranda",
+    "actions": {
+      "view": "Lihat",
+      "edit": "Edit",
+      "delete": "Hapus"
+    }
+  },
+  "navbar": {
+    "tagline": "Islamic Education",
+    "ppdb_cta": "PPDB 2025",
+    "role": {
+      "super_admin": "Super Admin",
+      "admin_unit": "Admin Unit",
+      "guru": "Guru",
+      "siswa": "Siswa",
+      "default": "Pengguna"
+    }
+  },
+  "sidebar": {
+    "title": "Admin Panel",
+    "brand": "Baituljannah"
+  },
+  "admin": {
+    "menu": {
+      "dashboard": "Dashboard",
+      "units": "Manajemen Unit",
+      "users": "Manajemen User",
+      "content": "Manajemen Konten",
+      "content_news": "Berita & Artikel",
+      "content_gallery": "Galeri",
+      "content_achievement": "Prestasi",
+      "content_programs": "Program",
+      "ppdb": "PPDB",
+      "career": "Rekrutmen",
+      "finance": "Keuangan",
+      "library": "Perpustakaan",
+      "attendance": "Absensi",
+      "students": "Manajemen Siswa",
+      "teachers": "Manajemen Guru",
+      "classes": "Manajemen Kelas",
+      "materials": "Materi Pembelajaran",
+      "assignments": "Manajemen Tugas",
+      "grades": "Manajemen Nilai",
+      "schedule": "Jadwal",
+      "profile": "Pengaturan",
+      "logout": "Logout"
+    },
+    "headers": {
+      "dashboard": "Dashboard",
+      "units": "Manajemen Unit Sekolah",
+      "users": "Manajemen User",
+      "ppdb": "Manajemen PPDB",
+      "career": "Manajemen Rekrutmen",
+      "content_news": "Manajemen Berita & Artikel",
+      "content_gallery": "Manajemen Galeri",
+      "content_achievement": "Manajemen Prestasi",
+      "content_programs": "Manajemen Program",
+      "students": "Manajemen Siswa",
+      "teachers": "Manajemen Guru",
+      "classes_admin": "Manajemen Kelas",
+      "classes_teacher": "Kelas Saya",
+      "finance": "Manajemen Keuangan",
+      "library": "Manajemen Perpustakaan",
+      "attendance": "Manajemen Absensi",
+      "materials": "Materi Pembelajaran",
+      "assignments": "Manajemen Tugas",
+      "grades": "Manajemen Nilai",
+      "schedule": "Jadwal",
+      "profile": "Profil Saya",
+      "welcome": "Selamat datang kembali, {name}!"
+    }
+  },
+  "admin_finance": {
+    "site_title": "Admin Panel - Keuangan",
+    "menu": {
+      "dashboard": "Dashboard",
+      "finance": "Keuangan",
+      "students": "Siswa",
+      "reports": "Laporan"
+    },
+    "header": {
+      "title": "Manajemen Keuangan & SPP",
+      "subtitle": "Kelola pembayaran SPP seluruh siswa"
+    },
+    "buttons": {
+      "send_reminder": "Kirim Pengingat ({count})",
+      "export_report": "Export Laporan",
+      "send_reminder_bulk": "Kirim Pengingat Massal"
+    },
+    "stats": {
+      "total_revenue": "Total Penerimaan",
+      "pending_bills": "Tagihan Pending",
+      "overdue": "Tunggakan",
+      "paid_count": "Lunas",
+      "detail": {
+        "academic_year_this": "Tahun ajaran ini",
+        "pending_tagihan": "{count} tagihan",
+        "overdue_students": "{count} siswa",
+        "students_total": "Dari {total} siswa"
+      }
+    },
+    "filters": {
+      "search_placeholder": "Cari nama atau NIS siswa...",
+      "status": {
+        "all": "Semua",
+        "paid": "Lunas",
+        "pending": "Pending",
+        "overdue": "Terlambat"
+      },
+      "summary": "Menampilkan {count} dari {total} siswa"
+    },
+    "tabs": {
+      "overview": "Ringkasan",
+      "students": "Per Siswa",
+      "transactions": "Transaksi"
+    },
+    "alerts": {
+      "overdue_title": "{count} Siswa Memiliki Tunggakan",
+      "total_overdue": "Total tunggakan: {amount}"
+    },
+    "overview": {
+      "unit_revenue_title": "Penerimaan Per Unit",
+      "payment_status_title": "Status Pembayaran",
+      "status_labels": {
+        "clear": "Lunas",
+        "current": "Lancar",
+        "overdue": "Menunggak",
+        "students_suffix": "siswa"
+      }
+    },
+    "students_table": {
+      "nis": "NIS",
+      "name": "Nama Siswa",
+      "class": "Kelas",
+      "unit": "Unit",
+      "paid": "Terbayar",
+      "pending": "Pending",
+      "overdue": "Tunggakan",
+      "status": "Status",
+      "actions": "Aksi"
+    },
+    "transactions": {
+      "title": "Transaksi Terbaru",
+      "filter": {
+        "all_status": "Semua Status",
+        "paid": "Lunas",
+        "pending": "Pending",
+        "overdue": "Terlambat"
+      },
+      "spp_label": "SPP {month} {year}",
+      "due_date": "Jatuh tempo",
+      "paid_on": "Dibayar",
+      "status": {
+        "paid": "Lunas",
+        "pending": "Pending",
+        "overdue": "Terlambat"
+      }
+    },
+    "detail_modal": {
+      "title": "Detail Pembayaran - {name}",
+      "cards": {
+        "total_paid": "Total Terbayar",
+        "total_pending": "Total Pending",
+        "total_overdue": "Total Tunggakan"
+      },
+      "history_title": "Riwayat Pembayaran",
+      "item": {
+        "paid_on": "Dibayar",
+        "due_date": "Jatuh tempo"
+      },
+      "close": "Tutup"
+    },
+    "reminder_modal": {
+      "title": "Kirim Pengingat Pembayaran",
+      "will_send": "Akan mengirim pengingat ke:",
+      "count_overdue": "{count} siswa dengan tunggakan",
+      "total_overdue": "Total tunggakan: {amount}",
+      "cancel": "Batal",
+      "send": "Kirim Pengingat"
+    }
+  },
+  "admin_students": {
+    "site_title": "Admin Panel - Siswa",
+    "menu": {
+      "dashboard": "Dashboard",
+      "students": "Siswa",
+      "teachers": "Guru",
+      "academic": "Akademik",
+      "finance": "Keuangan"
+    },
+    "header": {
+      "title": "Manajemen Siswa",
+      "subtitle": "Kelola data siswa dari semua unit sekolah",
+      "create": "Tambah Siswa"
+    },
+    "stats": {
+      "total_students": "Total Siswa",
+      "active_students": "Siswa Aktif",
+      "avg_gpa": "Rata-rata IPK",
+      "avg_attendance": "Kehadiran Avg"
+    },
+    "filters": {
+      "search_placeholder": "Cari nama atau NIS...",
+      "summary": "Menampilkan {count} dari {total} siswa"
+    },
+    "table": {
+      "student": "Siswa",
+      "nis": "NIS",
+      "class": "Kelas",
+      "unit": "Unit",
+      "gpa": "IPK",
+      "attendance": "Kehadiran",
+      "status": "Status",
+      "actions": "Aksi",
+      "empty": "Tidak ada siswa yang ditemukan"
+    },
+    "modal": {
+      "title": {
+        "create": "Tambah Siswa Baru",
+        "edit": "Edit Data Siswa",
+        "view": "Detail Siswa"
+      },
+      "form": {
+        "nis": "NIS *",
+        "nis_placeholder": "202400XX",
+        "name": "Nama Lengkap *",
+        "name_placeholder": "Nama siswa",
+        "gender": "Jenis Kelamin *",
+        "gender_options": { "L": "Laki-laki", "P": "Perempuan" },
+        "unit": "Unit *",
+        "class": "Kelas *",
+        "class_placeholder": "XII IPA 1",
+        "birth_date": "Tanggal Lahir *",
+        "enroll_date": "Tanggal Masuk *",
+        "email": "Email *",
+        "email_placeholder": "email@student.baituljannah.sch.id",
+        "phone": "Telepon *",
+        "phone_placeholder": "081234567890",
+        "address": "Alamat *",
+        "address_placeholder": "Alamat lengkap",
+        "parent_name": "Nama Orang Tua *",
+        "parent_name_placeholder": "Nama orang tua/wali",
+        "parent_phone": "Telepon Orang Tua *",
+        "gpa": "IPK",
+        "gpa_placeholder": "3.50",
+        "attendance": "Kehadiran (%)",
+        "attendance_placeholder": "95",
+        "status": "Status *",
+        "status_options": { "active": "Active", "inactive": "Inactive" }
+      },
+      "view_sections": {
+        "personal": "Informasi Pribadi",
+        "parents": "Informasi Orang Tua",
+        "academic": "Akademik",
+        "born": "Lahir",
+        "gpa": "IPK",
+        "attendance": "Kehadiran"
+      },
+      "actions": {
+        "close": "Tutup",
+        "cancel": "Batal",
+        "create": "Tambah Siswa",
+        "save": "Simpan Perubahan"
+      }
+    }
+  },
+  "admin_news": {
+    "site_title": "Admin Panel - Berita",
+    "menu": {
+      "dashboard": "Dashboard",
+      "news": "Berita",
+      "gallery": "Galeri",
+      "achievement": "Prestasi",
+      "programs": "Program",
+      "career": "Rekrutmen"
+    },
+    "header": {
+      "title": "Manajemen Berita",
+      "subtitle": "Kelola semua berita dan pengumuman sekolah",
+      "create": "Tambah Berita"
+    },
+    "stats": {
+      "total": "Total Berita",
+      "published": "Published",
+      "draft": "Draft",
+      "views": "Total Views"
+    },
+    "filters": {
+      "search_placeholder": "Cari berita...",
+      "summary": "Menampilkan {count} dari {total} berita"
+    },
+    "list": {
+      "views_suffix": "views",
+      "author_prefix": "oleh",
+      "empty": "Tidak ada berita yang ditemukan"
+    },
+    "actions": {
+      "view": "Lihat",
+      "edit": "Edit",
+      "delete": "Hapus"
+    },
+    "modal": {
+      "title": {
+        "create": "Tambah Berita Baru",
+        "edit": "Edit Berita",
+        "view": "Detail Berita"
+      },
+      "form": {
+        "title": "Judul Berita *",
+        "title_placeholder": "Masukkan judul berita",
+        "category": "Kategori *",
+        "unit": "Unit *",
+        "date": "Tanggal *",
+        "status": "Status *",
+        "status_options": { "draft": "Draft", "published": "Published" },
+        "excerpt": "Excerpt (Ringkasan) *",
+        "excerpt_placeholder": "Ringkasan singkat berita (maks 200 karakter)",
+        "content": "Konten Berita *",
+        "content_placeholder": "Tulis konten berita lengkap di sini...",
+        "image_url": "URL Gambar",
+        "upload": "Upload",
+        "preview_alt": "Preview"
+      },
+      "actions": {
+        "close": "Tutup",
+        "cancel": "Batal",
+        "create": "Tambah Berita",
+        "save": "Simpan Perubahan"
+      }
+    },
+    "delete": {
+      "title": "Hapus Berita?",
+      "message": "Berita yang dihapus tidak dapat dikembalikan. Apakah Anda yakin?",
+      "cancel": "Batal",
+      "confirm": "Ya, Hapus"
+    }
+  },
+  "admin_gallery": {
+    "site_title": "Admin Panel - Galeri",
+    "menu": {
+      "dashboard": "Dashboard",
+      "news": "Berita",
+      "gallery": "Galeri",
+      "achievement": "Prestasi",
+      "programs": "Program"
+    },
+    "header": {
+      "title": "Manajemen Galeri",
+      "subtitle": "Kelola semua foto dan dokumentasi kegiatan sekolah",
+      "upload": "Upload Foto"
+    },
+    "stats": {
+      "total_photos": "Total Foto",
+      "categories": "Kategori",
+      "downloads": "Total Downloads",
+      "this_month": "Bulan Ini"
+    },
+    "filters": {
+      "search_placeholder": "Cari foto...",
+      "summary": "Menampilkan {count} dari {total} foto"
+    },
+    "list": {
+      "downloads_suffix": "downloads",
+      "photographer_prefix": "Foto: ",
+      "empty": "Tidak ada foto yang ditemukan"
+    },
+    "modal": {
+      "title": {
+        "create": "Upload Foto Baru",
+        "edit": "Edit Foto",
+        "view": "Detail Foto"
+      },
+      "upload": {
+        "label": "Upload Gambar *",
+        "click_or_drag": "Click to upload atau drag and drop",
+        "limit": "PNG, JPG, GIF up to 10MB",
+        "progress": "Uploading... {percent}%",
+        "preview_alt": "Preview"
+      },
+      "form": {
+        "title": "Judul Foto *",
+        "title_placeholder": "Masukkan judul foto",
+        "category": "Kategori *",
+        "unit": "Unit *",
+        "date": "Tanggal *",
+        "description": "Deskripsi",
+        "description_placeholder": "Deskripsi foto..."
+      },
+      "actions": {
+        "close": "Tutup",
+        "cancel": "Batal",
+        "create": "Upload Foto",
+        "save": "Simpan Perubahan"
+      }
+    },
+    "delete": {
+      "title": "Hapus Foto?",
+      "message": "Foto yang dihapus tidak dapat dikembalikan. Apakah Anda yakin?",
+      "cancel": "Batal",
+      "confirm": "Ya, Hapus"
+    }
+  },
+  "admin_programs": {
+    "site_title": "Admin Panel - Program",
+    "menu": {
+      "dashboard": "Dashboard",
+      "news": "Berita",
+      "gallery": "Galeri",
+      "programs": "Program",
+      "achievement": "Prestasi"
+    },
+    "header": {
+      "title": "Manajemen Program",
+      "subtitle": "Kelola semua program ekstrakurikuler dan unggulan",
+      "create": "Tambah Program"
+    },
+    "stats": {
+      "total": "Total Program",
+      "active": "Program Aktif",
+      "participants": "Total Peserta",
+      "remaining_capacity": "Kapasitas Tersisa"
+    },
+    "filters": {
+      "search_placeholder": "Cari program...",
+      "summary": "Menampilkan {count} dari {total} program"
+    },
+    "list": {
+      "status": { "active": "Active", "inactive": "Inactive" },
+      "participants_suffix": "peserta",
+      "capacity": "Kapasitas",
+      "empty": "Tidak ada program yang ditemukan"
+    },
+    "modal": {
+      "title": {
+        "create": "Tambah Program Baru",
+        "edit": "Edit Program"
+      },
+      "form": {
+        "name": "Nama Program *",
+        "name_placeholder": "Masukkan nama program",
+        "category": "Kategori *",
+        "unit": "Unit *",
+        "description": "Deskripsi *",
+        "description_placeholder": "Deskripsi program",
+        "duration": "Durasi *",
+        "duration_placeholder": "Contoh: 6 Bulan",
+        "instructor": "Instruktur *",
+        "instructor_placeholder": "Nama instruktur",
+        "capacity": "Kapasitas *",
+        "enrolled": "Terdaftar *",
+        "fee": "Biaya *",
+        "fee_placeholder": "Contoh: Rp 500.000/bulan",
+        "status": "Status *",
+        "status_options": { "active": "Active", "inactive": "Inactive" },
+        "benefits": "Benefit Program",
+        "benefit_placeholder": "Benefit {index}",
+        "add_benefit": "+ Tambah Benefit"
+      },
+      "actions": {
+        "cancel": "Batal",
+        "create": "Tambah Program",
+        "save": "Simpan Perubahan"
+      }
+    },
+    "delete": {
+      "title": "Hapus Program?",
+      "message": "Program yang dihapus tidak dapat dikembalikan. Apakah Anda yakin?",
+      "cancel": "Batal",
+      "confirm": "Ya, Hapus"
+    }
+  },
+  "login": {
+    "welcome_title": "Selamat Datang! 👋",
+    "welcome_subtitle": "Silakan login untuk melanjutkan",
+    "login_as": "Login Sebagai:",
+    
+    "types": {
+      "student": { "label": "Siswa", "description": "Login sebagai siswa" },
+      "parent": { "label": "Orang Tua", "description": "Login sebagai wali murid" },
+      "teacher": { "label": "Guru", "description": "Login sebagai guru" },
+      "admin": { "label": "Admin", "description": "Login sebagai admin" }
+    },
+    "email_label_student": "NIS / Email",
+    "email_label_other": "Email / Username",
+    "email_placeholder_student": "Masukkan NIS atau Email",
+    "email_placeholder_other": "Masukkan email atau username",
+    "password_label": "Password",
+    "password_placeholder": "Masukkan password",
+    "remember_me": "Ingat saya",
+    "forgot_password": "Lupa password?",
+    "submit": "Login Sekarang",
+    "processing": "Memproses...",
+    "divider_or": "atau",
+    "back_home": "Kembali ke Beranda",
+    "dev_creds": "Kredensial dev:",
+    "fill_auto": "Isi otomatis"
+  },
+  "finance": {
+    "total_revenue": "Total Pemasukan",
+    "pending_bills": "Tagihan Pending",
+    "overdue": "Tunggakan",
+    "paid_students": "Siswa Lunas",
+    "unit_summary": "Ringkasan Per Unit",
+    "loading": "Memuat data keuangan..."
+  },
+  "student": {
+    "menu": {
+      "dashboard": "Dashboard",
+      "academic": "Akademik",
+      "finance": "Keuangan",
+      "profile": "Profil"
+    },
+    "finance": {
+      "site_title": "Portal Siswa - Keuangan",
+      "header": "Informasi Keuangan & SPP",
+      "download_summary": "Download Rekap",
+      "tabs": {
+        "overview": "Ringkasan Tagihan",
+        "history": "Riwayat Pembayaran",
+        "invoice": "Invoice & Kuitansi"
+      },
+      "pending_section": { "title": "Tagihan yang Belum Dibayar" },
+      "due_date": "Jatuh tempo",
+      "pay_now": "Bayar Sekarang",
+      "other_fees": { "title": "Tagihan Lainnya" },
+      "pay": "Bayar",
+      "summary": {
+        "title": "Ringkasan Pembayaran Tahun Ajaran {period}",
+        "total_spp": "Total SPP",
+        "paid": "Sudah Dibayar",
+        "remaining": "Sisa Tagihan"
+      },
+      "academic_year_short": "TA",
+      "history": {
+        "title": "Riwayat Pembayaran Lengkap",
+        "filters": {
+          "all_status": "Semua Status",
+          "paid": "Lunas",
+          "pending": "Pending"
+        },
+        "table": {
+          "period": "Periode",
+          "category": "Kategori",
+          "amount": "Jumlah",
+          "due": "Jatuh Tempo",
+          "paid_date": "Tgl Bayar",
+          "method": "Metode",
+          "status": "Status",
+          "actions": "Aksi"
+        }
+      },
+      "invoice": {
+        "title": "Download Invoice & Kuitansi",
+        "number_label": "No. Invoice",
+        "paid_on": "Dibayar"
+      },
+      "status": {
+        "paid": "Lunas",
+        "pending": "Belum Bayar",
+        "overdue": "Terlambat",
+        "ok": "Lancar",
+        "has_overdue": "Tunggakan",
+        "no_overdue": "Tidak ada tunggakan"
+      },
+      "stats": {
+        "total_paid": "Total Terbayar",
+        "pending_bills": "Tagihan Pending",
+        "status": "Status",
+        "monthly_spp_label": "Total SPP/Bulan",
+        "months_label": "bulan",
+        "overdue_amount_label": "Rp {amount}jt"
+      },
+      "modal": {
+        "title": "Pembayaran SPP",
+        "details": {
+          "title": "Detail Tagihan",
+          "period": "Periode",
+          "category": "Kategori",
+          "total_bill": "Total Tagihan"
+        },
+        "method": {
+          "title": "Pilih Metode Pembayaran",
+          "bank_transfer": "Transfer Bank",
+          "bank_list": "BCA, BNI, Mandiri, BRI",
+          "virtual_account": "Virtual Account",
+          "virtual_desc": "Otomatis terverifikasi",
+          "ewallet": "E-Wallet",
+          "ewallet_list": "GoPay, OVO, Dana, ShopeePay"
+        },
+        "continue_payment": "Lanjut Pembayaran",
+        "cancel": "Batal"
+      }
+    },
+    "academic": {
+      "site_title": "Portal Siswa - Akademik",
+      "header": "Data Akademik",
+      "download_report": "Download Rapor",
+      "term": { "genap": "Genap", "ganjil": "Ganjil" },
+      "semester_label": "Semester {term} {period}",
+      "tabs": {
+        "grades": "Nilai & Rapor",
+        "schedule": "Jadwal Pelajaran",
+        "attendance": "Kehadiran",
+        "assignments": "Tugas & Penilaian"
+      },
+      "grades_table": {
+        "subject": "Mata Pelajaran",
+        "teacher": "Guru",
+        "uts": "UTS",
+        "uas": "UAS",
+        "assignments": "Tugas",
+        "attendance": "Kehadiran",
+        "kkm": "KKM",
+        "final_grade": "Nilai Akhir",
+        "grade": "Grade",
+        "average": "Rata-rata"
+      },
+      "chart_title": "Grafik Performa",
+      "stats": {
+        "avg_grade": "Rata-rata Nilai",
+        "attendance": "Kehadiran",
+        "attendance_detail": "{present} dari {total} hari",
+        "assignments_completed": "Tugas Selesai",
+        "class_rank": "Ranking Kelas",
+        "subjects_count": "{count} mata pelajaran",
+        "current_semester": "Semester ini",
+        "students_total": "Dari {total} siswa"
+      },
+      "attendance_summary": {
+        "total_present": "Total Hadir",
+        "days": "Hari",
+        "attendance_percentage": "Persentase Kehadiran",
+        "excellent": "Excellent!",
+        "total_sick_permission": "Total Sakit/Izin"
+      },
+      "attendance_table": {
+        "month": "Bulan",
+        "present": "Hadir",
+        "sick": "Sakit",
+        "permission": "Izin",
+        "absence": "Alpha",
+        "percentage": "Persentase"
+      },
+      "assignments": {
+        "status": {
+          "graded": "Dinilai",
+          "submitted": "Terkirim",
+          "pending": "Belum Dikerjakan"
+        },
+        "deadline": "Deadline",
+        "submitted": "Dikumpulkan",
+        "score": "Nilai",
+        "upload_task": "Upload Tugas"
+      }
+    }
+  }
+}
