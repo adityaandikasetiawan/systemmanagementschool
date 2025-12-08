@@ -16,6 +16,11 @@ export declare const register: (req: Request, res: Response) => Promise<Response
  */
 export declare const getCurrentUser: (req: AuthRequest, res: Response) => Promise<Response<any, Record<string, any>>>;
 /**
+ * Get student profile (joined info)
+ * GET /api/auth/student/profile
+ */
+export declare const getStudentProfile: (req: AuthRequest, res: Response) => Promise<Response<any, Record<string, any>>>;
+/**
  * Logout user
  * POST /api/auth/logout
  */

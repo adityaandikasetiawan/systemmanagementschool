@@ -9,5 +9,5 @@ All notable changes to this project are documented in this file.
 - Backend: Rotate `JWT_SECRET` and `JWT_REFRESH_SECRET` to strong values.
 - Frontend: Continue i18n migration for admin pages using centralized `src/i18n/texts.json`.
 - Deployment: Add auto-deploy checklist updates in `src/DEPLOYMENT_CHECKLIST.md` (Nginx, PM2/Node, environment variables, build steps).
+- CI: Add GitHub Actions workflow `.github/workflows/ci.yml` to build frontend and backend and run backend lint.
 - Verification: Frontend build validated; backend health endpoint verified running. Remote DB connection requires grants for `b112@103.3.221.216` (see deployment checklist notes).
-

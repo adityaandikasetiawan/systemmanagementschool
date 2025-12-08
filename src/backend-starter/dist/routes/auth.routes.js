@@ -65,6 +65,12 @@ router.post('/logout', auth_1.authenticate, authController.logout);
  */
 router.get('/me', auth_1.authenticate, authController.getCurrentUser);
 /**
+ * @route   GET /api/auth/student/profile
+ * @desc    Get current student's profile
+ * @access  Private (Student)
+ */
+router.get('/student/profile', auth_1.authenticate, authController.getStudentProfile);
+/**
  * @route   POST /api/auth/refresh
  * @desc    Refresh access token
  * @access  Public

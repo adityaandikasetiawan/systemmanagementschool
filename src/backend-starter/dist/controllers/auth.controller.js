@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.refreshToken = exports.logout = exports.getCurrentUser = exports.register = exports.login = void 0;
+exports.refreshToken = exports.logout = exports.getStudentProfile = exports.getCurrentUser = exports.register = exports.login = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const database_1 = require("../config/database");
@@ -293,6 +293,78 @@ const getCurrentUser = async (req, res) => {
     }
 };
 exports.getCurrentUser = getCurrentUser;
+/**
+ * Get student profile (joined info)
+ * GET /api/auth/student/profile
+ */
+const getStudentProfile = async (req, res) => {
+    try {
+        if (!req.user) {
+            return res.status(401).json({ success: false, message: 'Not authenticated' });
+        }
+        const isDev = process.env.NODE_ENV === 'development' && process.env.ALLOW_DEV_LOGIN === 'true';
+        if (isDev && req.user.id === 101) {
+            return res.json({
+                success: true,
+                data: {
+                    profile: {
+                        user_id: 101,
+                        full_name: 'Siswa Dev Mode',
+                        email: 'student@baituljannah.sch.id',
+                        nis: '2024001',
+                        nisn: '0083456789',
+                        class: 'XII IPA 1',
+                        unit: 'SMAIT',
+                        academic_year: '2024/2025 Genap',
+                        gpa: 3.85,
+                        attendance: 95,
+                        photo_url: null,
+                        phone: '081234567801',
+                        gender: 'L',
+                        birth_date: null,
+                        birth_place: null,
+                        address: null,
+                        city: null,
+                        province: null
+                    }
+                }
+            });
+        }
+        const rows = await (0, database_1.query)(`SELECT 
+         u.id AS user_id,
+         u.email,
+         up.full_name,
+         up.phone,
+         up.photo_url,
+         up.gender,
+         up.birth_date,
+         up.birth_place,
+         up.address,
+         up.city,
+         up.province,
+         s.nis,
+         s.nisn,
+         c.name AS class,
+         su.code AS unit,
+         ay.name AS academic_year
+       FROM users u
+       LEFT JOIN user_profiles up ON up.user_id = u.id
+       LEFT JOIN students s ON s.user_id = u.id
+       LEFT JOIN classes c ON c.id = s.class_id
+       LEFT JOIN school_units su ON su.id = s.school_unit_id
+       LEFT JOIN academic_years ay ON ay.id = c.academic_year_id
+       WHERE u.id = ?
+       LIMIT 1`, [req.user.id]);
+        if (rows.length === 0) {
+            return res.status(404).json({ success: false, message: 'Student profile not found' });
+        }
+        return res.json({ success: true, data: { profile: rows[0] } });
+    }
+    catch (error) {
+        return res.status(500).json({ success: false, message: 'Failed to get student profile' });
+    }
+};
+exports.getStudentProfile = getStudentProfile;
 /**
  * Logout user
  * POST /api/auth/logout
