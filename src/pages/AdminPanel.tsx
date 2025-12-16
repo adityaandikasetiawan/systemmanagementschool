@@ -11,6 +11,12 @@ import {
 import { api } from '../services/api';
 import { t, tf } from '../i18n';
 import { Table } from '../components/Table';
+import { Pagination as Pager } from '../components/Pagination';
+import { AdminAchievement } from './AdminAchievement';
+import { AdminNews } from './AdminNews';
+import { AdminGallery } from './AdminGallery';
+import { AdminPrograms } from './AdminPrograms';
+import { AdminCareer } from './AdminCareer';
 
 interface AdminPanelProps {
   userRole: 'Super Admin' | 'Admin Unit' | 'Guru' | 'Siswa';
@@ -27,7 +33,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   accentColor = '#1E4AB8',
   onNavigate = () => {}
 }) => {
-  const [activeSection, setActiveSection] = useState<'dashboard' | 'units' | 'users' | 'ppdb' | 'career' | 'finance' | 'library' | 'attendance' | 'students' | 'teachers' | 'classes' | 'materials' | 'assignments' | 'grades' | 'schedule' | 'profile' | 'content-news' | 'content-gallery' | 'content-achievement' | 'content-programs'>('dashboard');
+  const [activeSection, setActiveSection] = useState<'dashboard' | 'units' | 'users' | 'ppdb' | 'career' | 'finance' | 'library' | 'attendance' | 'students' | 'teachers' | 'classes' | 'materials' | 'assignments' | 'grades' | 'schedule' | 'profile' | 'content-news' | 'content-gallery' | 'content-achievement' | 'content-programs' | 'content-hero'>('dashboard');
+  React.useEffect(() => {
+    try {
+      const saved = localStorage.getItem('bj_admin_active_section');
+      if (saved) setActiveSection(saved as any);
+    } catch {}
+  }, []);
+  React.useEffect(() => {
+    try { localStorage.setItem('bj_admin_active_section', activeSection); } catch {}
+  }, [activeSection]);
 
   // Menu items based on role
   const getMenuItems = () => {
@@ -43,7 +58,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             { label: t('admin.menu.content_news'), onClick: () => setActiveSection('content-news') },
             { label: t('admin.menu.content_gallery'), onClick: () => setActiveSection('content-gallery') },
             { label: t('admin.menu.content_achievement'), onClick: () => setActiveSection('content-achievement') },
-            { label: t('admin.menu.content_programs'), onClick: () => setActiveSection('content-programs') }
+            { label: t('admin.menu.content_programs'), onClick: () => setActiveSection('content-programs') },
+            { label: 'Hero Slides', onClick: () => setActiveSection('content-hero') }
           ]
         },
         { label: t('admin.menu.ppdb'), icon: Calendar, section: 'ppdb' },
@@ -77,7 +93,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             { label: t('admin.menu.content_news'), onClick: () => setActiveSection('content-news') },
             { label: t('admin.menu.content_gallery'), onClick: () => setActiveSection('content-gallery') },
             { label: t('admin.menu.content_achievement'), onClick: () => setActiveSection('content-achievement') },
-            { label: t('admin.menu.content_programs'), onClick: () => setActiveSection('content-programs') }
+            { label: t('admin.menu.content_programs'), onClick: () => setActiveSection('content-programs') },
+            { label: 'Hero Slides', onClick: () => setActiveSection('content-hero') }
           ]
         },
         { label: t('admin.menu.profile'), icon: Settings, section: 'profile' },
@@ -93,7 +110,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         { label: t('admin.menu.attendance'), icon: UserCheck, section: 'attendance' },
         { label: t('admin.menu.schedule'), icon: Calendar, section: 'schedule' },
         { label: t('admin.headers.profile'), icon: Settings, section: 'profile' },
-        { label: t('admin.menu.logout'), icon: LogOut, href: '#', onClick: () => onNavigate('login') }
+        { label: t('admin.menu.logout'), icon: LogOut, href: '#', onClick: async () => { try { await api.auth.logout(); } catch {} onNavigate('login'); } }
       ];
     } else { // Siswa
       return [
@@ -163,7 +180,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       case 'ppdb':
         return <PPDBManagement accentColor={accentColor} />;
       case 'career':
-        return <CareerManagement accentColor={accentColor} />;
+        return <AdminCareer onNavigate={onNavigate} embedded />;
       case 'content-news':
         return <ContentNewsManagement accentColor={accentColor} onNavigate={onNavigate} />;
       case 'content-gallery':
@@ -172,6 +189,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         return <ContentAchievementManagement accentColor={accentColor} onNavigate={onNavigate} />;
       case 'content-programs':
         return <ContentProgramsManagement accentColor={accentColor} onNavigate={onNavigate} />;
+      case 'content-hero':
+        return <ContentHeroSlidesManagement accentColor={accentColor} />;
       case 'students':
         return <StudentsManagement accentColor={accentColor} onNavigate={onNavigate} />;
       case 'teachers':
@@ -272,12 +291,219 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
 // Dashboard Content Component
 const DashboardContent: React.FC<{ userRole: string; accentColor: string }> = ({ userRole, accentColor }) => {
-  const recentActivities = [
+  const defaultActivities = [
     { activity: 'User baru terdaftar', user: 'Ahmad Fauzi', time: '5 menit lalu', status: 'Success' },
     { activity: 'Berita dipublikasikan', user: 'Admin SDIT', time: '15 menit lalu', status: 'Success' },
     { activity: 'PPDB diterima', user: 'Siti Aisyah', time: '1 jam lalu', status: 'Pending' },
     { activity: 'Materi diupload', user: 'Guru Matematika', time: '2 jam lalu', status: 'Success' }
   ];
+  const [activities, setActivities] = React.useState<Array<{ id: string; activity: string; user: string; time: string; status: string }>>([]);
+  const [showActivityForm, setShowActivityForm] = React.useState(false);
+  const [editingActivity, setEditingActivity] = React.useState<{ id: string; activity: string; user: string; time: string; status: string } | null>(null);
+  const [activityForm, setActivityForm] = React.useState<{ activity: string; user: string; time: string; status: string }>({ activity: '', user: '', time: '', status: 'Success' });
+  const getTimeLabel = (iso?: string, fallback?: string) => {
+    if (!iso) return fallback || '';
+    const now = Date.now();
+    const t = new Date(iso).getTime();
+    const diffMs = Math.max(0, now - t);
+    const diffMin = Math.floor(diffMs / 60000);
+    if (diffMin < 1) return 'baru saja';
+    if (diffMin < 60) return `${diffMin} menit lalu`;
+    const diffHour = Math.floor(diffMin / 60);
+    if (diffHour < 24) return `${diffHour} jam lalu`;
+    const diffDay = Math.floor(diffHour / 24);
+    return `${diffDay} hari lalu`;
+  };
+  const loadActivities = React.useCallback(async () => {
+    try {
+      const res = await api.dashboardActivities.getAll();
+      const list = (res && res.success && res.data) ? (res.data as any[]) : [];
+      if (Array.isArray(list) && list.length) {
+        setActivities(list.map((a: any) => {
+          const statusRaw = String(a.status || 'Success');
+          const status = statusRaw.charAt(0).toUpperCase() + statusRaw.slice(1);
+          const time = getTimeLabel(a.occurred_at || a.created_at, a.time);
+          return {
+            id: String(a.id),
+            activity: a.activity || a.title || '',
+            user: a.user || a.actor || '',
+            time,
+            status
+          };
+        }));
+      } else {
+        const seeded: any[] = [];
+        for (const a of defaultActivities) {
+          const created = await api.dashboardActivities.create({
+            activity: a.activity,
+            user: a.user,
+            status: a.status.toLowerCase(),
+            occurred_at: new Date().toISOString(),
+            time: a.time
+          });
+          if (created.success && created.data) {
+            const d: any = created.data;
+            const statusRaw = String(d.status || 'Success');
+            const status = statusRaw.charAt(0).toUpperCase() + statusRaw.slice(1);
+            const time = getTimeLabel(d.occurred_at || d.created_at, d.time || a.time);
+            seeded.push({
+              id: String(d.id),
+              activity: d.activity || a.activity,
+              user: d.user || a.user,
+              time,
+              status
+            });
+          }
+        }
+        setActivities(seeded.length ? seeded : defaultActivities.map(a => ({ id: String(Date.now() + Math.random()), ...a })));
+      }
+    } catch {
+      setActivities(defaultActivities.map(a => ({ id: String(Date.now() + Math.random()), ...a })));
+    }
+  }, []);
+  const saveActivities = async (next?: Array<{ id: string; activity: string; user: string; time: string; status: string }>) => {
+    if (next) setActivities(next);
+  };
+  const openCreateActivity = () => {
+    setEditingActivity(null);
+    setActivityForm({ activity: '', user: '', time: '', status: 'Success' });
+    setShowActivityForm(true);
+  };
+  const openEditActivity = (row: { id: string; activity: string; user: string; time: string; status: string }) => {
+    setEditingActivity(row);
+    setActivityForm({ activity: row.activity, user: row.user, time: row.time, status: row.status });
+    setShowActivityForm(true);
+  };
+  const removeActivity = async (id: string) => {
+    if (!confirm('Hapus aktivitas ini?')) return;
+    await api.dashboardActivities.delete(id);
+    await loadActivities();
+  };
+  const saveActivity = async () => {
+    if (!activityForm.activity || !activityForm.user) return;
+    if (editingActivity) {
+      await api.dashboardActivities.update(editingActivity.id, {
+        activity: activityForm.activity,
+        user: activityForm.user,
+        status: activityForm.status.toLowerCase(),
+        occurred_at: new Date().toISOString(),
+        time: activityForm.time
+      });
+    } else {
+      await api.dashboardActivities.create({
+        activity: activityForm.activity,
+        user: activityForm.user,
+        status: activityForm.status.toLowerCase(),
+        occurred_at: new Date().toISOString(),
+        time: activityForm.time
+      });
+    }
+    setShowActivityForm(false);
+    await loadActivities();
+  };
+  React.useEffect(() => { loadActivities(); }, [loadActivities]);
+  const [events, setEvents] = React.useState<Array<{ id: string; title: string; date: string; time: string; location: string }>>([]);
+  const [showEventForm, setShowEventForm] = React.useState(false);
+  const [editingEvent, setEditingEvent] = React.useState<{ id: string; title: string; date: string; time: string; location: string } | null>(null);
+  const [eventForm, setEventForm] = React.useState<{ title: string; date: string; time: string; location: string }>({ title: '', date: '', time: '', location: '' });
+  const [quickModal, setQuickModal] = React.useState<{ type: string; data?: any } | null>(null);
+  const [unitQuickForm, setUnitQuickForm] = React.useState<{ name: string; level: string; accent_color: string }>({ name: '', level: '', accent_color: accentColor });
+  const [userQuickForm, setUserQuickForm] = React.useState<{ name: string; email: string; role: string }>({ name: '', email: '', role: 'Siswa' });
+  const [studentQuickForm, setStudentQuickForm] = React.useState<{ name: string; unit: string; class_name: string }>({ name: '', unit: '', class_name: '' });
+  const [teacherQuickForm, setTeacherQuickForm] = React.useState<{ name: string; unit: string; subject: string }>({ name: '', unit: '', subject: '' });
+  const [materialQuickForm, setMaterialQuickForm] = React.useState<{ title: string; link: string }>({ title: '', link: '' });
+  const [assignmentQuickForm, setAssignmentQuickForm] = React.useState<{ title: string; due_date: string }>({ title: '', due_date: '' });
+  const [scheduleQuickForm, setScheduleQuickForm] = React.useState<{ title: string; date: string; time: string; location: string }>({ title: '', date: '', time: '', location: '' });
+  const openQuick = (type: string, data?: any) => { setQuickModal({ type, data }); };
+  const closeQuick = () => { setQuickModal(null); };
+  const saveQuick = async () => {
+    if (!quickModal) return;
+    try {
+      if (quickModal.type === 'unit') {
+        if (!unitQuickForm.name || !unitQuickForm.level) return;
+        await api.units.create({ name: unitQuickForm.name, level: unitQuickForm.level, accent_color: unitQuickForm.accent_color });
+      } else if (quickModal.type === 'user') {
+        const roleMapBackend: Record<string, string> = { 'Siswa': 'student', 'Guru': 'teacher', 'Admin Unit': 'admin', 'Super Admin': 'super_admin' };
+        const role = roleMapBackend[userQuickForm.role] || 'student';
+        if (!userQuickForm.name || !userQuickForm.email) return;
+        const username = String(userQuickForm.email).split('@')[0];
+        const tempPassword = `${Math.random().toString(36).slice(2, 10)}A1!`;
+        const res = await api.auth.register({ username, email: userQuickForm.email, password: tempPassword, role, full_name: userQuickForm.name });
+        if (res && res.success) {
+          try { window.dispatchEvent(new CustomEvent('bj:users:refresh')); } catch {}
+        }
+      } else if (quickModal.type === 'student') {
+        if (!studentQuickForm.name) return;
+        await api.students.create({ name: studentQuickForm.name, unit: studentQuickForm.unit, class_name: studentQuickForm.class_name });
+      } else if (quickModal.type === 'teacher') {
+        if (!teacherQuickForm.name) return;
+        await api.teachers.create({ name: teacherQuickForm.name, unit: teacherQuickForm.unit, subject: teacherQuickForm.subject });
+      } else if (quickModal.type === 'material') {
+        if (!materialQuickForm.title && !materialQuickForm.link) return;
+        const fd = new FormData();
+        fd.append('title', materialQuickForm.title);
+        fd.append('link', materialQuickForm.link);
+        await api.materials.create(fd);
+      } else if (quickModal.type === 'assignment') {
+        if (!assignmentQuickForm.title || !assignmentQuickForm.due_date) return;
+        await api.assignments.create({ title: assignmentQuickForm.title, deadline: assignmentQuickForm.due_date });
+      } else if (quickModal.type === 'schedule') {
+        const title = scheduleQuickForm.title || 'Jadwal';
+        const date = scheduleQuickForm.date || new Date().toISOString().slice(0, 10);
+        const parts = (scheduleQuickForm.time || '').split('-').map(s => s.trim());
+        const start_time = parts[0] || '';
+        const end_time = parts[1] || '';
+        await api.dashboardEvents.create({ title, event_date: date, start_time, end_time, location: scheduleQuickForm.location });
+        await loadEvents();
+      }
+    } finally {
+      closeQuick();
+    }
+  };
+  const loadEvents = React.useCallback(async () => {
+    try {
+      const res = await api.dashboardEvents.getAll();
+      const list = (res && res.success && res.data) ? (res.data as any[]) : [];
+      setEvents((Array.isArray(list) ? list : []).map(e => ({ ...e, id: String(e.id) })));
+    } catch {
+      setEvents([]);
+    }
+  }, []);
+  const saveEvents = async (next?: Array<{ id: string; title: string; date: string; time: string; location: string }>) => {
+    if (next) setEvents(next);
+  };
+  const openCreateEvent = () => {
+    setEditingEvent(null);
+    setEventForm({ title: '', date: '', time: '', location: '' });
+    setShowEventForm(true);
+  };
+  const openEditEvent = (e: { id: string; title: string; date: string; time: string; location: string }) => {
+    setEditingEvent(e);
+    setEventForm({ title: e.title, date: e.date, time: e.time, location: e.location });
+    setShowEventForm(true);
+  };
+  const removeEvent = async (e: { id: string }) => {
+    if (!confirm('Hapus event ini?')) return;
+    await api.dashboardEvents.delete(e.id);
+    await loadEvents();
+  };
+  const saveEvent = async () => {
+    if (!eventForm.title || !eventForm.date) return;
+    if (editingEvent) {
+      const parts = (eventForm.time || '').split('-').map(s => s.trim());
+      const start_time = parts[0] || '';
+      const end_time = parts[1] || '';
+      await api.dashboardEvents.update(editingEvent.id, { title: eventForm.title, event_date: eventForm.date, start_time, end_time, location: eventForm.location });
+    } else {
+      const parts = (eventForm.time || '').split('-').map(s => s.trim());
+      const start_time = parts[0] || '';
+      const end_time = parts[1] || '';
+      await api.dashboardEvents.create({ title: eventForm.title, event_date: eventForm.date, start_time, end_time, location: eventForm.location });
+    }
+    setShowEventForm(false);
+    await loadEvents();
+  };
+  React.useEffect(() => { loadEvents(); }, [loadEvents]);
 
   const columns = [
     { header: 'Aktivitas', accessor: 'activity' },
@@ -287,11 +513,23 @@ const DashboardContent: React.FC<{ userRole: string; accentColor: string }> = ({
       header: 'Status',
       accessor: 'status',
       cell: (value: string) => (
-        <span className={`px-3 py-1 rounded-full text-xs ${
-          value === 'Success' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
-        }`}>
+        <span className={`px-3 py-1 rounded-full text-xs ${value === 'Success' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
           {value}
         </span>
+      )
+    },
+    {
+      header: 'Aksi',
+      accessor: 'id',
+      cell: (_value: any, row: any) => (
+        <div className="flex items-center gap-2">
+          <button onClick={() => openEditActivity(row)} className="btn-outline text-xs" style={{ borderColor: accentColor, color: accentColor }}>
+            <Edit className="w-4 h-4" />
+          </button>
+          <button onClick={() => removeActivity(row.id)} className="btn-outline text-xs" style={{ borderColor: '#EF4444', color: '#EF4444' }}>
+            <X className="w-4 h-4" />
+          </button>
+        </div>
       )
     }
   ];
@@ -303,9 +541,15 @@ const DashboardContent: React.FC<{ userRole: string; accentColor: string }> = ({
         <div className="card">
           <div className="flex items-center justify-between mb-6">
             <h3>Aktivitas Terbaru</h3>
-            <button className="text-sm" style={{ color: accentColor }}>Lihat Semua</button>
+            <div className="flex items-center gap-2">
+              <button onClick={() => openQuick('activitiesView')} className="text-sm" style={{ color: accentColor }}>Lihat Semua</button>
+              <button onClick={openCreateActivity} className="btn-primary text-sm flex items-center gap-2" style={{ backgroundColor: accentColor }}>
+                <Plus className="w-4 h-4" />
+                <span>Tambah Aktivitas</span>
+              </button>
+            </div>
           </div>
-          <Table columns={columns} data={recentActivities} accentColor={accentColor} />
+          <Table columns={columns} data={activities} accentColor={accentColor} />
         </div>
       </div>
 
@@ -316,11 +560,11 @@ const DashboardContent: React.FC<{ userRole: string; accentColor: string }> = ({
           <div className="space-y-3">
             {userRole === 'Super Admin' && (
               <>
-                <button className="w-full btn-primary text-left flex items-center gap-3" style={{ backgroundColor: accentColor }}>
+                <button onClick={() => openQuick('unit')} className="w-full btn-primary text-left flex items-center gap-3" style={{ backgroundColor: accentColor }}>
                   <Building className="w-5 h-5" />
                   <span>Tambah Unit</span>
                 </button>
-                <button className="w-full btn-outline text-left flex items-center gap-3" style={{ borderColor: accentColor, color: accentColor }}>
+                <button onClick={() => openQuick('user')} className="w-full btn-outline text-left flex items-center gap-3" style={{ borderColor: accentColor, color: accentColor }}>
                   <Users className="w-5 h-5" />
                   <span>Tambah User</span>
                 </button>
@@ -328,11 +572,11 @@ const DashboardContent: React.FC<{ userRole: string; accentColor: string }> = ({
             )}
             {userRole === 'Admin Unit' && (
               <>
-                <button className="w-full btn-primary text-left flex items-center gap-3" style={{ backgroundColor: accentColor }}>
+                <button onClick={() => openQuick('student')} className="w-full btn-primary text-left flex items-center gap-3" style={{ backgroundColor: accentColor }}>
                   <Users className="w-5 h-5" />
                   <span>Tambah Siswa</span>
                 </button>
-                <button className="w-full btn-outline text-left flex items-center gap-3" style={{ borderColor: accentColor, color: accentColor }}>
+                <button onClick={() => openQuick('teacher')} className="w-full btn-outline text-left flex items-center gap-3" style={{ borderColor: accentColor, color: accentColor }}>
                   <GraduationCap className="w-5 h-5" />
                   <span>Tambah Guru</span>
                 </button>
@@ -340,59 +584,256 @@ const DashboardContent: React.FC<{ userRole: string; accentColor: string }> = ({
             )}
             {userRole === 'Guru' && (
               <>
-                <button className="w-full btn-primary text-left flex items-center gap-3" style={{ backgroundColor: accentColor }}>
+                <button onClick={() => openQuick('material')} className="w-full btn-primary text-left flex items-center gap-3" style={{ backgroundColor: accentColor }}>
                   <BookOpen className="w-5 h-5" />
                   <span>Upload Materi</span>
                 </button>
-                <button className="w-full btn-outline text-left flex items-center gap-3" style={{ borderColor: accentColor, color: accentColor }}>
+                <button onClick={() => openQuick('assignment')} className="w-full btn-outline text-left flex items-center gap-3" style={{ borderColor: accentColor, color: accentColor }}>
                   <FileText className="w-5 h-5" />
                   <span>Buat Tugas</span>
                 </button>
               </>
             )}
-            <button className="w-full btn-outline text-left flex items-center gap-3" style={{ borderColor: accentColor, color: accentColor }}>
+            <button onClick={() => openQuick('schedule')} className="w-full btn-outline text-left flex items-center gap-3" style={{ borderColor: accentColor, color: accentColor }}>
               <Calendar className="w-5 h-5" />
               <span>Lihat Jadwal</span>
             </button>
           </div>
         </div>
 
-        {/* Upcoming Events */}
         <div className="card">
-          <h4 className="mb-4">Event Mendatang</h4>
+          <div className="flex items-center justify-between mb-4">
+            <h4 className="mb-0">Event Mendatang</h4>
+            <button onClick={openCreateEvent} className="btn-primary flex items-center gap-2" style={{ backgroundColor: accentColor }}>
+              <Plus className="w-4 h-4" />
+              <span>Tambah Event</span>
+            </button>
+          </div>
           <div className="space-y-4">
-            <div className="flex gap-3">
-              <div className="w-12 h-12 rounded-xl flex flex-col items-center justify-center flex-shrink-0" style={{ backgroundColor: `${accentColor}20`, color: accentColor }}>
-                <span className="text-xs">DEC</span>
-                <span className="text-lg">28</span>
+            {events.length === 0 && (
+              <div className="text-sm text-gray-500">Belum ada event</div>
+            )}
+            {events.map((e) => {
+              const d = new Date(e.date);
+              const month = d.toLocaleString('id-ID', { month: 'short' }).toUpperCase();
+              const day = d.getDate().toString().padStart(2, '0');
+              return (
+                <div key={e.id} className="flex items-center justify-between">
+                  <div className="flex gap-3">
+                    <div className="w-12 h-12 rounded-xl flex flex-col items-center justify-center flex-shrink-0" style={{ backgroundColor: `${accentColor}20`, color: accentColor }}>
+                      <span className="text-xs">{month}</span>
+                      <span className="text-lg">{day}</span>
+                    </div>
+                    <div>
+                      <p className="text-sm">{e.title}</p>
+                      <p className="text-xs text-gray-500">{e.time} {e.location ? `• ${e.location}` : ''}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => openEditEvent(e)} className="btn-outline text-xs" style={{ borderColor: accentColor, color: accentColor }}>
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    <button onClick={() => removeEvent(e)} className="btn-outline text-xs" style={{ borderColor: '#EF4444', color: '#EF4444' }}>
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        {showEventForm && (
+          <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl w-full max-w-md shadow-strong">
+              <div className="p-6 border-b">
+                <h3 className="text-lg">{editingEvent ? 'Edit Event' : 'Tambah Event'}</h3>
               </div>
-              <div>
-                <p className="text-sm">Ujian Semester</p>
-                <p className="text-xs text-gray-500">08:00 - 12:00</p>
+              <div className="p-6 space-y-4">
+                <div>
+                  <label className="text-sm block mb-2">Judul</label>
+                  <input value={eventForm.title} onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })} className="input-field" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm block mb-2">Tanggal</label>
+                    <input type="date" value={eventForm.date} onChange={(e) => setEventForm({ ...eventForm, date: e.target.value })} className="input-field" />
+                  </div>
+                  <div>
+                    <label className="text-sm block mb-2">Waktu</label>
+                    <input type="text" placeholder="08:00 - 12:00" value={eventForm.time} onChange={(e) => setEventForm({ ...eventForm, time: e.target.value })} className="input-field" />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm block mb-2">Lokasi</label>
+                  <input value={eventForm.location} onChange={(e) => setEventForm({ ...eventForm, location: e.target.value })} className="input-field" />
+                </div>
               </div>
-            </div>
-            <div className="flex gap-3">
-              <div className="w-12 h-12 rounded-xl flex flex-col items-center justify-center flex-shrink-0" style={{ backgroundColor: `${accentColor}20`, color: accentColor }}>
-                <span className="text-xs">JAN</span>
-                <span className="text-lg">05</span>
-              </div>
-              <div>
-                <p className="text-sm">Rapat Guru</p>
-                <p className="text-xs text-gray-500">10:00 - 12:00</p>
-              </div>
-            </div>
-            <div className="flex gap-3">
-              <div className="w-12 h-12 rounded-xl flex flex-col items-center justify-center flex-shrink-0" style={{ backgroundColor: `${accentColor}20`, color: accentColor }}>
-                <span className="text-xs">JAN</span>
-                <span className="text-lg">15</span>
-              </div>
-              <div>
-                <p className="text-sm">Pembagian Rapor</p>
-                <p className="text-xs text-gray-500">08:00 - 15:00</p>
+              <div className="p-6 border-t flex gap-2">
+                <button onClick={() => setShowEventForm(false)} className="flex-1 btn-outline">Batal</button>
+                <button onClick={saveEvent} className="flex-1 btn-primary" style={{ backgroundColor: accentColor }}>
+                  <Save className="w-4 h-4" />
+                  <span>Simpan</span>
+                </button>
               </div>
             </div>
           </div>
-        </div>
+        )}
+        {quickModal && (
+          <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl w-full max-w-md shadow-strong">
+              <div className="p-6 border-b">
+                <h3 className="text-lg">
+                  {quickModal.type === 'unit' && 'Tambah Unit'}
+                  {quickModal.type === 'user' && 'Tambah User'}
+                  {quickModal.type === 'student' && 'Tambah Siswa'}
+                  {quickModal.type === 'teacher' && 'Tambah Guru'}
+                  {quickModal.type === 'material' && 'Upload Materi'}
+                  {quickModal.type === 'assignment' && 'Buat Tugas'}
+                  {quickModal.type === 'schedule' && 'Jadwal'}
+                  {quickModal.type === 'activitiesView' && 'Semua Aktivitas'}
+                </h3>
+              </div>
+              {quickModal.type === 'activitiesView' ? (
+                <div className="p-6 space-y-4 max-h-[60vh] overflow-auto">
+                  {activities.map((a) => (
+                    <div key={a.id} className="flex items-center justify-between p-3 rounded-xl border">
+                      <div>
+                        <p className="font-medium">{a.activity}</p>
+                        <p className="text-xs text-gray-500">{a.user} • {a.time}</p>
+                      </div>
+                      <span className={`px-3 py-1 rounded-full text-xs ${a.status === 'Success' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>{a.status}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-6 space-y-4">
+                  {quickModal.type === 'unit' && (
+                    <>
+                      <div>
+                        <label className="text-sm block mb-2">Nama</label>
+                        <input value={unitQuickForm.name} onChange={(e) => setUnitQuickForm({ ...unitQuickForm, name: e.target.value })} className="input-field" />
+                      </div>
+                      <div>
+                        <label className="text-sm block mb-2">Jenjang</label>
+                        <input value={unitQuickForm.level} onChange={(e) => setUnitQuickForm({ ...unitQuickForm, level: e.target.value })} className="input-field" />
+                      </div>
+                      <div>
+                        <label className="text-sm block mb-2">Warna Aksen</label>
+                        <input type="color" value={unitQuickForm.accent_color} onChange={(e) => setUnitQuickForm({ ...unitQuickForm, accent_color: e.target.value })} className="input-field" />
+                      </div>
+                    </>
+                  )}
+                  {quickModal.type === 'user' && (
+                    <>
+                      <div>
+                        <label className="text-sm block mb-2">Nama</label>
+                        <input value={userQuickForm.name} onChange={(e) => setUserQuickForm({ ...userQuickForm, name: e.target.value })} className="input-field" />
+                      </div>
+                      <div>
+                        <label className="text-sm block mb-2">Email</label>
+                        <input type="email" value={userQuickForm.email} onChange={(e) => setUserQuickForm({ ...userQuickForm, email: e.target.value })} className="input-field" />
+                      </div>
+                      <div>
+                        <label className="text-sm block mb-2">Role</label>
+                        <select value={userQuickForm.role} onChange={(e) => setUserQuickForm({ ...userQuickForm, role: e.target.value })} className="input-field">
+                          <option>Siswa</option>
+                          <option>Guru</option>
+                          <option>Admin Unit</option>
+                          <option>Super Admin</option>
+                        </select>
+                      </div>
+                    </>
+                  )}
+                  {quickModal.type === 'student' && (
+                    <>
+                      <div>
+                        <label className="text-sm block mb-2">Nama</label>
+                        <input value={studentQuickForm.name} onChange={(e) => setStudentQuickForm({ ...studentQuickForm, name: e.target.value })} className="input-field" />
+                      </div>
+                      <div>
+                        <label className="text-sm block mb-2">Unit</label>
+                        <input value={studentQuickForm.unit} onChange={(e) => setStudentQuickForm({ ...studentQuickForm, unit: e.target.value })} className="input-field" />
+                      </div>
+                      <div>
+                        <label className="text-sm block mb-2">Kelas</label>
+                        <input value={studentQuickForm.class_name} onChange={(e) => setStudentQuickForm({ ...studentQuickForm, class_name: e.target.value })} className="input-field" />
+                      </div>
+                    </>
+                  )}
+                  {quickModal.type === 'teacher' && (
+                    <>
+                      <div>
+                        <label className="text-sm block mb-2">Nama</label>
+                        <input value={teacherQuickForm.name} onChange={(e) => setTeacherQuickForm({ ...teacherQuickForm, name: e.target.value })} className="input-field" />
+                      </div>
+                      <div>
+                        <label className="text-sm block mb-2">Unit</label>
+                        <input value={teacherQuickForm.unit} onChange={(e) => setTeacherQuickForm({ ...teacherQuickForm, unit: e.target.value })} className="input-field" />
+                      </div>
+                      <div>
+                        <label className="text-sm block mb-2">Mapel</label>
+                        <input value={teacherQuickForm.subject} onChange={(e) => setTeacherQuickForm({ ...teacherQuickForm, subject: e.target.value })} className="input-field" />
+                      </div>
+                    </>
+                  )}
+                  {quickModal.type === 'material' && (
+                    <>
+                      <div>
+                        <label className="text-sm block mb-2">Judul</label>
+                        <input value={materialQuickForm.title} onChange={(e) => setMaterialQuickForm({ ...materialQuickForm, title: e.target.value })} className="input-field" />
+                      </div>
+                      <div>
+                        <label className="text-sm block mb-2">Link</label>
+                        <input value={materialQuickForm.link} onChange={(e) => setMaterialQuickForm({ ...materialQuickForm, link: e.target.value })} className="input-field" />
+                      </div>
+                    </>
+                  )}
+                  {quickModal.type === 'assignment' && (
+                    <>
+                      <div>
+                        <label className="text-sm block mb-2">Judul</label>
+                        <input value={assignmentQuickForm.title} onChange={(e) => setAssignmentQuickForm({ ...assignmentQuickForm, title: e.target.value })} className="input-field" />
+                      </div>
+                      <div>
+                        <label className="text-sm block mb-2">Tenggat</label>
+                        <input type="date" value={assignmentQuickForm.due_date} onChange={(e) => setAssignmentQuickForm({ ...assignmentQuickForm, due_date: e.target.value })} className="input-field" />
+                      </div>
+                    </>
+                  )}
+                  {quickModal.type === 'schedule' && (
+                    <>
+                      <div>
+                        <label className="text-sm block mb-2">Judul</label>
+                        <input value={scheduleQuickForm.title} onChange={(e) => setScheduleQuickForm({ ...scheduleQuickForm, title: e.target.value })} className="input-field" />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="text-sm block mb-2">Tanggal</label>
+                          <input type="date" value={scheduleQuickForm.date} onChange={(e) => setScheduleQuickForm({ ...scheduleQuickForm, date: e.target.value })} className="input-field" />
+                        </div>
+                        <div>
+                          <label className="text-sm block mb-2">Waktu</label>
+                          <input value={scheduleQuickForm.time} onChange={(e) => setScheduleQuickForm({ ...scheduleQuickForm, time: e.target.value })} className="input-field" placeholder="08:00 - 12:00" />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-sm block mb-2">Lokasi</label>
+                        <input value={scheduleQuickForm.location} onChange={(e) => setScheduleQuickForm({ ...scheduleQuickForm, location: e.target.value })} className="input-field" />
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+              <div className="p-6 border-t flex gap-2">
+                <button onClick={closeQuick} className="flex-1 btn-outline">Tutup</button>
+                <button onClick={saveQuick} className="flex-1 btn-primary" style={{ backgroundColor: accentColor }}>
+                  <Save className="w-4 h-4" />
+                  <span>Simpan</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -400,13 +841,127 @@ const DashboardContent: React.FC<{ userRole: string; accentColor: string }> = ({
 
 // Units Management Component
 const UnitsManagement: React.FC<{ accentColor: string }> = ({ accentColor }) => {
-  const units = [
-    { id: 1, name: 'TKIT Baituljannah', level: 'TK Islam Terpadu', students: 120, teachers: 12, color: '#10B981', status: 'Aktif' },
-    { id: 2, name: 'SDIT Baituljannah', level: 'SD Islam Terpadu', students: 450, teachers: 45, color: '#3B82F6', status: 'Aktif' },
-    { id: 3, name: 'SMPIT Baituljannah', level: 'SMP Islam Terpadu', students: 320, teachers: 38, color: '#F97316', status: 'Aktif' },
-    { id: 4, name: 'SMAIT Baituljannah', level: 'SMA Islam Terpadu', students: 280, teachers: 35, color: '#8B5CF6', status: 'Aktif' },
-    { id: 5, name: 'SLBIT Baituljannah', level: 'SLB Islam Terpadu', students: 80, teachers: 15, color: '#06B6D4', status: 'Aktif' }
-  ];
+  const [items, setItems] = useState<Array<any>>([]);
+  const [loading, setLoading] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState<any | null>(null);
+  const [form, setForm] = useState<any>({
+    code: '',
+    name: '',
+    level: '',
+    description: '',
+    accent_color: '#3B82F6',
+    icon: '',
+    address: '',
+    phone: '',
+    email: '',
+    website: '',
+    principal_name: '',
+    status: 'active',
+    established_year: ''
+  });
+
+  const load = async () => {
+    setLoading(true);
+    try {
+      const res = await api.units.getAll();
+      const payload: any = res && res.data ? res.data : [];
+      const list = Array.isArray(payload) ? payload : (payload.units || []);
+      setItems(list);
+    } catch {}
+    setLoading(false);
+  };
+
+  const openCreate = () => {
+    setEditing(null);
+    setForm({
+      code: '',
+      name: '',
+      level: '',
+      description: '',
+      accent_color: accentColor,
+      icon: '',
+      address: '',
+      phone: '',
+      email: '',
+      website: '',
+      principal_name: '',
+      status: 'active',
+      established_year: ''
+    });
+    setShowForm(true);
+  };
+
+  const openEdit = (u: any) => {
+    setEditing(u);
+    setForm({
+      code: u.code || '',
+      name: u.name || '',
+      level: u.level || '',
+      description: u.description || '',
+      accent_color: u.accent_color || accentColor,
+      icon: u.icon || '',
+      address: u.address || '',
+      phone: u.phone || '',
+      email: u.email || '',
+      website: u.website || '',
+      principal_name: u.principal_name || '',
+      status: u.status || 'active',
+      established_year: u.established_year || ''
+    });
+    setShowForm(true);
+  };
+
+  const save = async () => {
+    try {
+      if (editing) {
+        await api.units.update(editing.id, form);
+      } else {
+        await api.units.create(form);
+      }
+      setShowForm(false);
+      await load();
+    } catch {}
+  };
+
+  const remove = async (u: any) => {
+    try {
+      await api.units.delete(u.id);
+      await load();
+    } catch {}
+  };
+
+  React.useEffect(() => { load(); }, []);
+
+  const handleIconUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const fd = new FormData();
+    fd.append('image', file);
+  try {
+      const res = await api.gallery.upload(fd);
+      const d: any = res && res.data ? res.data : {};
+      const url = d.image_url || d.thumbnail_url || d.url || d.image || d.path || d.link || '';
+      if (url) setForm({ ...form, icon: url });
+  } catch {}
+  };
+
+  const computeCode = (nameVal: string, levelVal: string) => {
+    const lvl = (levelVal || 'UNIT').replace(/[^A-Za-z0-9]/g, '').slice(0, 4).toUpperCase();
+    const nm = (nameVal || '').replace(/[^A-Za-z0-9]/g, '').slice(0, 6).toUpperCase();
+    const rand = String(Math.floor(100 + Math.random() * 900));
+    return `${lvl}${nm}${rand}`;
+  };
+  const generateCode = () => {
+    setForm({ ...form, code: computeCode(form.name, form.level) });
+  };
+
+  const openVisit = (u: any) => {
+    const raw = (u && u.website) ? String(u.website).trim() : '';
+    if (!raw) return;
+    const href = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+    window.open(href, '_blank');
+  };
 
   return (
     <div>
@@ -414,46 +969,151 @@ const UnitsManagement: React.FC<{ accentColor: string }> = ({ accentColor }) => 
         <div>
           <p className="text-gray-600">Kelola semua unit sekolah yang ada di Yayasan Baituljannah</p>
         </div>
-        <button className="btn-primary flex items-center gap-2" style={{ backgroundColor: accentColor }}>
+        <button onClick={openCreate} className="btn-primary flex items-center gap-2" style={{ backgroundColor: accentColor }}>
           <Plus className="w-5 h-5" />
           <span>Tambah Unit</span>
         </button>
       </div>
 
+      {loading && (
+        <div className="card mb-6">
+          <p className="text-center text-gray-600 py-6">Memuat data...</p>
+        </div>
+      )}
+
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {units.map((unit) => (
+        {items.map((unit) => (
           <div key={unit.id} className="card hover:shadow-strong transition-shadow">
             <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${unit.color}20`, color: unit.color }}>
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${(unit.accent_color || accentColor)}20`, color: unit.accent_color || accentColor }}>
                 <School className="w-6 h-6" />
               </div>
-              <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs">
-                {unit.status}
+              <span className={`px-3 py-1 rounded-full text-xs ${unit.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                {unit.status === 'active' ? 'Aktif' : 'Nonaktif'}
               </span>
             </div>
             <h4 className="mb-1">{unit.name}</h4>
             <p className="text-sm text-gray-600 mb-4">{unit.level}</p>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div>
-                <p className="text-2xl" style={{ color: unit.color }}>{unit.students}</p>
-                <p className="text-xs text-gray-500">Siswa</p>
-              </div>
-              <div>
-                <p className="text-2xl" style={{ color: unit.color }}>{unit.teachers}</p>
-                <p className="text-xs text-gray-500">Guru</p>
-              </div>
-            </div>
             <div className="flex gap-2">
-              <button className="flex-1 btn-outline text-sm" style={{ borderColor: unit.color, color: unit.color }}>
-                <Eye className="w-4 h-4" />
-              </button>
-              <button className="flex-1 btn-outline text-sm" style={{ borderColor: unit.color, color: unit.color }}>
+              <button onClick={() => openEdit(unit)} className="flex-1 btn-outline text-sm" style={{ borderColor: unit.accent_color || accentColor, color: unit.accent_color || accentColor }}>
                 <Edit className="w-4 h-4" />
+              </button>
+              {unit.website && (
+                <button onClick={() => openVisit(unit)} className="flex-1 btn-outline text-sm" style={{ borderColor: unit.accent_color || accentColor, color: unit.accent_color || accentColor }}>
+                  <Eye className="w-4 h-4" />
+                </button>
+              )}
+              <button onClick={() => remove(unit)} className="flex-1 btn-outline text-sm" style={{ borderColor: '#EF4444', color: '#EF4444' }}>
+                <X className="w-4 h-4" />
               </button>
             </div>
           </div>
         ))}
       </div>
+
+      {showForm && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-2xl shadow-strong max-h-[70vh] flex flex-col">
+            <div className="p-6 border-b shrink-0">
+              <h3 className="text-lg">{editing ? 'Edit Unit' : 'Tambah Unit'}</h3>
+            </div>
+            <div className="p-6 space-y-4 overflow-y-auto flex-1">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm block mb-2">Kode</label>
+                  <div className="flex gap-2">
+                    <input value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} className="input-field flex-1" />
+                    <button type="button" onClick={generateCode} className="px-4 py-2 rounded-xl border text-sm" style={{ borderColor: accentColor, color: accentColor }}>Generate</button>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm block mb-2">Nama</label>
+                  <input value={form.name} onChange={(e) => {
+                    const val = e.target.value;
+                    if (!form.code) {
+                      setForm({ ...form, name: val, code: computeCode(val, form.level) });
+                    } else {
+                      setForm({ ...form, name: val });
+                    }
+                  }} className="input-field" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm block mb-2">Jenjang</label>
+                  <input value={form.level} onChange={(e) => {
+                    const val = e.target.value;
+                    if (!form.code) {
+                      setForm({ ...form, level: val, code: computeCode(form.name, val) });
+                    } else {
+                      setForm({ ...form, level: val });
+                    }
+                  }} className="input-field" />
+                </div>
+                <div>
+                  <label className="text-sm block mb-2">Warna Aksen</label>
+                  <input type="color" value={form.accent_color} onChange={(e) => setForm({ ...form, accent_color: e.target.value })} className="input-field" />
+                </div>
+              </div>
+              <div>
+                <label className="text-sm block mb-2">Deskripsi</label>
+                <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="input-field" rows={3} />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm block mb-2">Icon</label>
+                  <input value={form.icon} onChange={(e) => setForm({ ...form, icon: e.target.value })} className="input-field" />
+                  <input type="file" accept="image/*" onChange={handleIconUpload} className="input-field mt-2" />
+                </div>
+                <div>
+                  <label className="text-sm block mb-2">Kepala Sekolah</label>
+                  <input value={form.principal_name} onChange={(e) => setForm({ ...form, principal_name: e.target.value })} className="input-field" />
+                </div>
+              </div>
+              <div>
+                <label className="text-sm block mb-2">Alamat</label>
+                <textarea value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className="input-field" rows={3} />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm block mb-2">Telepon</label>
+                  <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="input-field" />
+                </div>
+                <div>
+                  <label className="text-sm block mb-2">Email</label>
+                  <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="input-field" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm block mb-2">Domain/Situs</label>
+                  <input type="url" value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} className="input-field" />
+                </div>
+                <div>
+                  <label className="text-sm block mb-2">Tahun Berdiri</label>
+                  <input type="number" value={form.established_year} onChange={(e) => setForm({ ...form, established_year: e.target.value })} className="input-field" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm block mb-2">Status</label>
+                  <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} className="input-field">
+                    <option value="active">Aktif</option>
+                    <option value="inactive">Nonaktif</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div className="p-6 border-t flex gap-2 shrink-0">
+              <button onClick={() => setShowForm(false)} className="flex-1 btn-outline text-sm px-3 py-2">Batal</button>
+              <button onClick={save} className="flex-1 btn-primary text-sm px-3 py-2" style={{ backgroundColor: accentColor }}>
+                <Save className="w-4 h-4" />
+                <span>Simpan</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -461,79 +1121,283 @@ const UnitsManagement: React.FC<{ accentColor: string }> = ({ accentColor }) => 
 // Users Management Component
 const UsersManagement: React.FC<{ accentColor: string }> = ({ accentColor }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterRole, setFilterRole] = useState('Semua');
+  const [filterRole, setFilterRole] = useState('Semua Role');
+  const [filterStatus, setFilterStatus] = useState('Semua Status');
+  const [items, setItems] = useState<Array<any>>([]);
+  const [loading, setLoading] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState<any | null>(null);
+  const [form, setForm] = useState<{ full_name: string; email: string; role: string; phone?: string; password?: string; confirmPassword?: string }>({ full_name: '', email: '', role: 'Siswa', phone: '', password: '', confirmPassword: '' });
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
 
-  const users = [
-    { id: 1, name: 'Ahmad Fauzi', email: 'ahmad.fauzi@baituljannah.sch.id', role: 'Admin Unit', unit: 'SDIT', status: 'Aktif', lastLogin: '2024-12-01 08:30' },
-    { id: 2, name: 'Siti Aisyah', email: 'siti.aisyah@baituljannah.sch.id', role: 'Admin Unit', unit: 'SMAIT', status: 'Aktif', lastLogin: '2024-12-01 09:15' },
-    { id: 3, name: 'Ustadz Muhammad', email: 'muhammad@baituljannah.sch.id', role: 'Guru', unit: 'SDIT', status: 'Aktif', lastLogin: '2024-12-01 07:45' },
-    { id: 4, name: 'Ustadzah Fatimah', email: 'fatimah@baituljannah.sch.id', role: 'Guru', unit: 'SMPIT', status: 'Aktif', lastLogin: '2024-11-30 14:20' },
-    { id: 5, name: 'Abdullah Rahman', email: 'abdullah@baituljannah.sch.id', role: 'Siswa', unit: 'SMAIT', status: 'Aktif', lastLogin: '2024-12-01 10:00' }
-  ];
+  const load = async () => {
+    setLoading(true);
+    try {
+      const roleMapBackend: Record<string, string> = { 'Siswa': 'student', 'Guru': 'teacher', 'Admin Unit': 'admin', 'Super Admin': 'super_admin' };
+      const statusMapBackend: Record<string, string> = { 'Aktif': 'active', 'Nonaktif': 'inactive' };
+      const roleParam = roleMapBackend[filterRole] || (filterRole === 'Semua Role' ? '' : '');
+      const statusParam = statusMapBackend[filterStatus] || (filterStatus === 'Semua Status' ? '' : '');
+      const res = await api.users.getAll({ page, limit, ...(roleParam ? { role: roleParam } : {}), ...(statusParam ? { status: statusParam } : {}) });
+      let list: any[] = [];
+      let totalCount = 0;
+      if (res && res.success && res.data && Array.isArray((res as any).data?.users)) {
+        list = (res as any).data.users;
+        const pg = (res as any).data.pagination;
+        totalCount = pg?.total || 0;
+        setTotalPages(Math.max(pg?.total_pages || 1, 1));
+      } else if (res && res.success && Array.isArray(res.data)) {
+        const all = res.data as any[];
+        totalCount = all.length;
+        const start = (page - 1) * limit;
+        list = all.slice(start, start + limit);
+        setTotalPages(Math.max(Math.ceil(total / limit), 1));
+      }
+      setItems(list);
+      setTotal(totalCount);
+    } catch {
+      setItems([]);
+    }
+    setLoading(false);
+  };
+
+  React.useEffect(() => {
+    load();
+    const handler = () => { load(); };
+    window.addEventListener('bj:users:refresh' as any, handler);
+    return () => { window.removeEventListener('bj:users:refresh' as any, handler); };
+  }, []);
+
+  React.useEffect(() => {
+    setPage(1);
+  }, [filterRole, filterStatus]);
+
+  React.useEffect(() => {
+    load();
+  }, [page, filterRole, filterStatus]);
+
+  const mapRoleToLabel = (role: string) => {
+    const m: Record<string, string> = { super_admin: 'Super Admin', admin: 'Admin Unit', teacher: 'Guru', student: 'Siswa', parent: 'Orang Tua' };
+    return m[role] || role;
+  };
+
+  const filtered = items
+    .map((u: any) => ({
+      id: u.id,
+      name: u.full_name || u.username || '-',
+      email: u.email || '-',
+      role: mapRoleToLabel(u.role || '-'),
+      unit: u.unit || '-',
+      status: (u.status || 'active') === 'active' ? 'Aktif' : 'Nonaktif',
+      lastLogin: u.last_login || '-'
+    }))
+    .filter(u => (
+      (!searchQuery || (u.name + u.email).toLowerCase().includes(searchQuery.toLowerCase())) &&
+      (filterRole === 'Semua Role' || u.role === filterRole) &&
+      (filterStatus === 'Semua Status' || u.status === filterStatus)
+    ));
+
+  const openCreate = () => {
+    setEditing(null);
+    setForm({ full_name: '', email: '', role: 'Siswa', phone: '', password: '', confirmPassword: '' });
+    setShowForm(true);
+  };
+
+  const openEdit = (user: any) => {
+    setEditing(user);
+    setForm({ full_name: user.name || '', email: user.email || '', role: user.role || 'Siswa', phone: user.phone || '' });
+    setShowForm(true);
+  };
+
+  const save = async () => {
+    try {
+      const roleMapBackend: Record<string, string> = { 'Siswa': 'student', 'Guru': 'teacher', 'Admin Unit': 'admin', 'Super Admin': 'super_admin' };
+      const role = roleMapBackend[form.role] || 'student';
+      if (!form.full_name || !form.email) return;
+      if (editing) {
+        await api.users.update(editing.id, { email: form.email, role, full_name: form.full_name, phone: form.phone });
+      } else {
+        const username = String(form.email).split('@')[0];
+        const password = form.password || '';
+        const confirm = form.confirmPassword || '';
+        if (!password || password !== confirm) return;
+        await api.auth.register({ username, email: form.email, password, role, full_name: form.full_name, phone: form.phone });
+      }
+      setShowForm(false);
+      await load();
+    } catch {}
+  };
+
+  const remove = async (user: any) => {
+    if (!confirm('Hapus user ini?')) return;
+    try {
+      await api.users.delete(user.id);
+      await load();
+    } catch {}
+  };
 
   const columns = [
     { header: 'Nama', accessor: 'name' },
     { header: 'Email', accessor: 'email' },
     { header: 'Role', accessor: 'role' },
     { header: 'Unit', accessor: 'unit' },
-    {
-      header: 'Status',
-      accessor: 'status',
-      cell: (value: string) => (
-        <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs">
-          {value}
-        </span>
-      )
-    },
+    { header: 'Status', accessor: 'status' },
     { header: 'Last Login', accessor: 'lastLogin' },
-    {
-      header: 'Aksi',
-      accessor: 'id',
-      cell: () => (
-        <div className="flex gap-2">
-          <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-            <Edit className="w-4 h-4" />
-          </button>
-          <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-            <Eye className="w-4 h-4" />
-          </button>
-        </div>
-      )
-    }
+    { header: 'Aksi', accessor: 'id' },
   ];
 
   return (
     <div>
-      <div className="flex flex-col md:flex-row gap-4 mb-6">
-        <div className="flex-1 relative">
-          <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Cari user..."
-            className="input-field pl-10"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+      <div className="bg-white rounded-2xl p-6 shadow-soft mb-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl mb-2">Kelola User</h1>
+            <p className="text-gray-600">Manajemen data pengguna sistem</p>
+          </div>
+          <button onClick={openCreate} className="btn-primary flex items-center gap-2">
+            <Plus className="w-5 h-5" />
+            <span>Tambah User</span>
+          </button>
         </div>
-        <select
-          className="input-field"
-          value={filterRole}
-          onChange={(e) => setFilterRole(e.target.value)}
-        >
-          <option>Semua Role</option>
-          <option>Admin Unit</option>
-          <option>Guru</option>
-          <option>Siswa</option>
-        </select>
-        <button className="btn-primary flex items-center gap-2" style={{ backgroundColor: accentColor }}>
-          <Plus className="w-5 h-5" />
-          <span>Tambah User</span>
-        </button>
       </div>
 
-      <div className="card">
-        <Table columns={columns} data={users} accentColor={accentColor} />
+      <div className="bg-white rounded-2xl p-6 shadow-soft mb-6">
+        <div className="flex flex-col lg:flex-row gap-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <input
+              type="text"
+              placeholder="Cari nama atau email..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-yellow-500 transition-colors"
+            />
+          </div>
+
+          <select
+            value={filterRole}
+            onChange={(e) => setFilterRole(e.target.value)}
+            className="px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-yellow-500 transition-colors"
+          >
+            <option>Semua Role</option>
+            <option>Admin Unit</option>
+            <option>Guru</option>
+            <option>Siswa</option>
+          </select>
+
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            className="px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-yellow-500 transition-colors"
+          >
+            <option>Semua Status</option>
+            <option>Aktif</option>
+            <option>Nonaktif</option>
+          </select>
+        </div>
+        <div className="mt-4 text-gray-600">
+          Menampilkan <strong>{filtered.length}</strong> dari <strong>{total}</strong> user
+        </div>
       </div>
+
+      <div className="bg-white rounded-2xl shadow-soft">
+        {loading ? (
+          <div className="p-6 text-center text-gray-500">Memuat data...</div>
+        ) : (
+          <div className="p-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filtered.map((row, idx) => (
+                <div key={idx} className="card hover:shadow-strong transition-shadow">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${accentColor}20`, color: accentColor }}>
+                      <Users className="w-6 h-6" />
+                    </div>
+                    <span className={`px-3 py-1 rounded-full text-xs ${row.status === 'Aktif' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                      {row.status}
+                    </span>
+                  </div>
+                  <h4 className="mb-1">{row.name}</h4>
+                  <p className="text-sm text-gray-600 mb-2">{row.email}</p>
+                  <div className="text-sm text-gray-600 mb-4">{row.role} • {row.unit}</div>
+                  <div className="flex gap-2">
+                    <button onClick={() => openEdit(row)} className="flex-1 btn-outline text-sm" style={{ borderColor: accentColor, color: accentColor }}>
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    <button onClick={() => remove(row)} className="flex-1 btn-outline text-sm" style={{ borderColor: '#EF4444', color: '#EF4444' }}>
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        {!loading && totalPages > 1 && (
+          <div className="p-4 border-t">
+            <Pager currentPage={page} totalPages={totalPages} onPageChange={setPage} accentColor={accentColor} />
+          </div>
+        )}
+      </div>
+
+      {showForm && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md shadow-strong overflow-hidden">
+            <div className="sticky top-0 bg-gradient-to-r from-yellow-500 to-amber-600 text-white p-6 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Users className="w-6 h-6" />
+                <h2 className="text-2xl">{editing ? 'Edit User' : 'Tambah User Baru'}</h2>
+              </div>
+              <button onClick={() => setShowForm(false)} className="p-2 rounded-lg hover:bg-white/10">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="text-sm block mb-2">Nama Lengkap</label>
+                <input value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} className="input-field" />
+              </div>
+              <div>
+                <label className="text-sm block mb-2">Email</label>
+                <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="input-field" />
+              </div>
+              <div>
+                <label className="text-sm block mb-2">Role</label>
+                <select value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })} className="input-field">
+                  <option>Siswa</option>
+                  <option>Guru</option>
+                  <option>Admin Unit</option>
+                  <option>Super Admin</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-sm block mb-2">No. Telepon</label>
+                <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="input-field" />
+              </div>
+              {!editing && (
+                <>
+                  <div>
+                    <label className="text-sm block mb-2">Password</label>
+                    <input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className="input-field" />
+                  </div>
+                  <div>
+                    <label className="text-sm block mb-2">Konfirmasi Password</label>
+                    <input type="password" value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })} className="input-field" />
+                  </div>
+                </>
+              )}
+            </div>
+            <div className="p-6 border-t flex gap-2">
+              <button onClick={() => setShowForm(false)} className="flex-1 btn-outline">Batal</button>
+              <button onClick={save} className="flex-1 btn-primary" style={{ backgroundColor: accentColor }}>
+                <Save className="w-4 h-4" />
+                <span>Simpan</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -541,6 +1405,15 @@ const UsersManagement: React.FC<{ accentColor: string }> = ({ accentColor }) => 
 // PPDB Management Component
 const PPDBManagement: React.FC<{ accentColor: string }> = ({ accentColor }) => {
   const [selectedTab, setSelectedTab] = useState<'pending' | 'accepted' | 'rejected'>('pending');
+  const [showActivityForm, setShowActivityForm] = useState(false);
+  const [editingActivity, setEditingActivity] = useState<any | null>(null);
+  const [activityForm, setActivityForm] = useState<{ activity: string; user: string; time: string; status: 'Success' | 'Pending' }>({ activity: '', user: '', time: '', status: 'Pending' });
+  const saveActivity = async () => {
+    try {
+      setShowActivityForm(false);
+      setEditingActivity(null);
+    } catch {}
+  };
 
   const stats = [
     { label: 'Total Pendaftar', value: '342', color: '#3B82F6', icon: Users },
@@ -596,35 +1469,71 @@ const PPDBManagement: React.FC<{ accentColor: string }> = ({ accentColor }) => {
           </button>
         </div>
 
-        <div className="space-y-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {applicants
             .filter(a => a.status === selectedTab)
             .map((applicant) => (
-              <div key={applicant.id} className="flex items-center justify-between p-4 border rounded-xl hover:shadow-soft transition-shadow">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gray-200 flex items-center justify-center">
-                    <span>👤</span>
-                  </div>
-                  <div>
-                    <h5>{applicant.name}</h5>
-                    <p className="text-sm text-gray-600">{applicant.unit} • {applicant.birthDate}</p>
-                    <p className="text-sm text-gray-500">{applicant.parent} • {applicant.phone}</p>
-                  </div>
+              <div key={applicant.id} className="card hover:shadow-strong transition-shadow">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-gray-200 flex items-center justify-center">👤</div>
+                  <span className="px-3 py-1 rounded-full text-xs bg-gray-100 text-gray-700">PPDB</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <button className="btn-outline text-sm" style={{ borderColor: '#10B981', color: '#10B981' }}>
+                <h4 className="mb-1">{applicant.name}</h4>
+                <p className="text-sm text-gray-600 mb-2">{applicant.unit} • {applicant.birthDate}</p>
+                <p className="text-sm text-gray-500 mb-4">{applicant.parent} • {applicant.phone}</p>
+                <div className="flex gap-2">
+                  <button className="flex-1 btn-outline text-sm" style={{ borderColor: '#10B981', color: '#10B981' }}>
                     Terima
                   </button>
-                  <button className="btn-outline text-sm" style={{ borderColor: '#EF4444', color: '#EF4444' }}>
+                  <button className="flex-1 btn-outline text-sm" style={{ borderColor: '#EF4444', color: '#EF4444' }}>
                     Tolak
                   </button>
-                  <button className="btn-outline text-sm" style={{ borderColor: accentColor, color: accentColor }}>
+                  <button className="flex-1 btn-outline text-sm" style={{ borderColor: accentColor, color: accentColor }}>
                     Detail
                   </button>
                 </div>
               </div>
             ))}
         </div>
+        {showActivityForm && (
+          <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl w-full max-w-md shadow-strong">
+              <div className="p-6 border-b">
+                <h3 className="text-lg">{editingActivity ? 'Edit Aktivitas' : 'Tambah Aktivitas'}</h3>
+              </div>
+              <div className="p-6 space-y-4">
+                <div>
+                  <label className="text-sm block mb-2">Aktivitas</label>
+                  <input value={activityForm.activity} onChange={(e) => setActivityForm({ ...activityForm, activity: e.target.value })} className="input-field" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm block mb-2">User</label>
+                    <input value={activityForm.user} onChange={(e) => setActivityForm({ ...activityForm, user: e.target.value })} className="input-field" />
+                  </div>
+                  <div>
+                    <label className="text-sm block mb-2">Waktu</label>
+                    <input placeholder="cth: 5 menit lalu" value={activityForm.time} onChange={(e) => setActivityForm({ ...activityForm, time: e.target.value })} className="input-field" />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm block mb-2">Status</label>
+                  <select value={activityForm.status} onChange={(e) => setActivityForm({ ...activityForm, status: e.target.value })} className="input-field">
+                    <option value="Success">Success</option>
+                    <option value="Pending">Pending</option>
+                  </select>
+                </div>
+              </div>
+              <div className="p-6 border-t flex gap-2">
+                <button onClick={() => setShowActivityForm(false)} className="flex-1 btn-outline">Batal</button>
+                <button onClick={saveActivity} className="flex-1 btn-primary" style={{ backgroundColor: accentColor }}>
+                  <Save className="w-4 h-4" />
+                  <span>Simpan</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -997,19 +1906,17 @@ const AttendanceManagement: React.FC<{ accentColor: string; userRole: string }> 
 
         <div className="card">
           <h4 className="mb-4">Riwayat Absensi</h4>
-          <div className="space-y-2">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {attendanceData.map((item, index) => (
-              <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                <div>
-                  <p>{item.subject}</p>
-                  <p className="text-sm text-gray-600">{item.teacher}</p>
+              <div key={index} className="p-4 border rounded-xl hover:shadow-soft transition-shadow">
+                <div className="flex items-start justify-between mb-2">
+                  <div>
+                    <p className="font-medium">{item.subject}</p>
+                    <p className="text-sm text-gray-600">{item.teacher}</p>
+                  </div>
+                  <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs">{item.status}</span>
                 </div>
-                <div className="text-right">
-                  <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs">
-                    {item.status}
-                  </span>
-                  <p className="text-sm text-gray-500 mt-1">{item.date}</p>
-                </div>
+                <p className="text-sm text-gray-500">{item.date}</p>
               </div>
             ))}
           </div>
@@ -1488,203 +2395,237 @@ const ProfileManagement: React.FC<{ accentColor: string; userRole: string; userN
     </div>
   );
 };
-// Career Management Component (simplified)
-const CareerManagement: React.FC<{ accentColor: string }> = ({ accentColor }) => {
-  const jobs = [
-    { id: 1, title: 'Guru Matematika', unit: 'SDIT', type: 'Full-time', status: 'Aktif' },
-    { id: 2, title: 'Staff Administrasi', unit: 'SMAIT', type: 'Contract', status: 'Draft' },
-  ];
+
+// Content: News Management (full version embedded)
+const ContentNewsManagement: React.FC<{ accentColor: string; onNavigate: (page: string) => void }> = ({ accentColor, onNavigate }) => {
+  return (
+    <div className="space-y-6">
+      <AdminNews onNavigate={onNavigate} embedded />
+    </div>
+  );
+};
+
+// Content: Gallery Management (full version embedded)
+const ContentGalleryManagement: React.FC<{ accentColor: string; onNavigate: (page: string) => void }> = ({ accentColor, onNavigate }) => {
+  return (
+    <div className="space-y-6">
+      <AdminGallery onNavigate={onNavigate} embedded />
+    </div>
+  );
+};
+
+// Content: Achievement Management (full version embedded)
+const ContentAchievementManagement: React.FC<{ accentColor: string; onNavigate: (page: string) => void }> = ({ accentColor, onNavigate }) => {
+  return (
+    <div className="space-y-6">
+      <AdminAchievement onNavigate={onNavigate} embedded />
+    </div>
+  );
+};
+
+// Content: Programs Management (full version embedded)
+const ContentProgramsManagement: React.FC<{ accentColor: string; onNavigate: (page: string) => void }> = ({ accentColor, onNavigate }) => {
+  return (
+    <div className="space-y-6">
+      <AdminPrograms onNavigate={onNavigate} embedded />
+    </div>
+  );
+};
+
+// Content: Hero Slides Management (CRUD)
+const ContentHeroSlidesManagement: React.FC<{ accentColor: string }> = ({ accentColor }) => {
+  const [slides, setSlides] = useState<any[]>([]);
+  const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState<any | null>(null);
+  const [form, setForm] = useState({ image: '', image_base64: '', title: '', description: '', badge: '', order: 1, status: 'published' });
+  const [uploadError, setUploadError] = useState<string>('');
+
+  const load = async () => {
+    const res = await api.heroSlides.getAll();
+    setSlides((res && res.success && res.data) ? (res.data as any[]) : []);
+  };
+
+  const openCreate = () => {
+    setEditing(null);
+    setForm({ image: '', image_base64: '', title: '', description: '', badge: '', order: (slides.length || 0) + 1, status: 'published' });
+    setShowForm(true);
+  };
+
+  const openEdit = (slide: any) => {
+    setEditing(slide);
+    setForm({ image: slide.image || '', image_base64: '', title: slide.title || '', description: slide.description || '', badge: slide.badge || '', order: slide.order || 1, status: slide.status || 'published' });
+    setShowForm(true);
+  };
+
+  const save = async () => {
+    if (editing) {
+      const res = await api.heroSlides.update(editing.id, form);
+      if (res.success) {
+        await load();
+        setShowForm(false);
+      }
+    } else {
+      const res = await api.heroSlides.create(form);
+      if (res.success) {
+        await load();
+        setShowForm(false);
+      }
+    }
+  };
+
+  const remove = async (slide: any) => {
+    if (!confirm('Hapus slide ini?')) return;
+    const res = await api.heroSlides.delete(slide.id);
+    if (res.success) await load();
+  };
+
+  React.useEffect(() => {
+    load();
+  }, []);
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h4>Lowongan</h4>
-        <button className="btn-primary flex items-center gap-2" style={{ backgroundColor: accentColor }}>
+        <h4>Hero Slides (Banner Beranda)</h4>
+        <button onClick={openCreate} className="btn-primary flex items-center gap-2" style={{ backgroundColor: accentColor }}>
           <Plus className="w-5 h-5" />
-          <span>Buat Lowongan</span>
+          <span>Tambah Slide</span>
         </button>
       </div>
-      <div className="card">
-        <div className="space-y-3">
-          {jobs.map(job => (
-            <div key={job.id} className="flex items-center justify-between p-4 border rounded-xl">
-              <div>
-                <h5>{job.title}</h5>
-                <p className="text-sm text-gray-600">{job.unit} • {job.type}</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs">{job.status}</span>
-                <button className="btn-outline text-sm" style={{ borderColor: accentColor, color: accentColor }}>
-                  <Edit className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
 
-// Content: News Management (simplified)
-const ContentNewsManagement: React.FC<{ accentColor: string; onNavigate: (page: string) => void }> = ({ accentColor, onNavigate }) => {
-  const posts = [
-    { id: 1, title: 'Kegiatan Muharram', author: 'Admin SDIT', status: 'Published', date: '2024-11-28' },
-    { id: 2, title: 'Pengumuman PPDB', author: 'Admin Yayasan', status: 'Draft', date: '2024-11-25' },
-  ];
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <h4>Berita & Artikel</h4>
-        <div className="flex items-center gap-2">
-          <button className="btn-outline text-sm" style={{ borderColor: accentColor, color: accentColor }} onClick={() => onNavigate('admin-news')}>
-            Lihat versi lengkap
-          </button>
-          <button className="btn-primary flex items-center gap-2" style={{ backgroundColor: accentColor }}>
-            <Plus className="w-5 h-5" />
-            <span>Tulis Baru</span>
-          </button>
-        </div>
-      </div>
-      <div className="card">
-        <div className="space-y-3">
-          {posts.map(p => (
-            <div key={p.id} className="flex items-center justify-between p-4 border rounded-xl">
-              <div>
-                <h5>{p.title}</h5>
-                <p className="text-sm text-gray-600">{p.author} • {p.date}</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className={`px-3 py-1 rounded-full text-xs ${p.status === 'Published' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>{p.status}</span>
-                <button className="btn-outline text-sm" style={{ borderColor: accentColor, color: accentColor }}>
-                  <Edit className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Content: Gallery Management (simplified)
-const ContentGalleryManagement: React.FC<{ accentColor: string; onNavigate: (page: string) => void }> = ({ accentColor, onNavigate }) => {
-  const items = [
-    { id: 1, title: 'Wisuda Akhir Tahun', count: 24, status: 'Published' },
-    { id: 2, title: 'Kegiatan Pramuka', count: 12, status: 'Draft' },
-  ];
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <h4>Galeri</h4>
-        <div className="flex items-center gap-2">
-          <button className="btn-outline text-sm" style={{ borderColor: accentColor, color: accentColor }} onClick={() => onNavigate('admin-gallery')}>
-            Lihat versi lengkap
-          </button>
-          <button className="btn-primary flex items-center gap-2" style={{ backgroundColor: accentColor }}>
-            <Plus className="w-5 h-5" />
-            <span>Tambah Album</span>
-          </button>
-        </div>
-      </div>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {items.map(g => (
-          <div key={g.id} className="card">
-            <div className="w-full h-24 rounded-xl bg-gray-100 mb-3 flex items-center justify-center">
-              <ImageIcon className="w-8 h-8 text-gray-400" />
+        {slides.map((s: any) => (
+          <div key={s.id} className="card">
+            <div className="w-full h-28 rounded-xl bg-gray-100 mb-3 overflow-hidden">
+              <img src={s.image} alt={s.title} className="w-full h-full object-cover" />
             </div>
-            <h5 className="mb-1">{g.title}</h5>
-            <p className="text-sm text-gray-600 mb-3">{g.count} foto</p>
+            <h5 className="mb-1">{s.title}</h5>
+            <p className="text-sm text-gray-600 line-clamp-2 mb-3">{s.description}</p>
             <div className="flex items-center justify-between">
-              <span className={`px-3 py-1 rounded-full text-xs ${g.status === 'Published' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>{g.status}</span>
-              <button className="btn-outline text-sm" style={{ borderColor: accentColor, color: accentColor }}>
-                <Edit className="w-4 h-4" />
-              </button>
+              <span className="px-3 py-1 rounded-full text-xs bg-green-100 text-green-700">#{s.order}</span>
+              <div className="flex items-center gap-2">
+                <button onClick={() => openEdit(s)} className="btn-outline text-sm" style={{ borderColor: accentColor, color: accentColor }}>
+                  <Edit className="w-4 h-4" />
+                </button>
+                <button onClick={() => remove(s)} className="btn-outline text-sm" style={{ borderColor: '#EF4444', color: '#EF4444' }}>
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           </div>
         ))}
       </div>
-    </div>
-  );
-};
 
-// Content: Achievement Management (simplified)
-const ContentAchievementManagement: React.FC<{ accentColor: string; onNavigate: (page: string) => void }> = ({ accentColor, onNavigate }) => {
-  const achievements = [
-    { id: 1, title: 'Juara 1 Lomba Sains', unit: 'SMPIT', level: 'Kota', date: '2024-10-12' },
-    { id: 2, title: 'Juara 2 Tahfidz', unit: 'SDIT', level: 'Provinsi', date: '2024-08-30' },
-  ];
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <h4>Prestasi</h4>
-        <div className="flex items-center gap-2">
-          <button className="btn-outline text-sm" style={{ borderColor: accentColor, color: accentColor }} onClick={() => onNavigate('admin-achievement')}>
-            Lihat versi lengkap
-          </button>
-          <button className="btn-primary flex items-center gap-2" style={{ backgroundColor: accentColor }}>
-            <Plus className="w-5 h-5" />
-            <span>Tambah Prestasi</span>
-          </button>
-        </div>
-      </div>
-      <div className="card">
-        <div className="space-y-3">
-          {achievements.map(a => (
-            <div key={a.id} className="flex items-center justify-between p-4 border rounded-xl">
-              <div>
-                <h5>{a.title}</h5>
-                <p className="text-sm text-gray-600">{a.unit} • {a.level} • {a.date}</p>
+      {showForm && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-2xl shadow-strong">
+            <div className="p-6 border-b">
+              <h3 className="text-lg">{editing ? 'Edit Slide' : 'Tambah Slide'}</h3>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm block mb-2">Gambar (URL)</label>
+                  <input value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} className="input-field" />
+                </div>
+                <div>
+                  <label className="text-sm block mb-2">Upload Gambar</label>
+                  <input type="file" accept="image/png,image/jpeg,image/webp" className="input-field" onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const allowed = new Set(['image/png','image/jpeg','image/webp']);
+                    if (!allowed.has(file.type)) { setUploadError('Format tidak didukung (hanya JPG/PNG/WEBP)'); return; }
+                    const maxSize = 5 * 1024 * 1024;
+                    if (file.size > maxSize) { setUploadError('Ukuran file maksimal 5MB'); return; }
+                    setUploadError('');
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                      const dataUrl = reader.result as string;
+                      const img = new Image();
+                      img.onload = () => {
+                        const minW = 1200, minH = 400;
+                        if (img.width < minW || img.height < minH) { setUploadError(`Resolusi minimal ${minW}x${minH}px`); return; }
+                        const maxW = 1920, maxH = 1080;
+                        let tw = img.width, th = img.height;
+                        const rw = maxW / tw, rh = maxH / th;
+                        const r = Math.min(1, rw, rh);
+                        tw = Math.round(tw * r);
+                        th = Math.round(th * r);
+                        const canvas = document.createElement('canvas');
+                        canvas.width = tw; canvas.height = th;
+                        const ctx = canvas.getContext('2d');
+                        if (!ctx) { setForm(prev => ({ ...prev, image_base64: dataUrl })); return; }
+                        ctx.drawImage(img, 0, 0, tw, th);
+                        const webp = canvas.toDataURL('image/webp', 0.85);
+                        setForm(prev => ({ ...prev, image_base64: webp }));
+                      };
+                      img.src = dataUrl;
+                    };
+                    reader.readAsDataURL(file);
+                  }} />
+                  {uploadError && (<p className="text-xs text-red-600 mt-2">{uploadError}</p>)}
+                </div>
               </div>
-              <button className="btn-outline text-sm" style={{ borderColor: accentColor, color: accentColor }}>
-                <Edit className="w-4 h-4" />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="w-full h-32 rounded-xl bg-gray-100 overflow-hidden flex items-center justify-center">
+                  {(form.image_base64 || form.image) ? (
+                    <img src={form.image_base64 || (import.meta.env.DEV && form.image.startsWith('/') ? (`http://localhost:8080${form.image}`) : form.image)} alt="Preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-xs text-gray-500">Belum ada gambar</span>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  <button disabled={!(form.image_base64 || form.image)} onClick={() => {
+                    const src = form.image_base64 || form.image;
+                    if (!src) return;
+                    const url = (import.meta.env.DEV && src.startsWith('/')) ? `http://localhost:8080${src}` : src;
+                    window.open(url, '_blank');
+                  }} className="btn-outline text-sm" style={{ borderColor: accentColor, color: accentColor }}>
+                    Preview
+                  </button>
+                  <button disabled={!form.image_base64} onClick={() => setForm(prev => ({ ...prev, image_base64: '' }))} className="btn-outline text-sm" style={{ borderColor: '#EF4444', color: '#EF4444' }}>
+                    Hapus Upload
+                  </button>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm block mb-2">Judul</label>
+                  <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="input-field" />
+                </div>
+                <div>
+                  <label className="text-sm block mb-2">Badge</label>
+                  <input value={form.badge} onChange={(e) => setForm({ ...form, badge: e.target.value })} className="input-field" />
+                </div>
+              </div>
+              <div>
+                <label className="text-sm block mb-2">Deskripsi</label>
+                <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="input-field" rows={3} />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm block mb-2">Urutan</label>
+                  <input type="number" value={form.order} onChange={(e) => setForm({ ...form, order: Number(e.target.value) })} className="input-field" />
+                </div>
+                <div>
+                  <label className="text-sm block mb-2">Status</label>
+                  <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} className="input-field">
+                    <option value="published">Published</option>
+                    <option value="draft">Draft</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div className="p-6 border-t flex gap-2">
+              <button onClick={() => setShowForm(false)} className="flex-1 btn-outline">Batal</button>
+              <button onClick={save} className="flex-1 btn-primary" style={{ backgroundColor: accentColor }}>
+                <Save className="w-4 h-4" />
+                <span>Simpan</span>
               </button>
             </div>
-          ))}
+          </div>
         </div>
-      </div>
-    </div>
-  );
-};
-
-// Content: Programs Management (simplified)
-const ContentProgramsManagement: React.FC<{ accentColor: string; onNavigate: (page: string) => void }> = ({ accentColor, onNavigate }) => {
-  const programs = [
-    { id: 1, title: 'Tahfidz Harian', unit: 'SDIT', status: 'Aktif' },
-    { id: 2, title: 'Mentoring Pekanan', unit: 'SMAIT', status: 'Aktif' },
-  ];
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <h4>Program</h4>
-        <div className="flex items-center gap-2">
-          <button className="btn-outline text-sm" style={{ borderColor: accentColor, color: accentColor }} onClick={() => onNavigate('admin-programs')}>
-            Lihat versi lengkap
-          </button>
-          <button className="btn-primary flex items-center gap-2" style={{ backgroundColor: accentColor }}>
-            <Plus className="w-5 h-5" />
-            <span>Tambah Program</span>
-          </button>
-        </div>
-      </div>
-      <div className="card">
-        <div className="space-y-3">
-          {programs.map(pr => (
-            <div key={pr.id} className="flex items-center justify-between p-4 border rounded-xl">
-              <div>
-                <h5>{pr.title}</h5>
-                <p className="text-sm text-gray-600">{pr.unit}</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs">{pr.status}</span>
-                <button className="btn-outline text-sm" style={{ borderColor: accentColor, color: accentColor }}>
-                  <Edit className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      )}
     </div>
   );
 };
