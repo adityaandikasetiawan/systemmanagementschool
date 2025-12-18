@@ -28,20 +28,21 @@ export const Contact: React.FC<ContactProps> = ({ onNavigate = () => {} }) => {
       label: t('site.menu.about', 'Tentang'),
       href: '#',
       submenu: [
+        { label: t('site.submenu.foundation_profile', 'Profile Yayasan'), href: '#', onClick: () => onNavigate('about') },
         { label: t('site.submenu.vision_mission', 'Visi & Misi'), href: '#', onClick: () => onNavigate('vision-mission') },
-        { label: t('site.submenu.curriculum', 'Kurikulum'), href: '#', onClick: () => onNavigate('about') },
-        { label: t('site.submenu.facilities', 'Fasilitas'), href: '#', onClick: () => onNavigate('about') },
-        { label: t('site.submenu.management', 'Kepengurusan'), href: '#', onClick: () => onNavigate('about') }
+        { label: t('site.submenu.history', 'Sejarah'), href: '#', onClick: () => onNavigate('about') },
+        { label: t('site.submenu.organization', 'Struktur Organisasi'), href: '#', onClick: () => onNavigate('about') }
       ]
     },
     {
-      label: t('site.menu.profile', 'Profil'),
+      label: t('navbar.units_menu', 'Unit Pendidikan'),
       href: '#',
       submenu: [
-        { label: t('site.submenu.foundation_profile', 'Profil Yayasan'), href: '#', onClick: () => onNavigate('about') },
-        { label: t('site.submenu.history', 'Sejarah'), href: '#', onClick: () => onNavigate('about') },
-        { label: t('site.submenu.organization', 'Struktur Organisasi'), href: '#', onClick: () => onNavigate('about') },
-        { label: t('site.menu.career', 'Peluang Karir'), href: '#', onClick: () => onNavigate('career') }
+        { label: '🎨 ' + t('home.units.items.tkit', 'TKIT Baituljannah'), href: '#', onClick: () => onNavigate('tkit') },
+        { label: '📚 ' + t('home.units.items.sdit', 'SDIT Baituljannah'), href: '#', onClick: () => onNavigate('sdit') },
+        { label: '🎓 ' + t('home.units.items.smpit', 'SMPIT Baituljannah'), href: '#', onClick: () => onNavigate('smpit') },
+        { label: t('home.units.items.smait', 'SMAIT Baituljannah'), href: '#', onClick: () => onNavigate('smait') },
+        { label: t('home.units.items.slbit', 'SLBIT Baituljannah'), href: '#', onClick: () => onNavigate('slbit') }
       ]
     },
     {
@@ -50,11 +51,13 @@ export const Contact: React.FC<ContactProps> = ({ onNavigate = () => {} }) => {
       submenu: [
         { label: t('site.submenu.news', 'Berita'), href: '#', onClick: () => onNavigate('news') },
         { label: t('site.submenu.gallery', 'Galeri'), href: '#', onClick: () => onNavigate('gallery') },
-        { label: t('site.submenu.programs', 'Program'), href: '#', onClick: () => onNavigate('programs') }
+        { label: t('site.submenu.programs', 'Kurikulum'), href: '#', onClick: () => onNavigate('curriculum') },
+        { label: t('site.submenu.achievement', 'Prestasi'), href: '#', onClick: () => onNavigate('achievement') }
       ]
     },
+    { label: t('site.menu.career', 'Karir'), href: '#', onClick: () => onNavigate('career') },
     {
-      label: t('site.menu.admission', 'SPMB'),
+      label: t('site.menu.admission', 'PPDB'),
       href: '#',
       submenu: [
         { label: t('site.submenu.admission_registration', 'Pendaftaran'), href: '#', onClick: () => onNavigate('admission') },
@@ -322,7 +325,7 @@ export const Contact: React.FC<ContactProps> = ({ onNavigate = () => {} }) => {
         </div>
       </section>
 
-      <Footer siteName={t('site.name')} accentColor="var(--color-primary)" onNavigate={onNavigate} />
+      <Footer siteName={t('site.name')} accentColor="var(--color-primary)" onNavigate={onNavigate} logo="/images/logo/logo-yayasan.jpg" />
     </div>
   );
 };

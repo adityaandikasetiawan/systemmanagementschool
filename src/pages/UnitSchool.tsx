@@ -27,23 +27,49 @@ export const UnitSchool: React.FC<UnitSchoolProps> = ({
   onNavigate = () => {}
 }) => {
   const menuItems = [
-    { label: t('site.menu.home', 'Beranda'), href: '#', onClick: () => {} },
+    { label: t('site.menu.home', 'Beranda'), href: '#', onClick: () => onNavigate('main') },
     {
-      label: t('site.menu.profile', 'Profil'),
+      label: t('site.menu.about', 'Tentang'),
       href: '#',
       submenu: [
-        { label: t('site.submenu.about', 'Tentang Kami'), href: '#', onClick: () => {} },
-        { label: t('site.submenu.vision_mission', 'Visi & Misi'), href: '#', onClick: () => {} },
-        { label: t('site.submenu.facilities', 'Fasilitas'), href: '#', onClick: () => {} }
+        { label: t('site.submenu.foundation_profile', 'Profile Yayasan'), href: '#', onClick: () => onNavigate('about') },
+        { label: t('site.submenu.vision_mission', 'Visi & Misi'), href: '#', onClick: () => onNavigate('vision-mission') },
+        { label: t('site.submenu.history', 'Sejarah'), href: '#', onClick: () => onNavigate('about') },
+        { label: t('site.submenu.organization', 'Struktur Organisasi'), href: '#', onClick: () => onNavigate('about') }
       ]
     },
-    { label: t('site.submenu.programs', 'Kurikulum'), href: '#', onClick: () => {} },
-    { label: t('site.menu.teachers', 'Guru & Staff'), href: '#', onClick: () => {} },
-    { label: t('site.submenu.news', 'Berita'), href: '#', onClick: () => {} },
-    { label: t('site.submenu.gallery', 'Galeri'), href: '#', onClick: () => {} },
+    {
+      label: t('navbar.units_menu', 'Unit Pendidikan'),
+      href: '#',
+      submenu: [
+        { label: '🎨 ' + t('home.units.items.tkit', 'TKIT Baituljannah'), href: '#', onClick: () => onNavigate('tkit') },
+        { label: '📚 ' + t('home.units.items.sdit', 'SDIT Baituljannah'), href: '#', onClick: () => onNavigate('sdit') },
+        { label: '🎓 ' + t('home.units.items.smpit', 'SMPIT Baituljannah'), href: '#', onClick: () => onNavigate('smpit') },
+        { label: t('home.units.items.smait', 'SMAIT Baituljannah'), href: '#', onClick: () => onNavigate('smait') },
+        { label: t('home.units.items.slbit', 'SLBIT Baituljannah'), href: '#', onClick: () => onNavigate('slbit') }
+      ]
+    },
+    {
+      label: t('site.menu.info', 'Informasi'),
+      href: '#',
+      submenu: [
+        { label: t('site.submenu.news', 'Berita'), href: '#', onClick: () => onNavigate('news') },
+        { label: t('site.submenu.gallery', 'Galeri'), href: '#', onClick: () => onNavigate('gallery') },
+        { label: t('site.submenu.programs', 'Kurikulum'), href: '#', onClick: () => onNavigate('curriculum') },
+        { label: t('site.submenu.achievement', 'Prestasi'), href: '#', onClick: () => onNavigate('achievement') }
+      ]
+    },
     { label: t('site.menu.career', 'Karir'), href: '#', onClick: () => onNavigate('career') },
-    { label: t('site.menu.admission', 'PPDB'), href: '#', onClick: () => onNavigate('admission') },
-    { label: t('site.menu.contact', 'Kontak'), href: '#', onClick: () => {} },
+    {
+      label: t('site.menu.admission', 'PPDB'),
+      href: '#',
+      submenu: [
+        { label: t('site.submenu.admission_registration', 'Pendaftaran'), href: '#', onClick: () => onNavigate('admission') },
+        { label: t('site.submenu.admission_schedule', 'Jadwal & Alur'), href: '#', onClick: () => onNavigate('admission') },
+        { label: t('site.submenu.admission_fee', 'Biaya Pendidikan'), href: '#', onClick: () => onNavigate('admission') }
+      ]
+    },
+    { label: t('site.menu.contact', 'Kontak'), href: '#', onClick: () => onNavigate('contact') },
     { label: t('common.login', 'Login'), href: '#', onClick: () => onNavigate('login') }
   ];
 
@@ -97,6 +123,7 @@ export const UnitSchool: React.FC<UnitSchoolProps> = ({
         siteName={fullName}
         accentColor={accentColor}
         menuItems={menuItems}
+        logo={icon}
       />
 
       {/* Back to Portal */}
@@ -580,6 +607,43 @@ export const UnitSchool: React.FC<UnitSchoolProps> = ({
         </div>
       </section>
 
+      {/* Latest News */}
+      <section className="section-padding bg-gray-50">
+        <div className="container-custom">
+          <div className="flex items-end justify-between mb-12">
+            <div>
+              <div className="inline-block px-4 py-2 rounded-full text-sm mb-4" style={{ backgroundColor: `${accentColor}20`, color: accentColor }}>
+                {t('unit_school.news.badge', 'Berita Terkini')}
+              </div>
+              <h2 className="mb-0">{t('unit_school.news.title', 'Kabar Sekolah')}</h2>
+            </div>
+            <button 
+              onClick={() => onNavigate('news')}
+              className="hidden md:flex items-center gap-2 hover:gap-3 transition-all font-medium"
+              style={{ color: accentColor }}
+            >
+              {t('unit_school.news.view_all', 'Lihat Semua Berita')}
+              <ArrowRight className="w-5 h-5" />
+            </button>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {latestNews.map((news, index) => (
+              <NewsCard key={index} {...news} />
+            ))}
+          </div>
+
+          <div className="mt-8 text-center md:hidden">
+            <button 
+              onClick={() => onNavigate('news')}
+              className="btn-outline w-full justify-center"
+            >
+              {t('unit_school.news.view_all', 'Lihat Semua Berita')}
+            </button>
+          </div>
+        </div>
+      </section>
+
       {/* Fee Structure - NEW */}
       <section className="section-padding bg-gray-50">
         <div className="container-custom">
@@ -816,7 +880,12 @@ export const UnitSchool: React.FC<UnitSchoolProps> = ({
         </div>
       </section>
 
-      <Footer siteName={fullName} accentColor={accentColor} onNavigate={onNavigate} />
+      <Footer 
+        siteName={fullName} 
+        accentColor={accentColor} 
+        onNavigate={onNavigate}
+        logo={icon}
+      />
     </div>
   );
 };

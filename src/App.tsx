@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { MainPortal } from './pages/MainPortal';
-import { UnitSchool } from './pages/UnitSchool';
+import { TKITPage } from './pages/units/tkit/TKITPage';
+import { SDITPage } from './pages/units/sdit/SDITPage';
+import { SMPITPage } from './pages/units/smpit/SMPITPage';
+import { SMAITPage } from './pages/units/smait/SMAITPage';
+import { SLBITPage } from './pages/units/slbit/SLBITPage';
+import { AsramaPage } from './pages/units/asrama/AsramaPage';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { AdminPanel } from './pages/AdminPanel';
 import { ComponentLibrary } from './pages/ComponentLibrary';
@@ -13,6 +18,7 @@ import { Achievement } from './pages/Achievement';
 import { Contact } from './pages/Contact';
 import { Admission } from './pages/Admission';
 import { Programs } from './pages/Programs';
+import { Curriculum } from './pages/Curriculum';
 import { Career } from './pages/Career';
 import { Teachers } from './pages/Teachers';
 import { Events } from './pages/Events';
@@ -75,6 +81,7 @@ type PageType =
   | 'contact'
   | 'admission'
   | 'programs'
+  | 'curriculum'
   | 'career'
   | 'teachers'
   | 'events'
@@ -146,53 +153,6 @@ const App: React.FC = () => {
     }
   };
 
-  const unitConfigs = {
-    tkit: {
-      unitName: 'TKIT',
-      fullName: 'TKIT Baituljannah',
-      accentColor: '#10B981',
-      icon: '/images/logo/logo-tkit.png',
-      description: 'Pendidikan anak usia dini berbasis Islam dengan metode pembelajaran yang menyenangkan dan mengembangkan potensi anak secara optimal melalui pendekatan holistik.'
-    },
-    sdit: {
-      unitName: 'SDIT',
-      fullName: 'SDIT Baituljannah',
-      accentColor: '#3B82F6',
-      icon: '/images/logo/logo-sdit.png',
-      description: 'Sekolah Dasar Islam Terpadu dengan kurikulum nasional plus pendidikan agama Islam yang komprehensif untuk membentuk generasi Qur\'ani yang cerdas dan berakhlak mulia.'
-    },
-    smpit: {
-      unitName: 'SMPIT',
-      fullName: 'SMPIT Baituljannah',
-      accentColor: '#F97316',
-      icon: '/images/logo/logo-smpit.png',
-      description: 'Sekolah Menengah Pertama Islam Terpadu yang mengintegrasikan ilmu pengetahuan dengan nilai-nilai Islam untuk membentuk remaja yang berkarakter dan berprestasi.'
-    },
-    smait: {
-      unitName: 'SMAIT',
-      fullName: 'SMAIT Baituljannah',
-      accentColor: '#8B5CF6',
-      icon: '/images/logo/logo-smait.png',
-      description: 'Sekolah Menengah Atas Islam Terpadu yang mempersiapkan siswa menjadi pemimpin masa depan yang berakhlak mulia, cerdas, dan siap menghadapi tantangan global.'
-    },
-    slbit: {
-      unitName: 'SLBIT',
-      fullName: 'SLBIT Baituljannah',
-      accentColor: '#14B8A6',
-      icon: '/images/logo/logo-slbit.png',
-      description: 'Sekolah Luar Biasa Islam Terpadu yang memberikan pendidikan inklusif dengan perhatian khusus untuk setiap siswa berkebutuhan khusus dengan kasih sayang dan profesionalisme.'
-    },
-    asrama: {
-      unitName: 'ASRAMA',
-      fullName: 'Asrama Baituljannah',
-      accentColor: '#D4AF37',
-      icon: '/images/logo/logo-asrama.png',
-      description: 'Asrama putra dan putri dengan fasilitas lengkap dan pembinaan karakter Islami yang intensif, menciptakan lingkungan yang kondusif untuk belajar dan beribadah.'
-    }
-  };
-
-  type UnitKey = keyof typeof unitConfigs;
-
   const renderPage = () => {
     switch (currentPage) {
       case 'main':
@@ -202,11 +162,17 @@ const App: React.FC = () => {
         return <Login onNavigate={navigate} />;
       
       case 'tkit':
+        return <TKITPage onNavigate={navigate} />;
       case 'sdit':
+        return <SDITPage onNavigate={navigate} />;
       case 'smpit':
+        return <SMPITPage onNavigate={navigate} />;
       case 'smait':
+        return <SMAITPage onNavigate={navigate} />;
       case 'slbit':
-        return <UnitSchool {...unitConfigs[currentPage as UnitKey]} onNavigate={navigate} />;
+        return <SLBITPage onNavigate={navigate} />;
+      case 'asrama':
+        return <AsramaPage onNavigate={navigate} />;
       
       case 'admin-super':
         if (!currentUser || !apiHelpers.getToken()) {
@@ -384,7 +350,10 @@ const App: React.FC = () => {
       
       case 'programs':
         return <Programs onNavigate={navigate} />;
-      
+      case 'curriculum':
+        return <Curriculum onNavigate={navigate} />;
+      case 'career':
+        return <Career onNavigate={navigate} />;
       case 'teachers':
         return <Teachers onNavigate={navigate} />;
       

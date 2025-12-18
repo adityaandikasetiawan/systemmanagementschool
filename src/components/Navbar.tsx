@@ -110,9 +110,13 @@ export const Navbar: React.FC<NavbarProps> = ({ logo, siteName, siteTagline = t(
         <div className="flex justify-between items-center py-4">
           {/* Logo and Site Name */}
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: accentColor }}>
-              <span className="text-white text-xl">🕌</span>
-            </div>
+            {logo && (logo.startsWith('/') || logo.startsWith('http')) ? (
+               <img src={logo} alt={siteName} className="w-12 h-12 object-contain rounded-xl" />
+            ) : (
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: accentColor }}>
+                <span className="text-white text-xl">{logo || '🕌'}</span>
+              </div>
+            )}
             <div>
               <h1 className="text-xl" style={{ color: accentColor }}>{siteName}</h1>
               <p className="text-xs text-gray-500">{siteTagline}</p>
@@ -122,11 +126,14 @@ export const Navbar: React.FC<NavbarProps> = ({ logo, siteName, siteTagline = t(
           {/* Desktop Menu */}
           <div className="hidden lg:flex items-center gap-6">
             {filteredMenu.map((item, index) => (
-              <div key={index} className="relative group">
+              <div 
+                key={index} 
+                className="relative group"
+                onMouseEnter={() => item.submenu && setActiveSubmenu(item.label)}
+                onMouseLeave={() => setActiveSubmenu(null)}
+              >
                 <button
                   className="flex items-center gap-1 text-gray-700 hover:text-[var(--color-primary)] transition-colors py-2"
-                  onMouseEnter={() => item.submenu && setActiveSubmenu(item.label)}
-                  onMouseLeave={() => setActiveSubmenu(null)}
                   onClick={item.onClick}
                 >
                   {translateLabel(item.label)}
@@ -134,23 +141,23 @@ export const Navbar: React.FC<NavbarProps> = ({ logo, siteName, siteTagline = t(
                 </button>
                 
                 {item.submenu && activeSubmenu === item.label && (
-                  <div
-                    className="absolute top-full left-0 mt-2 w-48 bg-white shadow-strong rounded-xl py-2 opacity-100 transition-all"
-                    onMouseEnter={() => setActiveSubmenu(item.label)}
-                    onMouseLeave={() => setActiveSubmenu(null)}
-                  >
-                    {item.submenu.map((subitem, subindex) => (
-                      <button
-                        key={subindex}
-                        onClick={() => {
-                          subitem.onClick?.();
-                          setActiveSubmenu(null);
-                        }}
-                        className="w-full text-left block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-[var(--color-primary)] transition-colors"
-                      >
-                        {translateLabel(subitem.label)}
-                      </button>
-                    ))}
+                  <div className="absolute top-full left-0 pt-2 w-48 z-50">
+                    <div
+                      className="bg-white shadow-strong rounded-xl py-2 opacity-100 transition-all border border-gray-100"
+                    >
+                      {item.submenu.map((subitem, subindex) => (
+                        <button
+                          key={subindex}
+                          onClick={() => {
+                            subitem.onClick?.();
+                            setActiveSubmenu(null);
+                          }}
+                          className="w-full text-left block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-[var(--color-primary)] transition-colors"
+                        >
+                          {translateLabel(subitem.label)}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>

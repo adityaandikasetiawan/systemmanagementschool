@@ -3,12 +3,13 @@ import { Facebook, Instagram, Youtube, Mail, Phone, MapPin } from 'lucide-react'
 import { t } from '../i18n';
 
 interface FooterProps {
+  logo?: string;
   siteName: string;
   accentColor?: string;
   onNavigate?: (page: string) => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ siteName, accentColor = '#1E4AB8', onNavigate = () => {} }) => {
+export const Footer: React.FC<FooterProps> = ({ logo, siteName, accentColor = '#1E4AB8', onNavigate = () => {} }) => {
   return (
     <footer className="bg-gray-900 text-white mt-16">
       <div className="container-custom section-padding">
@@ -16,9 +17,13 @@ export const Footer: React.FC<FooterProps> = ({ siteName, accentColor = '#1E4AB8
           {/* About */}
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: accentColor }}>
-                <span className="text-white text-xl">🕌</span>
-              </div>
+              {logo && (logo.startsWith('/') || logo.startsWith('http')) ? (
+                 <img src={logo} alt={siteName} className="w-12 h-12 object-contain bg-white rounded-xl p-1" />
+              ) : (
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: accentColor }}>
+                  <span className="text-white text-xl">{logo || '🕌'}</span>
+                </div>
+              )}
               <h3 className="text-lg">{siteName}</h3>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed">

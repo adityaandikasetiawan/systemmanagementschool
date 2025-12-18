@@ -47,7 +47,7 @@ export const MainPortal: React.FC<MainPortalProps> = ({ onNavigate }) => {
       submenu: [
         { label: t('site.submenu.news', 'Berita'), href: '#', onClick: () => onNavigate('news') },
         { label: t('site.submenu.gallery', 'Galeri'), href: '#', onClick: () => onNavigate('gallery') },
-        { label: t('site.submenu.programs', 'Kurikulum'), href: '#', onClick: () => onNavigate('programs') },
+        { label: t('site.submenu.programs', 'Kurikulum'), href: '#', onClick: () => onNavigate('curriculum') },
         { label: t('site.submenu.achievement', 'Prestasi'), href: '#', onClick: () => onNavigate('achievement') }
       ]
     },
@@ -318,6 +318,7 @@ export const MainPortal: React.FC<MainPortalProps> = ({ onNavigate }) => {
         menuItems={menuItems}
         hideUserInfo
         hideLogout
+        logo="/images/logo/logo-yayasan.jpg"
       />
 
       {/* Hero Carousel */}
@@ -386,13 +387,13 @@ export const MainPortal: React.FC<MainPortalProps> = ({ onNavigate }) => {
                 <UnitCardCircular
                   name={t('home.units.items.smpit', 'SMPIT')}
                   icon="/images/logo/logo-smpit.png"
-                  color="#F97316"
+                  color="#003399"
                   onClick={() => onNavigate('smpit')}
                 />
                 <UnitCardCircular
                   name={t('home.units.items.smait', 'SMAIT')}
                   icon="/images/logo/logo-smait.png"
-                  color="#8B5CF6"
+                  color="#586c7d"
                   onClick={() => onNavigate('smait')}
                 />
                 <UnitCardCircular
@@ -958,7 +959,7 @@ export const MainPortal: React.FC<MainPortalProps> = ({ onNavigate }) => {
         </div>
       </section>
 
-      <Footer siteName={t('site.name')} accentColor="#1E4AB8" onNavigate={onNavigate} />
+      <Footer siteName={t('site.name')} accentColor="#1E4AB8" onNavigate={onNavigate} logo="/images/logo/logo-yayasan.jpg" />
     </div>
   );
 };
