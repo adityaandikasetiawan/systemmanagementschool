@@ -4,6 +4,7 @@ import { Footer } from '../components/Footer';
 import { Breadcrumb } from '../components/Breadcrumb';
 import { Eye, Target, CheckCircle, Star, Heart, BookOpen, Users, Award, Sparkles, TrendingUp, Shield, Lightbulb, Zap } from 'lucide-react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { t } from '../i18n';
 
 interface VisionMissionProps {
   onNavigate?: (page: string) => void;
@@ -11,95 +12,95 @@ interface VisionMissionProps {
 
 export const VisionMission: React.FC<VisionMissionProps> = ({ onNavigate = () => {} }) => {
   const menuItems = [
-    { label: 'Beranda', href: '#', onClick: () => onNavigate('main') },
+    { label: t('site.menu.home'), href: '#', onClick: () => onNavigate('main') },
     {
-      label: 'Tentang',
+      label: t('site.menu.about'),
       href: '#',
       submenu: [
-        { label: 'Visi & Misi', href: '#', onClick: () => onNavigate('vision-mission') },
-        { label: 'Kurikulum', href: '#', onClick: () => onNavigate('about') },
-        { label: 'Fasilitas', href: '#', onClick: () => onNavigate('about') },
-        { label: 'Kepengurusan', href: '#', onClick: () => onNavigate('about') }
+        { label: t('site.submenu.vision_mission'), href: '#', onClick: () => onNavigate('vision-mission') },
+        { label: t('site.submenu.curriculum'), href: '#', onClick: () => onNavigate('about') },
+        { label: t('site.submenu.facilities'), href: '#', onClick: () => onNavigate('about') },
+        { label: t('site.submenu.management'), href: '#', onClick: () => onNavigate('about') }
       ]
     },
     {
-      label: 'Profile',
+      label: t('site.menu.profile'),
       href: '#',
       submenu: [
-        { label: 'Profil Yayasan', href: '#', onClick: () => onNavigate('about') },
-        { label: 'Sejarah', href: '#', onClick: () => onNavigate('about') },
-        { label: 'Struktur Organisasi', href: '#', onClick: () => onNavigate('about') }
+        { label: t('site.submenu.foundation_profile'), href: '#', onClick: () => onNavigate('about') },
+        { label: t('site.submenu.history'), href: '#', onClick: () => onNavigate('about') },
+        { label: t('site.submenu.organization'), href: '#', onClick: () => onNavigate('about') }
       ]
     },
     {
-      label: 'Informasi',
+      label: t('site.menu.info'),
       href: '#',
       submenu: [
-        { label: 'Berita', href: '#', onClick: () => onNavigate('news') },
-        { label: 'Galeri Foto', href: '#', onClick: () => onNavigate('gallery') },
-        { label: 'Prestasi', href: '#', onClick: () => onNavigate('achievement') },
-        { label: 'Program', href: '#', onClick: () => onNavigate('programs') }
+        { label: t('site.submenu.news'), href: '#', onClick: () => onNavigate('news') },
+        { label: t('site.submenu.gallery'), href: '#', onClick: () => onNavigate('gallery') },
+        { label: t('site.submenu.achievement'), href: '#', onClick: () => onNavigate('achievement') },
+        { label: t('site.submenu.programs'), href: '#', onClick: () => onNavigate('programs') }
       ]
     },
-    { label: 'Karir', href: '#', onClick: () => onNavigate('career') },
+    { label: t('site.menu.career'), href: '#', onClick: () => onNavigate('career') },
     {
-      label: 'SPMB',
+      label: t('site.menu.admission'),
       href: '#',
       submenu: [
-        { label: 'Pendaftaran', href: '#', onClick: () => onNavigate('admission') },
-        { label: 'Jadwal & Alur', href: '#', onClick: () => onNavigate('admission') },
-        { label: 'Biaya Pendidikan', href: '#', onClick: () => onNavigate('admission') }
+        { label: t('site.submenu.admission_registration'), href: '#', onClick: () => onNavigate('admission') },
+        { label: t('site.submenu.admission_schedule'), href: '#', onClick: () => onNavigate('admission') },
+        { label: t('site.submenu.admission_fee'), href: '#', onClick: () => onNavigate('admission') }
       ]
     },
-    { label: 'Kontak', href: '#', onClick: () => onNavigate('contact') },
-    { label: 'Login', href: '#', onClick: () => onNavigate('login') }
+    { label: t('site.menu.contact'), href: '#', onClick: () => onNavigate('contact') },
+    { label: t('common.login'), href: '#', onClick: () => onNavigate('login') }
   ];
 
   const breadcrumbItems = [
-    { label: 'Beranda', onClick: () => onNavigate('main') },
-    { label: 'Visi & Misi' }
+    { label: t('site.menu.home'), onClick: () => onNavigate('main') },
+    { label: t('site.submenu.vision_mission') }
   ];
 
   const missions = [
     {
       icon: BookOpen,
-      title: 'Pendidikan Berkualitas',
-      description: 'Menyelenggarakan pendidikan Islam terpadu yang berkualitas dengan mengintegrasikan kurikulum nasional dan nilai-nilai Islam',
+      title: t('vision_mission.mission.items.education.title'),
+      description: t('vision_mission.mission.items.education.desc'),
       color: '#3B82F6',
       gradient: 'from-blue-500 to-cyan-600'
     },
     {
       icon: Heart,
-      title: 'Pembentukan Karakter',
-      description: 'Membentuk karakter siswa yang berakhlakul karimah, jujur, disiplin, dan bertanggung jawab berdasarkan Al-Quran dan As-Sunnah',
+      title: t('vision_mission.mission.items.character.title'),
+      description: t('vision_mission.mission.items.character.desc'),
       color: '#EF4444',
       gradient: 'from-red-500 to-rose-600'
     },
     {
       icon: Users,
-      title: 'Pengembangan Potensi',
-      description: 'Mengembangkan potensi akademik dan non-akademik siswa melalui program-program unggulan yang inovatif dan komprehensif',
+      title: t('vision_mission.mission.items.potential.title'),
+      description: t('vision_mission.mission.items.potential.desc'),
       color: '#10B981',
       gradient: 'from-green-500 to-emerald-600'
     },
     {
       icon: Award,
-      title: 'Prestasi Gemilang',
-      description: 'Mencetak siswa yang berprestasi dan kompetitif di tingkat lokal, nasional, maupun internasional',
+      title: t('vision_mission.mission.items.achievement.title'),
+      description: t('vision_mission.mission.items.achievement.desc'),
       color: '#F59E0B',
       gradient: 'from-orange-500 to-amber-600'
     },
     {
       icon: Shield,
-      title: 'Lingkungan Islami',
-      description: 'Menciptakan lingkungan pendidikan yang kondusif, Islami, dan mendukung perkembangan optimal siswa',
+      title: t('vision_mission.mission.items.environment.title'),
+      description: t('vision_mission.mission.items.environment.desc'),
       color: '#8B5CF6',
       gradient: 'from-purple-500 to-indigo-600'
     },
     {
       icon: TrendingUp,
-      title: 'Kemitraan Strategis',
-      description: 'Membangun kemitraan dengan orang tua, masyarakat, dan stakeholder untuk mendukung pencapaian tujuan pendidikan',
+      title: t('vision_mission.mission.items.partnership.title'),
+      description: t('vision_mission.mission.items.partnership.desc'),
       color: '#14B8A6',
       gradient: 'from-teal-500 to-cyan-600'
     }
@@ -108,44 +109,44 @@ export const VisionMission: React.FC<VisionMissionProps> = ({ onNavigate = () =>
   const goals = [
     {
       icon: Star,
-      title: 'Generasi Qur\'ani',
-      description: 'Mencetak generasi yang hafal Al-Quran dan mengamalkan nilai-nilainya',
-      stats: '200+ Hafidz'
+      title: t('vision_mission.goals.items.quran.title'),
+      description: t('vision_mission.goals.items.quran.desc'),
+      stats: t('vision_mission.goals.items.quran.stats')
     },
     {
       icon: Lightbulb,
-      title: 'Inovasi Pembelajaran',
-      description: 'Menerapkan metode pembelajaran modern dan efektif',
-      stats: '15+ Program'
+      title: t('vision_mission.goals.items.innovation.title'),
+      description: t('vision_mission.goals.items.innovation.desc'),
+      stats: t('vision_mission.goals.items.innovation.stats')
     },
     {
       icon: Zap,
-      title: 'Prestasi Unggul',
-      description: 'Meraih prestasi gemilang di berbagai kompetisi',
-      stats: '200+ Penghargaan'
+      title: t('vision_mission.goals.items.achievement.title'),
+      description: t('vision_mission.goals.items.achievement.desc'),
+      stats: t('vision_mission.goals.items.achievement.stats')
     },
     {
       icon: Users,
-      title: 'Kualitas SDM',
-      description: 'Tenaga pendidik profesional dan berpengalaman',
-      stats: '200+ Guru'
+      title: t('vision_mission.goals.items.hr.title'),
+      description: t('vision_mission.goals.items.hr.desc'),
+      stats: t('vision_mission.goals.items.hr.stats')
     }
   ];
 
   const values = [
-    { title: 'Integritas', description: 'Berpegang teguh pada nilai-nilai Islam dan kejujuran' },
-    { title: 'Excellence', description: 'Selalu berusaha memberikan yang terbaik dalam segala hal' },
-    { title: 'Innovation', description: 'Terus berinovasi dalam metode dan program pendidikan' },
-    { title: 'Collaboration', description: 'Membangun kerjasama yang solid dan sinergis' },
-    { title: 'Compassion', description: 'Mendidik dengan penuh kasih sayang dan perhatian' },
-    { title: 'Accountability', description: 'Bertanggung jawab atas amanah pendidikan' }
+    { title: t('vision_mission.values.items.integrity.title'), description: t('vision_mission.values.items.integrity.desc') },
+    { title: t('vision_mission.values.items.excellence.title'), description: t('vision_mission.values.items.excellence.desc') },
+    { title: t('vision_mission.values.items.innovation.title'), description: t('vision_mission.values.items.innovation.desc') },
+    { title: t('vision_mission.values.items.collaboration.title'), description: t('vision_mission.values.items.collaboration.desc') },
+    { title: t('vision_mission.values.items.compassion.title'), description: t('vision_mission.values.items.compassion.desc') },
+    { title: t('vision_mission.values.items.accountability.title'), description: t('vision_mission.values.items.accountability.desc') }
   ];
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar 
-        siteName="Baitul Jannah Islamic School"
-        siteTagline="Sekolahnya Para Juara"
+        siteName={t('site.name')}
+        siteTagline={t('navbar.tagline')}
         menuItems={menuItems}
         accentColor="#1E4AB8"
       />
@@ -166,11 +167,11 @@ export const VisionMission: React.FC<VisionMissionProps> = ({ onNavigate = () =>
           <div className="mt-8">
             <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/20 backdrop-blur-sm rounded-full text-sm mb-6">
               <Eye className="w-4 h-4" />
-              <span>Our Direction</span>
+              <span>{t('vision_mission.hero.badge')}</span>
             </div>
-            <h1 className="text-5xl lg:text-6xl mb-6">Visi & Misi</h1>
+            <h1 className="text-5xl lg:text-6xl mb-6">{t('vision_mission.hero.title')}</h1>
             <p className="text-xl text-white/90 max-w-3xl leading-relaxed">
-              Panduan arah dan tujuan Yayasan Baituljannah dalam mewujudkan pendidikan Islam berkualitas dan berkarakter
+              {t('vision_mission.hero.subtitle')}
             </p>
           </div>
         </div>
@@ -184,7 +185,7 @@ export const VisionMission: React.FC<VisionMissionProps> = ({ onNavigate = () =>
               <div className="relative rounded-3xl overflow-hidden shadow-strong">
                 <ImageWithFallback
                   src="https://images.unsplash.com/photo-1643429096345-9de0d2ab7e7c"
-                  alt="Vision Baituljannah"
+                  alt={t('vision_mission.vision.image_alt')}
                   className="w-full h-[500px] object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
@@ -195,8 +196,8 @@ export const VisionMission: React.FC<VisionMissionProps> = ({ onNavigate = () =>
                     <div className="w-20 h-20 mx-auto mb-6 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
                       <Eye className="w-10 h-10" />
                     </div>
-                    <h3 className="text-2xl mb-2">Visi Kami</h3>
-                    <p className="text-white/90">Menjadi Yang Terdepan</p>
+                    <h3 className="text-2xl mb-2">{t('vision_mission.vision.card_title')}</h3>
+                    <p className="text-white/90">{t('vision_mission.vision.card_subtitle')}</p>
                   </div>
                 </div>
               </div>
@@ -209,17 +210,17 @@ export const VisionMission: React.FC<VisionMissionProps> = ({ onNavigate = () =>
             <div>
               <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 rounded-full text-sm mb-6">
                 <Eye className="w-4 h-4" />
-                <span>Vision Statement</span>
+                <span>{t('vision_mission.vision.badge')}</span>
               </div>
               
-              <h2 className="text-4xl lg:text-5xl mb-6 text-gray-900">Visi Yayasan Baituljannah</h2>
+              <h2 className="text-4xl lg:text-5xl mb-6 text-gray-900">{t('vision_mission.vision.title')}</h2>
               
               <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-3xl p-8 shadow-soft relative overflow-hidden mb-8">
                 <div className="absolute inset-0 islamic-pattern opacity-5"></div>
                 <div className="relative">
                   <Star className="w-12 h-12 text-blue-600 mb-4" />
                   <p className="text-2xl text-gray-900 leading-relaxed italic">
-                    "Menjadi lembaga pendidikan Islam terpadu yang unggul, inovatif, dan berkarakter Qur'ani dalam mencetak generasi pemimpin masa depan"
+                    {t('vision_mission.vision.quote')}
                   </p>
                 </div>
               </div>
@@ -230,8 +231,8 @@ export const VisionMission: React.FC<VisionMissionProps> = ({ onNavigate = () =>
                     <CheckCircle className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h4 className="text-lg mb-1 text-gray-900">Unggul & Inovatif</h4>
-                    <p className="text-gray-600">Terdepan dalam kualitas pendidikan dan inovasi pembelajaran</p>
+                    <h4 className="text-lg mb-1 text-gray-900">{t('vision_mission.vision.points.innovative.title')}</h4>
+                    <p className="text-gray-600">{t('vision_mission.vision.points.innovative.desc')}</p>
                   </div>
                 </div>
 
@@ -240,8 +241,8 @@ export const VisionMission: React.FC<VisionMissionProps> = ({ onNavigate = () =>
                     <CheckCircle className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h4 className="text-lg mb-1 text-gray-900">Karakter Qur'ani</h4>
-                    <p className="text-gray-600">Membentuk pribadi yang beriman dan berakhlak mulia</p>
+                    <h4 className="text-lg mb-1 text-gray-900">{t('vision_mission.vision.points.character.title')}</h4>
+                    <p className="text-gray-600">{t('vision_mission.vision.points.character.desc')}</p>
                   </div>
                 </div>
 
@@ -250,8 +251,8 @@ export const VisionMission: React.FC<VisionMissionProps> = ({ onNavigate = () =>
                     <CheckCircle className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h4 className="text-lg mb-1 text-gray-900">Pemimpin Masa Depan</h4>
-                    <p className="text-gray-600">Mencetak generasi pemimpin yang amanah dan visioner</p>
+                    <h4 className="text-lg mb-1 text-gray-900">{t('vision_mission.vision.points.leader.title')}</h4>
+                    <p className="text-gray-600">{t('vision_mission.vision.points.leader.desc')}</p>
                   </div>
                 </div>
               </div>
@@ -266,11 +267,11 @@ export const VisionMission: React.FC<VisionMissionProps> = ({ onNavigate = () =>
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 rounded-full text-sm mb-6">
               <Target className="w-4 h-4" />
-              <span>Mission Statement</span>
+              <span>{t('vision_mission.mission.badge')}</span>
             </div>
-            <h2 className="text-4xl lg:text-5xl mb-4 text-gray-900">Misi Yayasan Baituljannah</h2>
+            <h2 className="text-4xl lg:text-5xl mb-4 text-gray-900">{t('vision_mission.mission.title')}</h2>
             <p className="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
-              Enam pilar misi yang menjadi panduan dalam mencapai visi pendidikan kami
+              {t('vision_mission.mission.subtitle')}
             </p>
           </div>
 
@@ -322,11 +323,11 @@ export const VisionMission: React.FC<VisionMissionProps> = ({ onNavigate = () =>
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-100 to-indigo-100 text-purple-700 rounded-full text-sm mb-6">
               <Sparkles className="w-4 h-4" />
-              <span>Strategic Goals</span>
+              <span>{t('vision_mission.goals.badge')}</span>
             </div>
-            <h2 className="text-4xl lg:text-5xl mb-4 text-gray-900">Tujuan Strategis</h2>
+            <h2 className="text-4xl lg:text-5xl mb-4 text-gray-900">{t('vision_mission.goals.title')}</h2>
             <p className="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
-              Target pencapaian yang menjadi fokus utama dalam mewujudkan visi dan misi kami
+              {t('vision_mission.goals.subtitle')}
             </p>
           </div>
 
@@ -363,11 +364,11 @@ export const VisionMission: React.FC<VisionMissionProps> = ({ onNavigate = () =>
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 rounded-full text-sm mb-6">
               <Heart className="w-4 h-4" />
-              <span>Core Values</span>
+              <span>{t('vision_mission.values.badge')}</span>
             </div>
-            <h2 className="text-4xl lg:text-5xl mb-4 text-gray-900">Nilai-Nilai Inti</h2>
+            <h2 className="text-4xl lg:text-5xl mb-4 text-gray-900">{t('vision_mission.values.title')}</h2>
             <p className="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
-              Fondasi nilai yang menjadi pedoman dalam setiap aktivitas dan keputusan kami
+              {t('vision_mission.values.subtitle')}
             </p>
           </div>
 
@@ -401,31 +402,31 @@ export const VisionMission: React.FC<VisionMissionProps> = ({ onNavigate = () =>
         <div className="container-custom text-center text-white relative z-10">
           <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/20 backdrop-blur-sm rounded-full text-sm mb-6">
             <Sparkles className="w-4 h-4" />
-            <span>Bergabunglah Bersama Kami</span>
+            <span>{t('vision_mission.cta.badge')}</span>
           </div>
-          <h2 className="mb-6 text-4xl lg:text-5xl">Wujudkan Visi Pendidikan Terbaik</h2>
+          <h2 className="mb-6 text-4xl lg:text-5xl">{t('vision_mission.cta.title')}</h2>
           <p className="text-xl mb-10 max-w-3xl mx-auto opacity-90 leading-relaxed">
-            Jadilah bagian dari keluarga Baituljannah dan berikan pendidikan terbaik untuk masa depan putra-putri Anda
+            {t('vision_mission.cta.subtitle')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
               onClick={() => onNavigate('admission')} 
               className="btn-secondary flex items-center justify-center gap-2 group"
             >
-              <span>Daftar PPDB 2025</span>
+              <span>{t('navbar.ppdb_cta')}</span>
               <Target className="w-5 h-5 group-hover:rotate-12 transition-transform" />
             </button>
             <button 
               onClick={() => onNavigate('programs')} 
               className="px-8 py-4 border-2 border-white text-white rounded-xl hover:bg-white hover:text-[#1E4AB8] transition-all text-lg flex items-center justify-center gap-2"
             >
-              <span>Lihat Program Kami</span>
+              <span>{t('vision_mission.cta.button_programs')}</span>
             </button>
           </div>
         </div>
       </section>
 
-      <Footer siteName="Baitul Jannah Islamic School" accentColor="#1E4AB8" onNavigate={onNavigate} />
+      <Footer siteName={t('site.name')} accentColor="#1E4AB8" onNavigate={onNavigate} />
     </div>
   );
 };

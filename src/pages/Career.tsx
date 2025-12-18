@@ -331,7 +331,7 @@ export const Career: React.FC<CareerProps> = ({ onNavigate = () => {} }) => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar 
-        siteName="Baitul Jannah Islamic School"
+        siteName={t('site.name')}
         siteTagline="Sekolahnya Para Juara"
         accentColor="#1E4AB8"
         menuItems={menuItems} 
@@ -1039,14 +1039,14 @@ export const Career: React.FC<CareerProps> = ({ onNavigate = () => {} }) => {
       {/* Email Confirmation */}
       {showEmailConfirm && (
         <EmailService
-          applicantName={formData.name}
-          applicantEmail={formData.email}
+          recipientName={formData.name}
+          recipientEmail={formData.email}
           position={formData.position}
           onClose={() => setShowEmailConfirm(false)}
         />
       )}
 
-      <Footer siteName="Baitul Jannah Islamic School" accentColor="#1E4AB8" onNavigate={onNavigate} />
+      <Footer siteName={t('site.name')} accentColor="#1E4AB8" onNavigate={onNavigate} />
     </div>
   );
 };

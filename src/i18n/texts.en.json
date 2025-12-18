@@ -1,0 +1,1640 @@
+{
+  "common": {
+    "login": "Login",
+    "logout": "Logout",
+    "or": "or",
+    "back_home": "Back to Home",
+    "actions": {
+      "view": "View",
+      "edit": "Edit",
+      "delete": "Delete"
+    }
+  },
+  "about": {
+    "hero": {
+      "badge": "Foundation Profile",
+      "title": "About Baituljannah",
+      "subtitle": "An integrated Islamic education foundation committed to forming Qur'anic generations with noble character, intelligence, and achievements"
+    },
+    "history": {
+      "badge": "Our History",
+      "title": "Baituljannah Foundation Journey",
+      "p1": "Baituljannah Foundation was established in 2010 with a vision to become an integrated Islamic education institution that is excellent and character-driven. Starting from TKIT with 50 students, it has grown into 5 education units with more than 2000 students.",
+      "p2": "Throughout its journey, Baituljannah continuously innovates by integrating the national curriculum with Islamic values. Our students have achieved numerous accomplishments in various competitions at local, national, and international levels.",
+      "p3": "With professional educators and modern facilities, Baituljannah is committed to providing quality education that nurtures Qur'anic generations ready to face future challenges."
+    },
+    "commitment": {
+      "title": "Our Commitment",
+      "items": {
+        "quality": "Quality education with national and international standards",
+        "character": "Strong Islamic character formation with noble morals",
+        "facilities": "Modern facilities and a conducive learning environment",
+        "achievement": "Outstanding academic and non-academic achievements"
+      }
+    },
+    "campus": {
+      "title": "Modern & Islamic Campus",
+      "subtitle": "Comfortable and conducive learning environment"
+    },
+    "stats": {
+      "students_active": "Active Students",
+      "educators": "Educators",
+      "years_experience": "Years of Experience",
+      "units": "School Units"
+    },
+    "card": {
+      "achievements_label": "Achievements",
+      "achievements_desc": "Various competitions at national & international levels"
+    },
+    "values": {
+      "badge": "Our Values",
+      "title": "Our Education Pillars",
+      "subtitle": "Four main pillars that are the foundation of every aspect of education at Baituljannah",
+      "quality": { "title": "Quality Education", "desc": "Providing integrated Islamic education with excellent national and international standards" },
+      "compassion": { "title": "Compassion", "desc": "Educating with compassion and attention to every individual student" },
+      "achievement": { "title": "Glorious Achievements", "desc": "Producing graduates who excel in academic and non-academic fields" },
+      "character": { "title": "Islamic Character", "desc": "Forming characters with noble morals based on the Quran and Sunnah" }
+    },
+    "facilities": {
+      "badge": "Complete Facilities",
+      "title": "Modern Facilities",
+      "subtitle": "Various modern and complete learning support facilities for student comfort",
+      "classrooms": { "title": "Modern Classrooms", "desc": "Air-conditioned classrooms with multimedia facilities and optimal capacity for effective learning" },
+      "labs": { "title": "Complete Laboratories", "desc": "Computer, science, and language labs with modern equipment for student practicums" },
+      "library": { "title": "Digital Library", "desc": "Library with complete book collections and e-library access for independent learning" },
+      "mosque": { "title": "Grand Mosque", "desc": "Mosque with large capacity for congregational prayers and religious activities" },
+      "sports": { "title": "Sports Field", "desc": "Complete sports area including futsal, basketball courts, and other sports facilities" },
+      "canteen": { "title": "Healthy Canteen", "desc": "Canteen with halal, nutritious, and hygienic menu for student nutritional needs" }
+    },
+    "leadership": {
+      "badge": "Leadership Team",
+      "title": "Foundation Management",
+      "subtitle": "Led by experienced professionals dedicated to quality education",
+      "roles": {
+        "chairman": { "title": "Chairman of Foundation", "desc": "Leading the foundation with a vision of modern Islamic education" },
+        "academic_director": { "title": "Academic Director", "desc": "Developing integrated and quality curriculum" },
+        "finance_director": { "title": "Finance Director", "desc": "Managing foundation finances professionally" },
+        "islamic_director": { "title": "Islamic Director", "desc": "Guiding religious and tahfidz programs" }
+      }
+    },
+    "cta": {
+      "badge": "Join Us",
+      "title": "Be Part of the Baituljannah Family",
+      "subtitle": "Realize the best education dream for your children with us",
+      "button_ppdb": "Register PPDB 2025",
+      "button_contact": "Contact Us"
+    },
+    "contact": {
+      "hero": { "title": "Contact Us", "subtitle": "We are ready to help you. Do not hesitate to contact us through various communication channels" },
+      "info": {
+        "address": "Address",
+        "phone": "Phone",
+        "email": "Email",
+        "hours": "Operational Hours"
+      },
+      "form": {
+        "title": "Send Message",
+        "subtitle": "Fill in the form below and we will respond to your message shortly",
+        "name": "Full Name",
+        "name_placeholder": "Enter full name",
+        "email": "Email",
+        "email_placeholder": "email@example.com",
+        "phone": "Phone Number",
+        "phone_placeholder": "081234567890",
+        "subject": "Subject",
+        "subject_placeholder": "Select message subject",
+        "unit": "Destination Unit",
+        "unit_placeholder": "Select school unit",
+        "message": "Message",
+        "message_placeholder": "Write your message here...",
+        "submit": "Send Message",
+        "success": "Your message has been sent! We will contact you soon."
+      },
+      "map": { "title": "Our Location" },
+      "units": { "title": "School Unit Contacts" },
+      "faq": {
+        "title": "Frequently Asked Questions?",
+        "desc": "Check our FAQ page for quick answers to common questions",
+        "button": "View FAQ"
+      },
+      "social": {
+        "title": "Follow Us",
+        "desc": "Get the latest updates via our social media"
+      }
+    },
+    "admission": {
+      "hero": {
+        "year_badge": "📚 Academic Year 2024/2025",
+        "title": "New Student Admission",
+        "subtitle": "Join the big family of Yayasan Baituljannah and realize a brilliant future with us",
+        "button_register": "Register Now",
+        "button_brochure": "Download Brochure"
+      },
+      "timeline": {
+        "title": "Admission Schedule",
+        "phases": {
+          "registration": { "title": "Online Registration", "date": "1 Jan - 28 Feb 2024" },
+          "test": { "title": "Selection Test", "date": "1 - 15 Mar 2024" },
+          "announcement": { "title": "Announcement", "date": "20 Mar 2024" },
+          "reregistration": { "title": "Re-registration", "date": "25 Mar - 5 Apr 2024" }
+        },
+        "status": { "active": "Active" }
+      },
+      "units": {
+        "title": "Select School Unit",
+        "subtitle": "Please select the school unit that suits the desired education level",
+        "labels": {
+          "age": "Age",
+          "quota": "Quota",
+          "fee": "Fee"
+        },
+        "data": {
+          "tkit": { "age": "4-6 years", "quota": "60 students" },
+          "sdit": { "age": "6-7 years", "quota": "120 students" },
+          "smpit": { "age": "12-13 years", "quota": "90 students" },
+          "smait": { "age": "15-16 years", "quota": "90 students" },
+          "slbit": { "age": "6-18 years", "quota": "30 students" }
+        }
+      },
+      "steps": {
+        "title": "Admission Flow",
+        "subtitle": "Follow these steps to complete the admission process",
+        "items": {
+          "form": { "title": "Fill Online Form", "desc": "Complete the online registration form with correct data" },
+          "upload": { "title": "Upload Documents", "desc": "Upload all required documents" },
+          "payment": { "title": "Payment", "desc": "Make the registration fee payment" },
+          "test": { "title": "Selection Test", "desc": "Take the selection test according to the schedule" },
+          "announcement": { "title": "Announcement", "desc": "Check the selection results announcement" },
+          "reregistration": { "title": "Re-registration", "desc": "Perform re-registration for accepted students" }
+        }
+      },
+      "requirements": {
+        "title": "Admission Requirements",
+        "items": {
+          "birth_cert": "Birth Certificate Copy (2 sheets)",
+          "family_card": "Family Card Copy (2 sheets)",
+          "photo": "Recent 3x4 Photo (4 sheets)",
+          "health_cert": "Health Certificate from Doctor",
+          "report_card": "Last Semester Report Card Copy (for Elementary and above)",
+          "recommendation": "Recommendation Letter from Previous School (if any)"
+        },
+        "note": {
+          "title": "Important Notes",
+          "list": [
+            "All documents must be in good condition and clearly legible",
+            "Registration fee of Rp 500.000 (non-refundable)",
+            "Registration can be done online or in person",
+            "For more information, contact the admission office"
+          ]
+        }
+      },
+      "form": {
+        "title": "Quick Registration Form",
+        "subtitle": "Fill in the data completely and correctly",
+        "name": "Student Full Name",
+        "parent_name": "Parent/Guardian Name",
+        "email": "Email",
+        "phone": "Phone Number",
+        "unit": "School Unit",
+        "unit_placeholder": "Select school unit",
+        "submit": "Register Now",
+        "disclaimer": "By registering, you agree to the terms and conditions",
+        "success": "Registration successful! Please check your email for further information."
+      },
+      "faq": {
+        "title": "Frequently Asked Questions",
+        "items": {
+          "deadline": { "q": "When is the registration deadline?", "a": "Registration opens from January 1 to February 28, 2024 or until the quota is full." },
+          "scholarship": { "q": "Are there scholarships available?", "a": "Yes, we provide various scholarship programs for high-achieving and underprivileged students. Full info can be asked during registration." },
+          "payment": { "q": "How is the tuition fee payment system?", "a": "Payment can be made in cash or installments. Payment scheme details will be explained during re-registration." },
+          "dorm": { "q": "Is there a dormitory for students?", "a": "Currently, dormitories are available for SMAIT and SMPIT students. Dormitory facilities are equipped with 24-hour supervisors." }
+        }
+      }
+    }
+  },
+  "programs_page": {
+    "hero": {
+      "badge": "Educational Excellence",
+      "title": "Featured Programs",
+      "subtitle": "Various quality programs to develop academic potential, Islamic character, and skills for the future"
+    },
+    "featured": {
+      "badge": "Excellence",
+      "title": "Featured Programs",
+      "subtitle": "Our best programs for students' future"
+    },
+    "filter": {
+      "showing": "Showing {count} programs"
+    },
+    "item": {
+      "view_detail": "View Detail"
+    },
+    "highlights": {
+      "available_programs": "Available Programs",
+      "active_students": "Active Students",
+      "achievements": "Achievements Won",
+      "years_experience": "Years of Experience"
+    },
+    "categories": {
+      "all": "All",
+      "academic": "Academic",
+      "religious": "Religious",
+      "extracurricular": "Extracurricular",
+      "development": "Self Development"
+    },
+    "items": {
+      "tahfidz": {
+        "title": "Tahfidz Program",
+        "desc": "Intensive Quran memorization program with mutqin target and correct tajweed understanding.",
+        "features": ["30 juz target", "Mutqin memorization method", "Tahfidz certification", "Certified guiding teachers"]
+      },
+      "bilingual": {
+        "title": "Bilingual Class",
+        "desc": "Learning program using two languages (Indonesian-English) to prepare students for the global era.",
+        "features": ["Cambridge Curriculum", "Native speaker", "English day", "International exam"]
+      },
+      "robotics": {
+        "title": "Robotics & Coding",
+        "desc": "Technology skill and programming logic development program from early age.",
+        "features": ["Programming basics", "Robot assembly", "Robotics competition", "Thinking logic"]
+      },
+      "scout": {
+        "title": "SIT Scout",
+        "desc": "Scouting activities integrated with Islamic values to form independent character.",
+        "features": ["Independence", "Leadership", "Survival skill", "Islamic brotherhood"]
+      },
+      "olympiad": {
+        "title": "Olympiad Club",
+        "desc": "Intensive coaching for potential students to participate in national and international science competitions.",
+        "features": ["Intensive guidance", "Competition simulation", "Problem analysis", "Champion mentality"]
+      },
+      "entrepreneur": {
+        "title": "Young Entrepreneur",
+        "desc": "Program to form entrepreneurial spirit and economic independence since school age.",
+        "features": ["Business plan", "Market day", "Financial literacy", "Industrial visit"]
+      }
+    }
+  },
+  "news_page": {
+    "hero": {
+      "badge": "News & Information",
+      "title": "Latest News",
+      "subtitle": "Follow the latest developments, achievements, and activities at Baituljannah Foundation"
+    },
+    "search": {
+      "placeholder": "Search news...",
+      "filter_active": "Active filters:"
+    },
+    "categories": {
+      "all": "All",
+      "achievement": "Achievement",
+      "activity": "Activity",
+      "academic": "Academic",
+      "announcement": "Announcement",
+      "event": "Event",
+      "program": "Program"
+    }
+  },
+  "gallery_page": {
+    "hero": {
+      "badge": "Activity Documentation",
+      "title": "Photo Gallery",
+      "subtitle": "Documentation of precious moments, glorious achievements, and inspiring activities at Baituljannah Foundation"
+    },
+    "filter": {
+      "showing": "Showing {count} photos",
+      "empty_title": "No photos found",
+      "empty_desc": "Try changing the category filter to see other photos",
+      "view_all": "View All Photos"
+    },
+    "item": {
+      "views": "views"
+    },
+    "categories": {
+      "all": "All",
+      "activity": "Activity",
+      "facility": "Facility",
+      "event": "Event",
+      "learning": "Learning"
+    }
+  },
+  "vision_mission": {
+    "hero": {
+      "badge": "Our Direction",
+      "title": "Vision & Mission",
+      "subtitle": "Direction and purpose guide of Baituljannah Foundation in realizing quality and character-based Islamic education"
+    },
+    "vision": {
+      "badge": "Vision Statement",
+      "title": "Baituljannah Foundation Vision",
+      "quote": "\"To become a leading, innovative, and Qur'anic character-based integrated Islamic education institution in molding future leader generations\"",
+      "card_title": "Our Vision",
+      "card_subtitle": "Being the Leader",
+      "image_alt": "Vision of Baituljannah",
+      "points": {
+        "innovative": {
+          "title": "Excellent & Innovative",
+          "desc": "Leading in education quality and learning innovation"
+        },
+        "character": {
+          "title": "Qur'anic Character",
+          "desc": "Forming individuals who are faithful and have noble character"
+        },
+        "leader": {
+          "title": "Future Leaders",
+          "desc": "Molding trustworthy and visionary leader generations"
+        }
+      }
+    },
+    "mission": {
+      "badge": "Mission Statement",
+      "title": "Baituljannah Foundation Mission",
+      "subtitle": "Six mission pillars guiding the achievement of our education vision",
+      "items": {
+        "education": {
+          "title": "Quality Education",
+          "desc": "Organizing quality integrated Islamic education by integrating national curriculum and Islamic values"
+        },
+        "character": {
+          "title": "Character Building",
+          "desc": "Building student character that is noble, honest, disciplined, and responsible based on Quran and Sunnah"
+        },
+        "potential": {
+          "title": "Potential Development",
+          "desc": "Developing student academic and non-academic potential through innovative and comprehensive flagship programs"
+        },
+        "achievement": {
+          "title": "Glorious Achievements",
+          "desc": "Producing students who are high-achieving and competitive at local, national, and international levels"
+        },
+        "environment": {
+          "title": "Islamic Environment",
+          "desc": "Creating an educational environment that is conducive, Islamic, and supports optimal student development"
+        },
+        "partnership": {
+          "title": "Strategic Partnership",
+          "desc": "Building partnerships with parents, community, and stakeholders to support educational goal achievement"
+        }
+      }
+    },
+    "goals": {
+      "badge": "Strategic Goals",
+      "title": "Strategic Goals",
+      "subtitle": "Achievement targets that are the main focus in realizing our vision and mission",
+      "items": {
+        "quran": {
+          "title": "Qur'anic Generation",
+          "desc": "Producing a generation that memorizes the Quran and practices its values",
+          "stats": "200+ Hafiz"
+        },
+        "innovation": {
+          "title": "Learning Innovation",
+          "desc": "Applying modern and effective learning methods",
+          "stats": "15+ Programs"
+        },
+        "achievement": {
+          "title": "Excellent Achievements",
+          "desc": "Achieving glorious achievements in various competitions",
+          "stats": "200+ Awards"
+        },
+        "hr": {
+          "title": "HR Quality",
+          "desc": "Professional and experienced educators",
+          "stats": "200+ Teachers"
+        }
+      }
+    },
+    "values": {
+      "badge": "Core Values",
+      "title": "Core Values",
+      "subtitle": "Value foundation guiding every activity and decision",
+      "items": {
+        "integrity": {
+          "title": "Integrity",
+          "desc": "Holding fast to Islamic values and honesty"
+        },
+        "excellence": {
+          "title": "Excellence",
+          "desc": "Always striving to provide the best in everything"
+        },
+        "innovation": {
+          "title": "Innovation",
+          "desc": "Continuously innovating in educational methods and programs"
+        },
+        "collaboration": {
+          "title": "Collaboration",
+          "desc": "Building solid and synergistic cooperation"
+        },
+        "compassion": {
+          "title": "Compassion",
+          "desc": "Educating with full love and attention"
+        },
+        "accountability": {
+          "title": "Accountability",
+          "desc": "Responsible for the educational trust"
+        }
+      }
+    },
+    "cta": {
+      "badge": "Join Us",
+      "title": "Realize the Best Education Vision",
+      "subtitle": "Be part of the Baituljannah family and provide the best education for your children's future",
+      "button_programs": "View Our Programs"
+    }
+  },
+  "navbar": {
+    "tagline": "Islamic Education",
+    "ppdb_cta": "Admissions 2025",
+    "role": {
+      "super_admin": "Super Admin",
+      "admin_unit": "Unit Admin",
+      "guru": "Teacher",
+      "siswa": "Student",
+      "default": "User"
+    }
+  },
+  "site": {
+    "name": "Baitul Jannah Islamic School",
+    "menu": {
+      "home": "Home",
+      "about": "About",
+      "profile": "Profile",
+      "info": "Information",
+      "career": "Career",
+      "admission": "Admissions",
+      "contact": "Contact"
+    },
+    "submenu": {
+      "vision_mission": "Vision & Mission",
+      "curriculum": "Curriculum",
+      "facilities": "Facilities",
+      "management": "Management",
+      "foundation_profile": "Foundation Profile",
+      "history": "History",
+      "organization": "Organization Structure",
+      "news": "News",
+      "gallery": "Photo Gallery",
+      "achievement": "Achievements",
+      "programs": "Programs",
+      "admission_registration": "Registration",
+      "admission_schedule": "Schedule & Flow",
+      "admission_fee": "Tuition Fees"
+    }
+    ,
+    "footer": {
+      "quick_links": "Quick Links",
+      "contact": "Contact",
+      "address": "Jl. Pendidikan Islam No. 123, South Jakarta",
+      "links": {
+        "about": "About Us",
+        "programs": "Programs",
+        "news": "News",
+        "gallery": "Gallery",
+        "career": "Career",
+        "admission": "Admissions"
+      },
+      "description": "An integrated Islamic education institution committed to building Qur'anic generations with noble character and achievements.",
+      "follow_us": "Follow Us",
+      "newsletter": {
+        "title": "Newsletter",
+        "placeholder": "Your Email",
+        "button": "Subscribe"
+      },
+      "copyright": "© 2025 Yayasan Baituljannah. All rights reserved.",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service"
+    }
+  },
+  "admin": {
+    "menu": {
+      "dashboard": "Dashboard",
+      "units": "Units Management",
+      "users": "Users Management",
+      "content": "Content Management",
+      "content_news": "News & Articles",
+      "content_gallery": "Gallery",
+      "content_achievement": "Achievements",
+      "content_programs": "Programs",
+      "ppdb": "Admissions",
+      "career": "Recruitment",
+      "finance": "Finance",
+      "library": "Library",
+      "attendance": "Attendance",
+      "students": "Students",
+      "teachers": "Teachers",
+      "classes": "Classes",
+      "materials": "Learning Materials",
+      "assignments": "Assignments",
+      "grades": "Grades",
+      "schedule": "Schedule",
+      "profile": "Settings",
+      "logout": "Logout"
+    },
+    "headers": {
+      "dashboard": "Dashboard",
+      "units": "School Units Management",
+      "users": "Users Management",
+      "ppdb": "Admissions Management",
+      "career": "Recruitment Management",
+      "content_news": "News & Articles Management",
+      "content_gallery": "Gallery Management",
+      "content_achievement": "Achievements Management",
+      "content_programs": "Programs Management",
+      "students": "Students Management",
+      "teachers": "Teachers Management",
+      "classes_admin": "Classes Management",
+      "classes_teacher": "My Classes",
+      "finance": "Finance Management",
+      "library": "Library Management",
+      "attendance": "Attendance Management",
+      "materials": "Learning Materials",
+      "assignments": "Assignments Management",
+      "grades": "Grades Management",
+      "schedule": "Schedule",
+      "profile": "My Profile",
+      "welcome": "Welcome back, {name}!"
+    }
+  },
+  "admin_finance": {
+    "site_title": "Admin Panel - Finance",
+    "menu": {
+      "dashboard": "Dashboard",
+      "finance": "Finance",
+      "students": "Students",
+      "reports": "Reports"
+    },
+    "header": {
+      "title": "Finance & Tuition Management",
+      "subtitle": "Manage tuition payments for all students"
+    },
+    "buttons": {
+      "send_reminder": "Send Reminder ({count})",
+      "export_report": "Export Report",
+      "send_reminder_bulk": "Send Bulk Reminders"
+    },
+    "stats": {
+      "total_revenue": "Total Revenue",
+      "pending_bills": "Pending Bills",
+      "overdue": "Overdue",
+      "paid_count": "Paid",
+      "detail": {
+        "academic_year_this": "This academic year",
+        "pending_tagihan": "{count} bills",
+        "overdue_students": "{count} students",
+        "students_total": "Out of {total} students"
+      }
+    },
+    "filters": {
+      "search_placeholder": "Search student name or NIS...",
+      "status": {
+        "all": "All",
+        "paid": "Paid",
+        "pending": "Pending",
+        "overdue": "Overdue"
+      },
+      "summary": "Showing {count} of {total} students"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "students": "By Student",
+      "transactions": "Transactions"
+    },
+    "alerts": {
+      "overdue_title": "{count} Students Have Overdue",
+      "total_overdue": "Total overdue: {amount}"
+    },
+    "overview": {
+      "unit_revenue_title": "Revenue by Unit",
+      "payment_status_title": "Payment Status",
+      "status_labels": {
+        "clear": "Paid",
+        "current": "Current",
+        "overdue": "Overdue",
+        "students_suffix": "students"
+      }
+    },
+    "students_table": {
+      "nis": "NIS",
+      "name": "Student Name",
+      "class": "Class",
+      "unit": "Unit",
+      "paid": "Paid",
+      "pending": "Pending",
+      "overdue": "Overdue",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "transactions": {
+      "title": "Recent Transactions",
+      "filter": {
+        "all_status": "All Statuses",
+        "paid": "Paid",
+        "pending": "Pending",
+        "overdue": "Overdue"
+      },
+      "spp_label": "Tuition {month} {year}",
+      "due_date": "Due date",
+      "paid_on": "Paid on",
+      "status": {
+        "paid": "Paid",
+        "pending": "Pending",
+        "overdue": "Overdue"
+      }
+    },
+    "detail_modal": {
+      "title": "Payment Details - {name}",
+      "cards": {
+        "total_paid": "Total Paid",
+        "total_pending": "Total Pending",
+        "total_overdue": "Total Overdue"
+      },
+      "history_title": "Payment History",
+      "item": {
+        "paid_on": "Paid on",
+        "due_date": "Due date"
+      },
+      "close": "Close"
+    },
+    "reminder_modal": {
+      "title": "Send Payment Reminder",
+      "will_send": "Will send reminders to:",
+      "count_overdue": "{count} students with overdue",
+      "total_overdue": "Total overdue: {amount}",
+      "cancel": "Cancel",
+      "send": "Send Reminder"
+    }
+  },
+  "admin_students": {
+    "site_title": "Admin Panel - Students",
+    "menu": {
+      "dashboard": "Dashboard",
+      "students": "Students",
+      "teachers": "Teachers",
+      "academic": "Academic",
+      "finance": "Finance"
+    },
+    "header": {
+      "title": "Student Management",
+      "subtitle": "Manage student data across all school units",
+      "create": "Add Student"
+    },
+    "stats": {
+      "total_students": "Total Students",
+      "active_students": "Active Students",
+      "avg_gpa": "Average GPA",
+      "avg_attendance": "Avg Attendance"
+    },
+    "filters": {
+      "search_placeholder": "Search name or NIS...",
+      "summary": "Showing {count} of {total} students"
+    },
+    "table": {
+      "student": "Student",
+      "nis": "NIS",
+      "class": "Class",
+      "unit": "Unit",
+      "gpa": "GPA",
+      "attendance": "Attendance",
+      "status": "Status",
+      "actions": "Actions",
+      "empty": "No students found"
+    },
+    "modal": {
+      "title": {
+        "create": "Add New Student",
+        "edit": "Edit Student Data",
+        "view": "Student Details"
+      },
+      "form": {
+        "nis": "NIS *",
+        "nis_placeholder": "202400XX",
+        "name": "Full Name *",
+        "name_placeholder": "Student name",
+        "gender": "Gender *",
+        "gender_options": { "L": "Male", "P": "Female" },
+        "unit": "Unit *",
+        "class": "Class *",
+        "class_placeholder": "XII Science 1",
+        "birth_date": "Birth Date *",
+        "enroll_date": "Enroll Date *",
+        "email": "Email *",
+        "email_placeholder": "email@student.baituljannah.sch.id",
+        "phone": "Phone *",
+        "phone_placeholder": "081234567890",
+        "address": "Address *",
+        "address_placeholder": "Full address",
+        "parent_name": "Parent Name *",
+        "parent_name_placeholder": "Parent/guardian name",
+        "parent_phone": "Parent Phone *",
+        "gpa": "GPA",
+        "gpa_placeholder": "3.50",
+        "attendance": "Attendance (%)",
+        "attendance_placeholder": "95",
+        "status": "Status *",
+        "status_options": { "active": "Active", "inactive": "Inactive" }
+      },
+      "view_sections": {
+        "personal": "Personal Information",
+        "parents": "Parents Information",
+        "academic": "Academic",
+        "born": "Born",
+        "gpa": "GPA",
+        "attendance": "Attendance"
+      },
+      "actions": {
+        "close": "Close",
+        "cancel": "Cancel",
+        "create": "Add Student",
+        "save": "Save Changes"
+      }
+    }
+  },
+  "login": {
+    "welcome_title": "Welcome! 👋",
+    "welcome_subtitle": "Please login to continue",
+    "login_as": "Login As:",
+    "types": {
+      "student": { "label": "Student", "description": "Login as student" },
+      "parent": { "label": "Parent", "description": "Login as parent/guardian" },
+      "teacher": { "label": "Teacher", "description": "Login as teacher" },
+      "admin": { "label": "Admin", "description": "Login as admin" }
+    },
+    "email_label_student": "NIS / Email",
+    "email_label_other": "Email / Username",
+    "email_placeholder_student": "Enter NIS or Email",
+    "email_placeholder_other": "Enter email or username",
+    "password_label": "Password",
+    "password_placeholder": "Enter password",
+    "remember_me": "Remember me",
+    "forgot_password": "Forgot password?",
+    "submit": "Login Now",
+    "processing": "Processing...",
+    "divider_or": "or",
+    "back_home": "Back to Home",
+    "dev_creds": "Dev credentials:",
+    "fill_auto": "Fill automatically"
+  },
+  "finance": {
+    "total_revenue": "Total Revenue",
+    "pending_bills": "Pending Bills",
+    "overdue": "Overdue",
+    "paid_students": "Paid Students",
+    "unit_summary": "Unit Summary",
+    "loading": "Loading finance data..."
+  },
+  "student": {
+    "menu": {
+      "dashboard": "Dashboard",
+      "academic": "Academic",
+      "finance": "Finance",
+      "profile": "Profile"
+    },
+    "finance": {
+      "site_title": "Student Portal - Finance",
+      "header": "Finance & Tuition Information",
+      "download_summary": "Download Summary",
+      "tabs": {
+        "overview": "Bills Overview",
+        "history": "Payment History",
+        "invoice": "Invoice & Receipt"
+      },
+      "pending_section": { "title": "Unpaid Bills" },
+      "due_date": "Due date",
+      "pay_now": "Pay Now",
+      "other_fees": { "title": "Other Fees" },
+      "pay": "Pay",
+      "summary": {
+        "title": "Payment Summary for Academic Year {period}",
+        "total_spp": "Total Tuition",
+        "paid": "Paid",
+        "remaining": "Remaining"
+      },
+      "academic_year_short": "AY",
+      "history": {
+        "title": "Complete Payment History",
+        "filters": {
+          "all_status": "All Statuses",
+          "paid": "Paid",
+          "pending": "Pending"
+        },
+        "table": {
+          "period": "Period",
+          "category": "Category",
+          "amount": "Amount",
+          "due": "Due",
+          "paid_date": "Paid Date",
+          "method": "Method",
+          "status": "Status",
+          "actions": "Actions"
+        }
+      },
+      "invoice": {
+        "title": "Download Invoice & Receipt",
+        "number_label": "Invoice No.",
+        "paid_on": "Paid on"
+      },
+      "status": {
+        "paid": "Paid",
+        "pending": "Unpaid",
+        "overdue": "Overdue",
+        "ok": "Clear",
+        "has_overdue": "Overdue",
+        "no_overdue": "No overdue"
+      },
+      "stats": {
+        "total_paid": "Total Paid",
+        "pending_bills": "Pending Bills",
+        "status": "Status",
+        "monthly_spp_label": "Total Tuition/Month",
+        "months_label": "months",
+        "overdue_amount_label": "Rp {amount}m"
+      },
+      "modal": {
+        "title": "Tuition Payment",
+        "details": {
+          "title": "Bill Details",
+          "period": "Period",
+          "category": "Category",
+          "total_bill": "Total Bill"
+        },
+        "method": {
+          "title": "Choose Payment Method",
+          "bank_transfer": "Bank Transfer",
+          "bank_list": "BCA, BNI, Mandiri, BRI",
+          "virtual_account": "Virtual Account",
+          "virtual_desc": "Auto verified",
+          "ewallet": "E-Wallet",
+          "ewallet_list": "GoPay, OVO, Dana, ShopeePay"
+        },
+        "continue_payment": "Continue Payment",
+        "cancel": "Cancel"
+      }
+    },
+    "academic": {
+      "site_title": "Student Portal - Academic",
+      "header": "Academic Data",
+      "download_report": "Download Report Card",
+      "term": { "genap": "Even", "ganjil": "Odd" },
+      "semester_label": "Semester {term} {period}",
+      "tabs": {
+        "grades": "Grades & Report",
+        "schedule": "Class Schedule",
+        "attendance": "Attendance",
+        "assignments": "Assignments & Assessment"
+      },
+      "grades_table": {
+        "subject": "Subject",
+        "teacher": "Teacher",
+        "uts": "Mid-term",
+        "uas": "Final",
+        "assignments": "Assignments",
+        "attendance": "Attendance",
+        "kkm": "KKM",
+        "final_grade": "Final Grade",
+        "grade": "Grade",
+        "average": "Average"
+      },
+      "chart_title": "Performance Chart",
+      "stats": {
+        "avg_grade": "Average Grade",
+        "attendance": "Attendance",
+        "attendance_detail": "{present} of {total} days",
+        "assignments_completed": "Assignments Completed",
+        "class_rank": "Class Rank",
+        "subjects_count": "{count} subjects",
+        "current_semester": "Current semester",
+        "students_total": "Out of {total} students"
+      },
+      "attendance_summary": {
+        "total_present": "Total Present",
+        "days": "Days",
+        "attendance_percentage": "Attendance Percentage",
+        "excellent": "Excellent!",
+        "total_sick_permission": "Total Sick/Permission"
+      },
+      "attendance_table": {
+        "month": "Month",
+        "present": "Present",
+        "sick": "Sick",
+        "permission": "Permission",
+        "absence": "Absent",
+        "percentage": "Percentage"
+      },
+      "assignments": {
+        "status": {
+          "graded": "Graded",
+          "submitted": "Submitted",
+          "pending": "Not Done"
+        },
+        "deadline": "Deadline",
+        "submitted": "Submitted",
+        "score": "Score",
+        "upload_task": "Upload Task"
+      }
+    }
+  },
+  "admin_news": {
+    "site_title": "Admin Panel - News",
+    "menu": {
+      "dashboard": "Dashboard",
+      "news": "News",
+      "gallery": "Gallery",
+      "achievement": "Achievements",
+      "programs": "Programs",
+      "career": "Recruitment"
+    },
+    "header": {
+      "title": "News Management",
+      "subtitle": "Manage all school news and announcements",
+      "create": "Add News"
+    },
+    "stats": {
+      "total": "Total News",
+      "published": "Published",
+      "draft": "Draft",
+      "views": "Total Views"
+    },
+    "filters": {
+      "search_placeholder": "Search news...",
+      "summary": "Showing {count} of {total} news"
+    },
+    "list": {
+      "views_suffix": "views",
+      "author_prefix": "by",
+      "empty": "No news found"
+    },
+    "actions": {
+      "view": "View",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "modal": {
+      "title": {
+        "create": "Add New News",
+        "edit": "Edit News",
+        "view": "News Details"
+      },
+      "form": {
+        "title": "News Title *",
+        "title_placeholder": "Enter news title",
+        "category": "Category *",
+        "unit": "Unit *",
+        "date": "Date *",
+        "status": "Status *",
+        "status_options": { "draft": "Draft", "published": "Published" },
+        "excerpt": "Excerpt *",
+        "excerpt_placeholder": "Short summary (max 200 characters)",
+        "content": "News Content *",
+        "content_placeholder": "Write full news content...",
+        "image_url": "Image URL",
+        "upload": "Upload",
+        "preview_alt": "Preview"
+      },
+      "actions": {
+        "close": "Close",
+        "cancel": "Cancel",
+        "create": "Add News",
+        "save": "Save Changes"
+      }
+    },
+    "delete": {
+      "title": "Delete News?",
+      "message": "Deleted news cannot be recovered. Are you sure?",
+      "cancel": "Cancel",
+      "confirm": "Yes, Delete"
+    }
+  },
+  "admin_gallery": {
+    "site_title": "Admin Panel - Gallery",
+    "menu": {
+      "dashboard": "Dashboard",
+      "news": "News",
+      "gallery": "Gallery",
+      "achievement": "Achievements",
+      "programs": "Programs"
+    },
+    "header": {
+      "title": "Gallery Management",
+      "subtitle": "Manage all school photos and documentation",
+      "upload": "Upload Photo"
+    },
+    "stats": {
+      "total_photos": "Total Photos",
+      "categories": "Categories",
+      "downloads": "Total Downloads",
+      "this_month": "This Month"
+    },
+    "filters": {
+      "search_placeholder": "Search photos...",
+      "summary": "Showing {count} of {total} photos"
+    },
+    "list": {
+      "downloads_suffix": "downloads",
+      "photographer_prefix": "Photo: ",
+      "empty": "No photos found"
+    },
+    "modal": {
+      "title": {
+        "create": "Upload New Photo",
+        "edit": "Edit Photo",
+        "view": "Photo Details"
+      },
+      "upload": {
+        "label": "Upload Image *",
+        "click_or_drag": "Click to upload or drag and drop",
+        "limit": "PNG, JPG, GIF up to 10MB",
+        "progress": "Uploading... {percent}%",
+        "preview_alt": "Preview"
+      },
+      "form": {
+        "title": "Photo Title *",
+        "title_placeholder": "Enter photo title",
+        "category": "Category *",
+        "unit": "Unit *",
+        "date": "Date *",
+        "description": "Description",
+        "description_placeholder": "Photo description..."
+      },
+      "actions": {
+        "close": "Close",
+        "cancel": "Cancel",
+        "create": "Upload Photo",
+        "save": "Save Changes"
+      }
+    },
+    "delete": {
+      "title": "Delete Photo?",
+      "message": "Deleted photos cannot be recovered. Are you sure?",
+      "cancel": "Cancel",
+      "confirm": "Yes, Delete"
+    }
+  },
+  "admin_programs": {
+    "site_title": "Admin Panel - Programs",
+    "menu": {
+      "dashboard": "Dashboard",
+      "news": "News",
+      "gallery": "Gallery",
+      "programs": "Programs",
+      "achievement": "Achievements"
+    },
+    "header": {
+      "title": "Programs Management",
+      "subtitle": "Manage all extracurricular and flagship programs",
+      "create": "Add Program"
+    },
+    "stats": {
+      "total": "Total Programs",
+      "active": "Active Programs",
+      "participants": "Total Participants",
+      "remaining_capacity": "Remaining Capacity"
+    },
+    "filters": {
+      "search_placeholder": "Search programs...",
+      "summary": "Showing {count} of {total} programs"
+    },
+    "list": {
+      "status": { "active": "Active", "inactive": "Inactive" },
+      "participants_suffix": "participants",
+      "capacity": "Capacity",
+      "empty": "No programs found"
+    },
+    "modal": {
+      "title": {
+        "create": "Add New Program",
+        "edit": "Edit Program"
+      },
+      "form": {
+        "name": "Program Name *",
+        "name_placeholder": "Enter program name",
+        "category": "Category *",
+        "unit": "Unit *",
+        "description": "Description *",
+        "description_placeholder": "Program description",
+        "duration": "Duration *",
+        "duration_placeholder": "Example: 6 Months",
+        "instructor": "Instructor *",
+        "instructor_placeholder": "Instructor name",
+        "capacity": "Capacity *",
+        "enrolled": "Enrolled *",
+        "fee": "Fee *",
+        "fee_placeholder": "Example: Rp 500.000/month",
+        "status": "Status *",
+        "status_options": { "active": "Active", "inactive": "Inactive" },
+        "benefits": "Program Benefits",
+        "benefit_placeholder": "Benefit {index}",
+        "add_benefit": "+ Add Benefit"
+      },
+      "actions": {
+        "cancel": "Cancel",
+        "create": "Add Program",
+        "save": "Save Changes"
+      }
+    },
+    "delete": {
+      "title": "Delete Program?",
+      "message": "Deleted programs cannot be recovered. Are you sure?",
+      "cancel": "Cancel",
+      "confirm": "Yes, Delete"
+    }
+  },
+  "home": {
+    "hero": {
+      "slides": {
+        "foundation": {
+          "title": "Baituljannah Foundation",
+          "description": "Forming Qur'anic Generations that are Intelligent, Noble Character, and Global Achievement",
+          "badge": "🕌 Integrated Islamic Education"
+        },
+        "quality": {
+          "title": "Quality Education",
+          "description": "Integrating national curriculum with values of Al-Quran and As-Sunnah",
+          "badge": "📚 Integrated Curriculum"
+        },
+        "achievement": {
+          "title": "Glorious Achievements",
+          "description": "Hundreds of achievements at local, national, and international levels",
+          "badge": "🏆 Achievements"
+        },
+        "facilities": {
+          "title": "Modern Facilities",
+          "description": "Equipped with modern and supportive learning facilities",
+          "badge": "🏫 Complete Facilities"
+        },
+        "teachers": {
+          "title": "Professional Teachers",
+          "description": "Competent, experienced, and highly dedicated educators",
+          "badge": "👨‍🏫 Experienced Educators"
+        }
+      }
+    },
+    "units": {
+      "badge": "Education Level",
+      "title": "Flagship Programs",
+      "subtitle": "Five integrated education units from PAUD to High School for continuous education journey",
+      "items": {
+        "tkit": "TKIT",
+        "sdit": "SDIT",
+        "smpit": "SMPIT",
+        "smait": "SMAIT",
+        "slbit": "SLBIT",
+        "asrama": "Asrama"
+      }
+    },
+    "video": {
+      "badge": "Video Profile",
+      "title": "Get to Know Baitul Jannah Closer"
+    },
+    "why_choose_us": {
+      "badge": "Our Advantages",
+      "title": "Why Choose Baituljannah?",
+      "subtitle": "Integrated Islamic education with high quality standards",
+      "items": {
+        "vision": { "title": "Clear Vision", "desc": "Forming Qur'anic generation with measurable memorization targets and academic achievements" },
+        "teachers": { "title": "Quality Teachers", "desc": "Professional, certified, and experienced educator team in their fields" },
+        "achievement": { "title": "Proud Achievements", "desc": "Hundreds of local, national, and international achievements in various fields" },
+        "environment": { "title": "Islamic Environment", "desc": "Conducive learning atmosphere with strong Islamic values" },
+        "facilities": { "title": "Modern Facilities", "desc": "Computer lab, digital library, and complete sports facilities" },
+        "curriculum": { "title": "Global Curriculum", "desc": "Integration of national curriculum with international standards and Islamic values" }
+      }
+    },
+    "programs": {
+      "badge": "Flagship Programs",
+      "title": "Our Education Programs",
+      "subtitle": "Various flagship programs specifically designed to form intelligent and character-based Qur'anic generation",
+      "button": "View All Programs",
+      "items": {
+        "tahfidz": { "title": "Tahfidz Al-Qur'an", "desc": "Flagship program to memorize Al-Qur'an with easy, fun, and proven effective methods." },
+        "bilingual": { "title": "Bilingual Program", "desc": "Dual language learning (Arabic & English) to prepare Islamic global generation." },
+        "character": { "title": "Character Building", "desc": "Islamic character building through noble moral habituation in daily life." },
+        "academic": { "title": "Academic Excellence", "desc": "Academic acceleration program with innovative learning methods and experienced teachers." }
+      }
+    },
+    "news": {
+      "title": "School News & Activities",
+      "search_placeholder": "Search news...",
+      "load_error": "Failed to load news",
+      "latest_news": "Latest News",
+      "meta": {
+        "by_foundation": "By Baituljannah",
+        "published_on": "Published On",
+        "views": "Views",
+        "by_admin": "By Admin",
+        "categories": "Categories:",
+        "min_read": "min read",
+        "more_button": "More School News"
+      }
+    },
+    "social": {
+      "title": "Follow Us",
+      "subtitle": "Get latest updates through our social media"
+    },
+    "achievement": {
+      "badge": "Proud Achievements",
+      "title": "Achieving Students",
+      "subtitle": "Creating a generation of champions who excel in various local, national, and international competitions",
+      "button": "View All Achievements",
+      "cards": {
+        "card1": { "achievement": "Best Olympiad Participant", "rank": "1ST PLACE", "category": "Quiz Competition" },
+        "card2": { "achievement": "Single Pencak Silat", "rank": "3RD PLACE", "category": "Representative • High 2 • High 1" },
+        "card3": { "achievement": "English Speech", "rank": "2ND PLACE", "category": "Representative • High 2 • High 3" }
+      }
+    },
+    "alumni": {
+      "badge": "Alumni Success Story",
+      "title": "Our Alumni Destinations",
+      "top_tier": "Top Tier Universities",
+      "popular": "Popular Choices",
+      "other": "Other Destinations",
+      "universities": {
+        "ui": "UI",
+        "ugm": "UGM",
+        "ipb": "IPB",
+        "itb": "ITB",
+        "ub": "UB",
+        "unpad": "UNPAD",
+        "undip": "UNDIP",
+        "unair": "UNAIR",
+        "its": "ITS",
+        "uns": "UNS",
+        "unila": "UNILA",
+        "telkom": "Telkom",
+        "uin": "UIN",
+        "upn": "UPN",
+        "unnes": "UNNES",
+        "upi": "UPI",
+        "binus": "BINUS"
+      }
+    },
+    "cta": {
+      "badge": "Register Now",
+      "title": "Join the Baituljannah Family",
+      "subtitle": "Register your children now and give them the best education that integrates science and faith",
+      "button_admission": "Register PPDB 2025",
+      "button_contact": "Contact Us"
+    }
+  },
+  "unit_school": {
+    "back_to_portal": "Back to Main Portal",
+    "about": {
+      "badge": "About Us",
+      "title": "{unitName} Profile",
+      "description": "{fullName} is an integrated Islamic educational institution committed to providing quality education by integrating the national curriculum and Islamic values. We focus on the balanced development of students' cognitive, affective, and psychomotor skills.",
+      "items": {
+        "curriculum": { "title": "Integrated Curriculum", "desc": "Combining national curriculum with comprehensive Islamic religious education" },
+        "teachers": { "title": "Professional Educators", "desc": "Qualified and experienced teachers in integrated Islamic education" },
+        "facilities": { "title": "Complete Facilities", "desc": "Modern buildings, laboratories, libraries, and other supporting facilities" }
+      }
+    },
+    "programs": {
+      "badge": "Flagship Programs",
+      "title": "Our Flagship Programs",
+      "subtitle": "Programs specifically designed to maximize student potential",
+      "items": {
+        "tahfidz": { "title": "Tahfidz Al-Qur'an", "desc": "Quran memorization program with easy and fun methods." },
+        "character": { "title": "Character Building", "desc": "Islamic character building through daily noble moral habituation." },
+        "academic": { "title": "Academic Achievement", "desc": "Quality learning to achieve the best academic achievements." }
+      }
+    },
+    "curriculum": {
+      "badge": "Curriculum",
+      "title": "Integrated Curriculum",
+      "subtitle": "Perfect combination of national curriculum and Islamic values",
+      "national": {
+        "title": "National Curriculum",
+        "items": [
+          "Adaptive and innovative Merdeka Curriculum",
+          "Project-based and problem-solving learning",
+          "STEAM (Science, Technology, Engineering, Arts, Math)",
+          "Indonesian, English, and Arabic Languages"
+        ]
+      },
+      "islamic": {
+        "title": "Islamic Curriculum",
+        "items": [
+          "Tahfidz Al-Qur'an with gradual memorization targets",
+          "Aqidah, Fiqh, and Morals in daily life",
+          "Hadith and Sirah Nabawiyah",
+          "Worship practice and Islamic etiquette habituation"
+        ]
+      }
+    },
+    "schedule": {
+      "title": "Learning Schedule",
+      "time": {
+        "title": "Study Time",
+        "mon_thu": "Monday - Thursday",
+        "fri": "Friday",
+        "sat": "Saturday",
+        "extracurricular": "Extracurricular"
+      },
+      "focus": {
+        "title": "Learning Focus",
+        "items": [
+          "Character & Leadership Building",
+          "Critical Thinking & Problem Solving",
+          "Collaboration & Communication"
+        ]
+      }
+    },
+    "facilities": {
+      "badge": "Facilities",
+      "title": "Complete & Modern Facilities",
+      "subtitle": "Supported by the best facilities to support the teaching and learning process",
+      "items": {
+        "classroom": { "title": "Classroom", "desc": "AC classrooms with 25-30 students capacity, equipped with smart TV and sound system" },
+        "library": { "title": "Library", "desc": "Collection of 5000+ books, comfortable reading room, and digital lending system" },
+        "lab": { "title": "Laboratory", "desc": "Computer, Science, and Language Labs with modern and complete equipment" },
+        "sports": { "title": "Sports Field", "desc": "Futsal, basketball, badminton sports facilities, and archery area" }
+      },
+      "additional": {
+        "title": "Additional Facilities",
+        "items": {
+          "mosque": { "title": "Mosque/Prayer Room", "desc": "Comfortable and clean place of worship" },
+          "canteen": { "title": "Healthy Canteen", "desc": "Providing nutritious and halal food" },
+          "clinic": { "title": "Health Clinic", "desc": "School Health Unit with professional medical staff" },
+          "wifi": { "title": "WiFi & Internet", "desc": "Fast internet access in all areas" },
+          "cctv": { "title": "CCTV 24/7", "desc": "Security monitored around the clock" },
+          "parking": { "title": "Spacious Parking", "desc": "Safe and organized parking area" }
+        }
+      }
+    },
+    "achievements": {
+      "badge": "Achievements",
+      "title": "Achievements & Statistics",
+      "subtitle": "Real proof of our education quality",
+      "stats": {
+        "graduation": { "value": "95%", "label": "Pass UN/USBN" },
+        "tahfidz": { "value": "30+", "label": "Quran Memorizers" },
+        "medals": { "value": "50+", "label": "Gold Medals" },
+        "alumni": { "value": "1000+", "label": "Successful Alumni" }
+      },
+      "list": {
+         "title": "Latest Achievements",
+         "view_all": "View All Achievements",
+         "items": {
+           "0": { "title": "1st Place National Science Olympiad", "desc": "Provincial Level - Mathematics", "date": "December 2024" },
+           "1": { "title": "2nd Place Hafidz Competition", "desc": "National Level - 10 Juz Category", "date": "November 2024" },
+           "2": { "title": "1st Place Robotics Competition", "desc": "City Level - Line Follower", "date": "October 2024" },
+           "3": { "title": "3rd Place English Competition", "desc": "Provincial Level - Story Telling", "date": "September 2024" }
+         }
+       }
+     },
+     "fees": {
+       "badge": "Tuition Fees",
+       "title": "Best Education Investment",
+       "subtitle": "Transparent and competitive fees for quality education",
+       "registration": {
+         "title": "Registration Fees",
+         "form": "Registration Form",
+         "entrance_fee": "Entrance Fee",
+         "uniform_book": "Uniform & Books",
+         "total": "Initial Total"
+       },
+       "monthly": {
+         "title": "Monthly Fees",
+         "tuition": "Tuition Fee",
+         "catering": "Catering (Optional)",
+         "transport": "Transport (Optional)",
+         "total": "Per Month"
+       },
+       "discounts": {
+         "early_bird": { "title": "Early Bird Discount", "desc": "Up to 20%" },
+         "sibling": { "title": "Sibling Discount", "desc": "10% for sibling" },
+         "scholarship": { "title": "Merit Scholarship", "desc": "Available" }
+       },
+       "note": "Note: Fees are subject to change. Please contact the administration for the latest information and installment details."
+     },
+     "teachers": {
+       "badge": "Educators",
+       "title": "Teachers & Staff",
+       "subtitle": "Professional educators dedicated to the best education",
+       "roles": {
+         "principal": "Principal",
+         "tahfidz": "Tahfidz Teacher",
+         "math": "Mathematics Teacher",
+         "arabic": "Arabic Teacher"
+       }
+     },
+     "ppdb": {
+        "title": "New Student Admission (PPDB)",
+        "subtitle": "Join the {fullName} family. We are opening registration for the 2025/2026 academic year.",
+        "period": "Registration Period",
+        "period_date": "January 1 - March 31, 2025",
+        "quota": "Quota",
+        "quota_value": "120 Students",
+        "button": "Register Now"
+      },
+      "contact": {
+        "title": "Contact Us",
+        "subtitle": "We are ready to help answer your questions",
+        "address": "Address",
+        "phone": "Phone",
+        "email": "Email"
+      }
+   },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "We are ready to help you. Do not hesitate to contact us through various communication channels",
+    "form": {
+      "title": "Send Message",
+      "subtitle": "Fill in the form below and we will respond to your message immediately",
+      "name": "Full Name",
+      "name_placeholder": "Enter full name",
+      "email": "Email",
+      "email_placeholder": "email@example.com",
+      "phone": "Phone Number",
+      "phone_placeholder": "08xx-xxxx-xxxx",
+      "unit": "Target School Unit",
+      "unit_placeholder": "Select school unit",
+      "subject": "Subject",
+      "subject_placeholder": "Your message topic",
+      "message": "Message",
+      "message_placeholder": "Write your message here...",
+      "submit": "Send Message",
+      "success": "Your message has been sent! We will contact you soon.",
+      "units_options": {
+        "tkit": "TKIT Baituljannah",
+        "sdit": "SDIT Baituljannah",
+        "smpit": "SMPIT Baituljannah",
+        "smait": "SMAIT Baituljannah",
+        "slbit": "SLBIT Baituljannah",
+        "yayasan": "Foundation (General)"
+      }
+    },
+    "info": {
+      "title": "Our Location",
+      "map_preview": "Map Preview",
+      "address": "Address",
+      "phone": "Phone",
+      "email": "Email",
+      "hours": "Operational Hours",
+      "units_contact": "School Unit Contacts"
+    },
+    "faq": {
+      "title": "Common Questions?",
+      "subtitle": "See our FAQ page for quick answers to frequently asked questions",
+      "button": "View FAQ"
+    }
+  },
+  "news_page": {
+    "hero": {
+      "badge": "Latest Updates",
+      "title": "News & Activities",
+      "subtitle": "Follow the latest developments and achievements of Baituljannah students through selected news and articles"
+    },
+    "search": {
+      "placeholder": "Search news...",
+      "filter_active": "Active filters:"
+    },
+    "categories": {
+      "all": "All",
+      "achievement": "Achievement",
+      "activity": "Activity",
+      "academic": "Academic",
+      "announcement": "Announcement",
+      "event": "Event",
+      "program": "Program"
+    },
+    "featured": {
+      "badge": "Featured News",
+      "read_more": "Read More"
+    },
+    "list": {
+      "title": "All News",
+      "showing": "Showing {shown} of {total} news",
+      "read_more": "Read More"
+    }
+  },
+  "gallery_page": {
+    "hero": {
+      "badge": "Photo Gallery",
+      "title": "School Gallery",
+      "subtitle": "Documentation of school activities and facilities as a form of transparency and beautiful memories"
+    },
+    "filter": {
+      "showing": "Showing {count} photos",
+      "empty_title": "No photos found",
+      "empty_desc": "Try selecting another category",
+      "view_all": "View All Photos"
+    },
+    "categories": {
+      "all": "All",
+      "activity": "Activity",
+      "facility": "Facility",
+      "event": "Event",
+      "learning": "Learning"
+    }
+  },
+  "programs_page": {
+    "hero": {
+      "badge": "Featured Programs",
+      "title": "Education Programs",
+      "subtitle": "Various featured programs designed to maximize student potential"
+    },
+    "highlights": {
+      "available_programs": "Available Programs",
+      "active_students": "Active Students",
+      "achievements": "Achievements Won",
+      "years_experience": "Years Experience"
+    },
+    "categories": {
+      "all": "All",
+      "academic": "Academic",
+      "religious": "Religious",
+      "extracurricular": "Extracurricular",
+      "development": "Development"
+    },
+    "list": {
+      "showing": "Showing {count} programs",
+      "view_detail": "View Detail"
+    },
+    "featured": {
+      "badge": "Latest Programs",
+      "title": "Latest Featured Programs",
+      "subtitle": "Innovative programs specially designed to prepare students for future challenges",
+      "new_badge": "NEW PROGRAM",
+      "register": "Register Now",
+      "international": {
+        "title": "International Class Program",
+        "desc": "International class program with Cambridge curriculum and bilingual learning to prepare students to compete globally.",
+        "features": {
+          "teachers": "Cambridge Certified Teachers",
+          "curriculum": "International Curriculum",
+          "global": "Global Competence Development"
+        }
+      },
+      "steam": {
+        "title": "STEAM Innovation Lab",
+        "desc": "Innovation and creativity center for students in Science, Technology, Engineering, Arts, and Mathematics.",
+        "features": {
+          "equipment": "Modern Equipment",
+          "project": "Project Based Learning",
+          "skill": "21st Century Skills"
+        }
+      }
+    },
+    "items": {
+      "tahfidz": { 
+        "title": "Tahfidz Al-Qur'an Program", 
+        "desc": "Quran memorization program with effective and structured methods for all education levels with experienced guidance.",
+        "features": ["30 Juz Target", "Experienced Ustadz Guidance", "Proven Effective Method", "Tahfidz Graduation"]
+      },
+      "language": { 
+        "title": "Foreign Language (English & Arabic)", 
+        "desc": "English and Arabic language learning program with practical and communicative methods for global communication preparation.",
+        "features": ["Native Speaker", "Language Lab", "International Certification", "Daily Conversation"]
+      },
+      "olympiad": { 
+        "title": "Olympiad & Competition", 
+        "desc": "Special coaching for science, math olympiad preparation, and other academic competitions with champion track record.",
+        "features": ["Expert Mentors", "Intensive Training", "Champion Track Record", "Regular Competitions"]
+      },
+      "character": { 
+        "title": "Character Building", 
+        "desc": "Islamic character building program through habituation and exemplary in daily life in the school environment.",
+        "features": ["Daily Habits", "Mentoring", "Islamic Values", "Role Model"]
+      },
+      "leadership": { 
+        "title": "Leadership Training", 
+        "desc": "Leadership training to form leader characters who are trustworthy, responsible, and visionary.",
+        "features": ["Outbound", "Public Speaking", "Team Building", "Project Management"]
+      },
+      "tahsin": { 
+        "title": "Tahsin & Tajwid", 
+        "desc": "Program to improve Quran reading with correct tajwid and beautiful tartil with talaqqi method.",
+        "features": ["One-on-one Session", "Progress Tracking", "Certified", "Talaqqi Method"]
+      },
+      "robotics": { 
+        "title": "Robotics & Coding", 
+        "desc": "Robotics and programming learning program to face the digital era with modern equipment.",
+        "features": ["Modern Equipment", "Project Based", "Competition Ready", "AI & IoT"]
+      },
+      "counseling": { 
+        "title": "Counseling Guidance", 
+        "desc": "Professional counseling services to help students' psychological, social, and academic development optimally.",
+        "features": ["Professional Counselor", "Confidential", "Parent Consultation", "Career Guidance"]
+      },
+      "sports_arts": { 
+        "title": "Sports & Arts", 
+        "desc": "Sports and arts extracurriculars to develop students' talents and interests with complete facilities.",
+        "features": ["Futsal", "Basketball", "Martial Arts", "Music", "Calligraphy"]
+      },
+      "kitab": { 
+        "title": "Yellow Book Study", 
+        "desc": "Classic Islamic book learning program to deepen religious knowledge with sanad and ijazah.",
+        "features": ["Experienced Scholars", "Learning Sanad", "Certification (Ijazah)", "Salaf Method"]
+      },
+      "entrepreneur": { 
+        "title": "Entrepreneur Class", 
+        "desc": "Entrepreneurship program to cultivate Islamic business spirit from an early age with direct practice.",
+        "features": ["Business Plan", "Market Day", "Business Mentor", "Real Project"]
+      },
+      "study_tour": { 
+        "title": "Study Tour & Exchange", 
+        "desc": "Educational visit program domestic and abroad to expand students' insight and experience.",
+        "features": ["Domestic & International", "Educational", "Cultural Exchange", "Global Exposure"]
+      }
+    }
+  }
+}

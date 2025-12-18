@@ -78,7 +78,8 @@ type PageType =
   | 'career'
   | 'teachers'
   | 'events'
-  | 'alumni';
+  | 'alumni'
+  | 'asrama';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<PageType>('main');
@@ -86,6 +87,22 @@ const App: React.FC = () => {
   const showQuickNav = false;
 
   const navigate = (page: PageType) => setCurrentPage(page);
+
+  useEffect(() => {
+    try {
+      const hash = window.location.hash ? window.location.hash.substring(1) : '';
+      const saved = localStorage.getItem('bj_current_page');
+      const initial = (hash || saved || 'main') as PageType;
+      setCurrentPage(initial);
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('bj_current_page', currentPage);
+      window.location.hash = currentPage;
+    } catch {}
+  }, [currentPage]);
 
   useEffect(() => {
     try {
@@ -134,36 +151,43 @@ const App: React.FC = () => {
       unitName: 'TKIT',
       fullName: 'TKIT Baituljannah',
       accentColor: '#10B981',
-      icon: '🎨',
+      icon: '/images/logo/logo-tkit.png',
       description: 'Pendidikan anak usia dini berbasis Islam dengan metode pembelajaran yang menyenangkan dan mengembangkan potensi anak secara optimal melalui pendekatan holistik.'
     },
     sdit: {
       unitName: 'SDIT',
       fullName: 'SDIT Baituljannah',
       accentColor: '#3B82F6',
-      icon: '📚',
+      icon: '/images/logo/logo-sdit.png',
       description: 'Sekolah Dasar Islam Terpadu dengan kurikulum nasional plus pendidikan agama Islam yang komprehensif untuk membentuk generasi Qur\'ani yang cerdas dan berakhlak mulia.'
     },
     smpit: {
       unitName: 'SMPIT',
       fullName: 'SMPIT Baituljannah',
       accentColor: '#F97316',
-      icon: '🎓',
+      icon: '/images/logo/logo-smpit.png',
       description: 'Sekolah Menengah Pertama Islam Terpadu yang mengintegrasikan ilmu pengetahuan dengan nilai-nilai Islam untuk membentuk remaja yang berkarakter dan berprestasi.'
     },
     smait: {
       unitName: 'SMAIT',
       fullName: 'SMAIT Baituljannah',
       accentColor: '#8B5CF6',
-      icon: '🏆',
+      icon: '/images/logo/logo-smait.png',
       description: 'Sekolah Menengah Atas Islam Terpadu yang mempersiapkan siswa menjadi pemimpin masa depan yang berakhlak mulia, cerdas, dan siap menghadapi tantangan global.'
     },
     slbit: {
       unitName: 'SLBIT',
       fullName: 'SLBIT Baituljannah',
       accentColor: '#14B8A6',
-      icon: '❤️',
+      icon: '/images/logo/logo-slbit.png',
       description: 'Sekolah Luar Biasa Islam Terpadu yang memberikan pendidikan inklusif dengan perhatian khusus untuk setiap siswa berkebutuhan khusus dengan kasih sayang dan profesionalisme.'
+    },
+    asrama: {
+      unitName: 'ASRAMA',
+      fullName: 'Asrama Baituljannah',
+      accentColor: '#D4AF37',
+      icon: '/images/logo/logo-asrama.png',
+      description: 'Asrama putra dan putri dengan fasilitas lengkap dan pembinaan karakter Islami yang intensif, menciptakan lingkungan yang kondusif untuk belajar dan beribadah.'
     }
   };
 

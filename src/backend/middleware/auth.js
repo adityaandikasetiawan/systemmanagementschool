@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const config = require('../config/config');
 const { getOne } = require('../config/database');
+const { getDb } = require('../config/mongo');
+const { ObjectId } = require('mongodb');
 
 // Protect routes - require authentication
 exports.protect = async (req, res, next) => {
@@ -27,11 +29,23 @@ exports.protect = async (req, res, next) => {
     // Verify token
     const decoded = jwt.verify(token, config.jwt.secret);
 
-    // Get user from database
-    const user = await getOne(
-      'SELECT id, username, email, role, full_name FROM users WHERE id = ? AND is_active = 1',
-      [decoded.id]
-    );
+    let user
+    if (process.env.USE_MONGO === 'true') {
+      const db = await getDb()
+      const oid = (() => {
+        try { return new ObjectId(decoded.id) } catch { return null }
+      })()
+      user = await db.collection('users').findOne({ _id: oid, is_active: true }, { projection: { password: 0 } })
+      if (user) {
+        user.id = user._id.toString()
+        delete user._id
+      }
+    } else {
+      user = await getOne(
+        'SELECT id, username, email, role, full_name FROM users WHERE id = ? AND is_active = 1',
+        [decoded.id]
+      )
+    }
 
     if (!user) {
       return res.status(401).json({

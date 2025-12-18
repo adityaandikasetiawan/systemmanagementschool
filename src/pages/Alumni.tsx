@@ -3,6 +3,7 @@ import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { GraduationCap, MapPin, Briefcase, Star, TrendingUp, Users, Trophy, Target, Building2, Globe, Mail, Linkedin, Instagram, Filter, Search, X, Award } from 'lucide-react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { t } from '../i18n';
 
 interface AlumniProps {
   onNavigate?: (page: string) => void;
@@ -212,7 +213,7 @@ export const Alumni: React.FC<AlumniProps> = ({ onNavigate = () => {} }) => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar 
-        siteName="Baitul Jannah Islamic School"
+        siteName={t('site.name')}
         siteTagline="Sekolahnya Para Juara"
         accentColor="#1E4AB8"
         menuItems={menuItems} 
@@ -583,7 +584,7 @@ export const Alumni: React.FC<AlumniProps> = ({ onNavigate = () => {} }) => {
       </section>
 
       <Footer 
-        siteName="Baitul Jannah Islamic School"
+        siteName={t('site.name')}
         accentColor="#1E4AB8"
         onNavigate={onNavigate}
       />

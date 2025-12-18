@@ -5,6 +5,7 @@ import { Award, Plus, Edit, Trash2, Search, Filter, X, Check, Users, Clock, Doll
 
 interface AdminProgramsProps {
   onNavigate?: (page: string) => void;
+  embedded?: boolean;
 }
 
 interface ProgramItem {
@@ -22,13 +23,30 @@ interface ProgramItem {
   benefits: string[];
 }
 
-export const AdminPrograms: React.FC<AdminProgramsProps> = ({ onNavigate = () => {} }) => {
+export const AdminPrograms: React.FC<AdminProgramsProps> = ({ onNavigate = () => {}, embedded = false }) => {
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
   const [selectedProgram, setSelectedProgram] = useState<ProgramItem | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState('Semua');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<number | null>(null);
+
+  React.useEffect(() => {
+    try {
+      const sq = localStorage.getItem('bj_admin_programs_search');
+      const fc = localStorage.getItem('bj_admin_programs_filter');
+      if (sq !== null) setSearchQuery(sq);
+      if (fc !== null) setFilterCategory(fc);
+    } catch {}
+  }, []);
+
+  React.useEffect(() => {
+    try { localStorage.setItem('bj_admin_programs_search', searchQuery); } catch {}
+  }, [searchQuery]);
+
+  React.useEffect(() => {
+    try { localStorage.setItem('bj_admin_programs_filter', filterCategory); } catch {}
+  }, [filterCategory]);
 
   const menuItems = [
     { label: t('admin_programs.menu.dashboard'), href: '#', onClick: () => onNavigate('admin-super') },
@@ -226,12 +244,14 @@ export const AdminPrograms: React.FC<AdminProgramsProps> = ({ onNavigate = () =>
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar 
-        siteName={t('admin_programs.site_title')}
-        accentColor="#1E4AB8"
-        menuItems={menuItems}
-      />
+    <div className={embedded ? '' : 'min-h-screen bg-gray-50'}>
+      {!embedded && (
+        <Navbar 
+          siteName={t('admin_programs.site_title')}
+          accentColor="#1E4AB8"
+          menuItems={menuItems}
+        />
+      )}
 
       <div className="container-custom py-8">
         {/* Header */}

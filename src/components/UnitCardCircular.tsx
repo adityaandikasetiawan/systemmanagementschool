@@ -21,7 +21,11 @@ export const UnitCardCircular: React.FC<UnitCardCircularProps> = ({
         style={{ boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}
         onClick={onClick}
       >
-        <span className="text-4xl md:text-5xl">{icon}</span>
+        {typeof icon === 'string' && (icon.startsWith('http://') || icon.startsWith('https://') || icon.startsWith('/')) ? (
+          <img src={icon} alt={name} className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-full" />
+        ) : (
+          <span className="text-4xl md:text-5xl">{icon}</span>
+        )}
       </div>
       
       {/* Name */}

@@ -1,9 +1,16 @@
 
-  import { createRoot } from "react-dom/client";
+import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
-import { t } from "./i18n";
-void t;
+import i18n from "./i18n";
 
-  createRoot(document.getElementById("root")!).render(<App />);
-  
+const rootEl = document.getElementById("root")!;
+const root = createRoot(rootEl);
+let renderKey = 0;
+
+const renderApp = () => {
+  root.render(<App key={renderKey++} />);
+};
+
+renderApp();
+i18n.onLocaleChange(() => renderApp());

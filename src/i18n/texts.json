@@ -11,7 +11,7 @@
     }
   },
   "navbar": {
-    "tagline": "Islamic Education",
+    "tagline": "Pendidikan Islam",
     "ppdb_cta": "PPDB 2025",
     "role": {
       "super_admin": "Super Admin",
@@ -19,6 +19,494 @@
       "guru": "Guru",
       "siswa": "Siswa",
       "default": "Pengguna"
+    }
+  },
+  "site": {
+    "name": "Sekolah Islam Baitul Jannah",
+    "menu": {
+      "home": "Beranda",
+      "about": "Tentang",
+      "profile": "Profile",
+      "info": "Informasi",
+      "career": "Karir",
+      "admission": "SPMB",
+      "contact": "Kontak"
+    },
+    "submenu": {
+      "vision_mission": "Visi & Misi",
+      "curriculum": "Kurikulum",
+      "facilities": "Fasilitas",
+      "management": "Kepengurusan",
+      "foundation_profile": "Profil Yayasan",
+      "history": "Sejarah",
+      "organization": "Struktur Organisasi",
+      "news": "Berita",
+      "gallery": "Galeri Foto",
+      "achievement": "Prestasi",
+      "programs": "Program",
+      "admission_registration": "Pendaftaran",
+      "admission_schedule": "Jadwal & Alur",
+      "admission_fee": "Biaya Pendidikan"
+    }
+    ,
+    "footer": {
+      "quick_links": "Quick Links",
+      "contact": "Kontak",
+      "address": "Jl. Pendidikan Islam No. 123, Jakarta Selatan",
+      "links": {
+        "about": "Tentang Kami",
+        "programs": "Program",
+        "news": "Berita",
+        "gallery": "Galeri",
+        "career": "Karir",
+        "admission": "PPDB"
+      },
+      "description": "Lembaga pendidikan Islam terpadu yang berkomitmen membentuk generasi Qur'ani, berakhlak mulia, dan berprestasi.",
+      "follow_us": "Ikuti Kami",
+      "newsletter": {
+        "title": "Newsletter",
+        "placeholder": "Email Anda",
+        "button": "Subscribe"
+      },
+      "copyright": "© 2025 Yayasan Baituljannah. All rights reserved.",
+      "privacy": "Kebijakan Privasi",
+      "terms": "Syarat & Ketentuan"
+    }
+  },
+  "about": {
+    "hero": {
+      "badge": "Profil Yayasan",
+      "title": "Tentang Baituljannah",
+      "subtitle": "Yayasan pendidikan Islam terpadu yang berkomitmen mencetak generasi Qur'ani yang berakhlak mulia, cerdas, dan berprestasi"
+    },
+    "history": {
+      "badge": "Sejarah Kami",
+      "title": "Perjalanan Yayasan Baituljannah",
+      "p1": "Yayasan Baituljannah didirikan pada tahun 2010 dengan visi menjadi lembaga pendidikan Islam terpadu yang unggul dan berkarakter. Berawal dari TKIT dengan 50 siswa, kini telah berkembang menjadi 5 unit pendidikan dengan lebih dari 2000 siswa.",
+      "p2": "Dalam perjalanannya, Baituljannah terus berinovasi mengembangkan metode pembelajaran yang mengintegrasikan kurikulum nasional dengan nilai-nilai Islam. Prestasi demi prestasi berhasil diraih oleh siswa-siswa kami di berbagai kompetisi tingkat lokal, nasional, hingga internasional.",
+      "p3": "Dengan dukungan tenaga pendidik profesional dan fasilitas modern, Baituljannah berkomitmen untuk terus memberikan pendidikan berkualitas yang melahirkan generasi Qur'ani yang siap menghadapi tantangan masa depan."
+    },
+    "commitment": {
+      "title": "Komitmen Kami",
+      "items": {
+        "quality": "Pendidikan berkualitas dengan standar nasional dan internasional",
+        "character": "Pembentukan karakter Islami yang kuat dan berakhlak mulia",
+        "facilities": "Fasilitas modern dan lingkungan belajar yang kondusif",
+        "achievement": "Prestasi akademik dan non-akademik yang membanggakan"
+      }
+    },
+    "campus": {
+      "title": "Kampus Modern & Islami",
+      "subtitle": "Lingkungan belajar yang nyaman dan kondusif"
+    },
+    "stats": {
+      "students_active": "Siswa Aktif",
+      "educators": "Tenaga Pendidik",
+      "years_experience": "Tahun Pengalaman",
+      "units": "Unit Sekolah"
+    },
+    "card": {
+      "achievements_label": "Prestasi Diraih",
+      "achievements_desc": "Berbagai kompetisi tingkat nasional & internasional"
+    },
+    "values": {
+      "badge": "Nilai-Nilai Kami",
+      "title": "Pilar Pendidikan Kami",
+      "subtitle": "Empat pilar utama yang menjadi fondasi dalam setiap aspek pendidikan di Baituljannah",
+      "quality": { "title": "Pendidikan Berkualitas", "desc": "Memberikan pendidikan Islam terpadu dengan standar nasional dan internasional yang unggul" },
+      "compassion": { "title": "Kasih Sayang", "desc": "Mendidik dengan penuh kasih sayang dan perhatian terhadap setiap individu siswa" },
+      "achievement": { "title": "Prestasi Gemilang", "desc": "Menghasilkan lulusan yang berprestasi dalam bidang akademik dan non-akademik" },
+      "character": { "title": "Karakter Islami", "desc": "Membentuk karakter yang berakhlakul karimah berdasarkan Al-Quran dan As-Sunnah" }
+    },
+    "facilities": {
+      "badge": "Fasilitas Lengkap",
+      "title": "Fasilitas Modern",
+      "subtitle": "Berbagai fasilitas penunjang pembelajaran yang modern dan lengkap untuk kenyamanan siswa",
+      "classrooms": { "title": "Ruang Kelas Modern", "desc": "Ruang kelas ber-AC dengan fasilitas multimedia dan kapasitas optimal untuk pembelajaran efektif" },
+      "labs": { "title": "Laboratorium Lengkap", "desc": "Lab komputer, sains, dan bahasa dengan peralatan modern untuk praktikum siswa" },
+      "library": { "title": "Perpustakaan Digital", "desc": "Perpustakaan dengan koleksi buku lengkap dan akses e-library untuk pembelajaran mandiri" },
+      "mosque": { "title": "Masjid Megah", "desc": "Masjid dengan kapasitas besar untuk ibadah berjamaah dan kegiatan keagamaan" },
+      "sports": { "title": "Lapangan Olahraga", "desc": "Area olahraga lengkap termasuk lapangan futsal, basket, dan fasilitas olahraga lainnya" },
+      "canteen": { "title": "Kantin Sehat", "desc": "Kantin dengan menu halal, bergizi, dan higienis untuk kebutuhan nutrisi siswa" }
+    },
+    "leadership": {
+      "badge": "Tim Kepemimpinan",
+      "title": "Kepengurusan Yayasan",
+      "subtitle": "Dipimpin oleh profesional berpengalaman yang berdedikasi untuk pendidikan berkualitas",
+      "roles": {
+        "chairman": { "title": "Ketua Yayasan", "desc": "Memimpin yayasan dengan visi pendidikan Islam modern" },
+        "academic_director": { "title": "Direktur Akademik", "desc": "Mengembangkan kurikulum terpadu dan berkualitas" },
+        "finance_director": { "title": "Direktur Keuangan", "desc": "Mengelola keuangan yayasan secara profesional" },
+        "islamic_director": { "title": "Direktur Keislaman", "desc": "Membina program keagamaan dan tahfidz" }
+      }
+    },
+    "cta": {
+      "badge": "Bergabunglah Bersama Kami",
+      "title": "Jadilah Bagian dari Keluarga Baituljannah",
+      "subtitle": "Wujudkan impian pendidikan terbaik untuk putra-putri Anda bersama kami",
+      "button_ppdb": "Daftar PPDB 2025",
+      "button_contact": "Hubungi Kami"
+    },
+    "contact": {
+      "hero": { "title": "Hubungi Kami", "subtitle": "Kami siap membantu Anda. Jangan ragu untuk menghubungi kami melalui berbagai saluran komunikasi" },
+      "info": {
+        "address": "Alamat",
+        "phone": "Telepon",
+        "email": "Email",
+        "hours": "Jam Operasional"
+      },
+      "form": {
+        "title": "Kirim Pesan",
+        "subtitle": "Isi formulir di bawah ini dan kami akan segera merespon pesan Anda",
+        "name": "Nama Lengkap",
+        "name_placeholder": "Masukkan nama lengkap",
+        "email": "Email",
+        "email_placeholder": "email@example.com",
+        "phone": "Nomor Telepon",
+        "phone_placeholder": "081234567890",
+        "subject": "Subjek",
+        "subject_placeholder": "Pilih subjek pesan",
+        "unit": "Unit Tujuan",
+        "unit_placeholder": "Pilih unit sekolah",
+        "message": "Pesan",
+        "message_placeholder": "Tulis pesan Anda di sini...",
+        "submit": "Kirim Pesan",
+        "success": "Pesan Anda telah terkirim! Kami akan menghubungi Anda segera."
+      },
+      "map": { "title": "Lokasi Kami" },
+      "units": { "title": "Kontak Unit Sekolah" },
+      "faq": {
+        "title": "Pertanyaan Umum?",
+        "desc": "Lihat halaman FAQ kami untuk jawaban cepat atas pertanyaan yang sering diajukan",
+        "button": "Lihat FAQ"
+      },
+      "social": {
+        "title": "Ikuti Kami",
+        "desc": "Dapatkan update terbaru melalui media sosial kami"
+      }
+    },
+    "admission": {
+      "hero": {
+        "year_badge": "📚 Tahun Ajaran 2024/2025",
+        "title": "Pendaftaran Siswa Baru",
+        "subtitle": "Bergabunglah dengan keluarga besar Yayasan Baituljannah dan wujudkan masa depan gemilang bersama kami",
+        "button_register": "Daftar Sekarang",
+        "button_brochure": "Download Brosur"
+      },
+      "timeline": {
+        "title": "Jadwal Pendaftaran",
+        "phases": {
+          "registration": { "title": "Pendaftaran Online", "date": "1 Jan - 28 Feb 2024" },
+          "test": { "title": "Tes Seleksi", "date": "1 - 15 Mar 2024" },
+          "announcement": { "title": "Pengumuman", "date": "20 Mar 2024" },
+          "reregistration": { "title": "Daftar Ulang", "date": "25 Mar - 5 Apr 2024" }
+        },
+        "status": { "active": "Aktif" }
+      },
+      "units": {
+        "title": "Pilih Unit Sekolah",
+        "subtitle": "Silakan pilih unit sekolah yang sesuai dengan jenjang pendidikan yang diinginkan",
+        "labels": {
+          "age": "Usia",
+          "quota": "Kuota",
+          "fee": "Biaya"
+        },
+        "data": {
+          "tkit": { "age": "4-6 tahun", "quota": "60 siswa" },
+          "sdit": { "age": "6-7 tahun", "quota": "120 siswa" },
+          "smpit": { "age": "12-13 tahun", "quota": "90 siswa" },
+          "smait": { "age": "15-16 tahun", "quota": "90 siswa" },
+          "slbit": { "age": "6-18 tahun", "quota": "30 siswa" }
+        }
+      },
+      "steps": {
+        "title": "Alur Pendaftaran",
+        "subtitle": "Ikuti langkah-langkah berikut untuk menyelesaikan proses pendaftaran",
+        "items": {
+          "form": { "title": "Isi Formulir Online", "desc": "Lengkapi formulir pendaftaran online dengan data yang benar" },
+          "upload": { "title": "Upload Dokumen", "desc": "Upload semua dokumen persyaratan yang dibutuhkan" },
+          "payment": { "title": "Pembayaran", "desc": "Lakukan pembayaran biaya pendaftaran" },
+          "test": { "title": "Tes Seleksi", "desc": "Ikuti tes seleksi sesuai jadwal yang ditentukan" },
+          "announcement": { "title": "Pengumuman", "desc": "Cek pengumuman hasil seleksi" },
+          "reregistration": { "title": "Daftar Ulang", "desc": "Lakukan daftar ulang untuk calon siswa yang diterima" }
+        }
+      },
+      "requirements": {
+        "title": "Persyaratan Pendaftaran",
+        "items": {
+          "birth_cert": "Fotokopi Akta Kelahiran (2 lembar)",
+          "family_card": "Fotokopi Kartu Keluarga (2 lembar)",
+          "photo": "Pas foto terbaru 3x4 (4 lembar)",
+          "health_cert": "Surat keterangan sehat dari dokter",
+          "report_card": "Fotokopi raport semester terakhir (untuk jenjang SD ke atas)",
+          "recommendation": "Surat rekomendasi dari sekolah sebelumnya (jika ada)"
+        },
+        "note": {
+          "title": "Catatan Penting",
+          "list": [
+            "Semua dokumen harus dalam kondisi baik dan terbaca dengan jelas",
+            "Biaya pendaftaran sebesar Rp 500.000 (tidak dapat dikembalikan)",
+            "Pendaftaran dapat dilakukan secara online atau datang langsung",
+            "Untuk informasi lebih lanjut, hubungi bagian admisi"
+          ]
+        }
+      },
+      "form": {
+        "title": "Formulir Pendaftaran Cepat",
+        "subtitle": "Isi data dengan lengkap dan benar",
+        "name": "Nama Lengkap Calon Siswa",
+        "parent_name": "Nama Orang Tua/Wali",
+        "email": "Email",
+        "phone": "Nomor Telepon",
+        "unit": "Unit Sekolah",
+        "unit_placeholder": "Pilih unit sekolah",
+        "submit": "Daftar Sekarang",
+        "disclaimer": "Dengan mendaftar, Anda menyetujui syarat dan ketentuan yang berlaku",
+        "success": "Pendaftaran berhasil! Silakan cek email untuk informasi selanjutnya."
+      },
+      "faq": {
+        "title": "Pertanyaan yang Sering Diajukan",
+        "items": {
+          "deadline": { "q": "Kapan batas akhir pendaftaran?", "a": "Pendaftaran dibuka mulai 1 Januari hingga 28 Februari 2024 atau hingga kuota terpenuhi." },
+          "scholarship": { "q": "Apakah ada beasiswa yang tersedia?", "a": "Ya, kami menyediakan berbagai program beasiswa untuk siswa berprestasi dan kurang mampu. Info lengkap dapat ditanyakan saat pendaftaran." },
+          "payment": { "q": "Bagaimana sistem pembayaran biaya pendidikan?", "a": "Pembayaran dapat dilakukan secara cash atau cicilan. Detail skema pembayaran akan dijelaskan saat daftar ulang." },
+          "dorm": { "q": "Apakah ada asrama untuk siswa?", "a": "Saat ini asrama tersedia untuk siswa SMAIT dan SMPIT. Fasilitas asrama dilengkapi dengan pembimbing dan pengawas 24 jam." }
+        }
+      }
+    }
+  },
+  "programs_page": {
+    "hero": {
+      "badge": "Keunggulan Pendidikan",
+      "title": "Program Unggulan",
+      "subtitle": "Berbagai program berkualitas untuk mengembangkan potensi akademik, karakter Islami, dan keterampilan siswa menghadapi masa depan"
+    },
+    "featured": {
+      "badge": "Keunggulan",
+      "title": "Program Unggulan",
+      "subtitle": "Program-program terbaik kami untuk masa depan siswa"
+    },
+    "filter": {
+      "showing": "Menampilkan {count} program"
+    },
+    "item": {
+      "view_detail": "Lihat Detail"
+    },
+    "highlights": {
+      "available_programs": "Program Tersedia",
+      "active_students": "Siswa Aktif",
+      "achievements": "Prestasi Diraih",
+      "years_experience": "Tahun Pengalaman"
+    },
+    "categories": {
+      "all": "Semua",
+      "academic": "Akademik",
+      "religious": "Keagamaan",
+      "extracurricular": "Ekstrakurikuler",
+      "development": "Pengembangan Diri"
+    },
+    "items": {
+      "tahfidz": {
+        "title": "Program Tahfidz",
+        "desc": "Program intensif menghafal Al-Quran dengan target hafalan mutqin dan pemahaman tajwid yang benar.",
+        "features": ["Target hafalan 30 juz", "Metode menghafal mutqin", "Sertifikasi tahfidz", "Guru pembimbing bersanad"]
+      },
+      "bilingual": {
+        "title": "Kelas Bilingual",
+        "desc": "Program pembelajaran menggunakan dua bahasa (Indonesia-Inggris) untuk mempersiapkan siswa di era global.",
+        "features": ["Kurikulum Cambridge", "Native speaker", "English day", "International exam"]
+      },
+      "robotics": {
+        "title": "Robotika & Coding",
+        "desc": "Program pengembangan keterampilan teknologi dan logika pemrograman sejak dini.",
+        "features": ["Dasar pemrograman", "Perakitan robot", "Kompetisi robotika", "Thinking logic"]
+      },
+      "scout": {
+        "title": "Pramuka SIT",
+        "desc": "Kegiatan kepramukaan yang terintegrasi dengan nilai-nilai keislaman untuk membentuk karakter mandiri.",
+        "features": ["Kemandirian", "Leadership", "Survival skill", "Ukhuwah Islamiyah"]
+      },
+      "olympiad": {
+        "title": "Klub Olimpiade",
+        "desc": "Pembinaan intensif bagi siswa berpotensi untuk mengikuti kompetisi sains tingkat nasional dan internasional.",
+        "features": ["Bimbingan intensif", "Simulasi kompetisi", "Bedah soal", "Mental juara"]
+      },
+      "entrepreneur": {
+        "title": "Young Entrepreneur",
+        "desc": "Program pembentukan jiwa wirausaha dan kemandirian ekonomi sejak usia sekolah.",
+        "features": ["Business plan", "Market day", "Financial literacy", "Kunjungan industri"]
+      }
+    }
+  },
+  "news_page": {
+    "hero": {
+      "badge": "Berita & Informasi",
+      "title": "Berita Terbaru",
+      "subtitle": "Ikuti perkembangan terkini, prestasi, dan kegiatan di Yayasan Baituljannah"
+    },
+    "featured": {
+      "badge": "Berita Utama",
+      "read_more": "Baca Selengkapnya"
+    },
+    "search": {
+      "placeholder": "Cari berita...",
+      "filter_active": "Filter aktif:"
+    },
+    "categories": {
+      "all": "Semua",
+      "achievement": "Prestasi",
+      "activity": "Kegiatan",
+      "academic": "Akademik",
+      "announcement": "Pengumuman",
+      "event": "Event",
+      "program": "Program"
+    }
+  },
+  "gallery_page": {
+    "hero": {
+      "badge": "Dokumentasi Kegiatan",
+      "title": "Galeri Foto",
+      "subtitle": "Dokumentasi momen berharga, prestasi gemilang, dan kegiatan inspiratif di Yayasan Baituljannah"
+    },
+    "filter": {
+      "showing": "Menampilkan {count} foto",
+      "empty_title": "Tidak ada foto ditemukan",
+      "empty_desc": "Coba ubah filter kategori untuk melihat foto lainnya",
+      "view_all": "Lihat Semua Foto"
+    },
+    "item": {
+      "views": "dilihat"
+    },
+    "categories": {
+      "all": "Semua",
+      "activity": "Kegiatan",
+      "facility": "Fasilitas",
+      "event": "Event",
+      "learning": "Pembelajaran"
+    }
+  },
+  "vision_mission": {
+    "hero": {
+      "badge": "Our Direction",
+      "title": "Visi & Misi",
+      "subtitle": "Panduan arah dan tujuan Yayasan Baituljannah dalam mewujudkan pendidikan Islam berkualitas dan berkarakter"
+    },
+    "vision": {
+      "badge": "Vision Statement",
+      "title": "Visi Yayasan Baituljannah",
+      "quote": "\"Menjadi lembaga pendidikan Islam terpadu yang unggul, inovatif, dan berkarakter Qur'ani dalam mencetak generasi pemimpin masa depan\"",
+      "card_title": "Visi Kami",
+      "card_subtitle": "Menjadi Yang Terdepan",
+      "image_alt": "Visi Baituljannah",
+      "points": {
+        "innovative": {
+          "title": "Unggul & Inovatif",
+          "desc": "Terdepan dalam kualitas pendidikan dan inovasi pembelajaran"
+        },
+        "character": {
+          "title": "Karakter Qur'ani",
+          "desc": "Membentuk pribadi yang beriman dan berakhlak mulia"
+        },
+        "leader": {
+          "title": "Pemimpin Masa Depan",
+          "desc": "Mencetak generasi pemimpin yang amanah dan visioner"
+        }
+      }
+    },
+    "mission": {
+      "badge": "Mission Statement",
+      "title": "Misi Yayasan Baituljannah",
+      "subtitle": "Enam pilar misi yang menjadi panduan dalam mencapai visi pendidikan kami",
+      "items": {
+        "education": {
+          "title": "Pendidikan Berkualitas",
+          "desc": "Menyelenggarakan pendidikan Islam terpadu yang berkualitas dengan mengintegrasikan kurikulum nasional dan nilai-nilai Islam"
+        },
+        "character": {
+          "title": "Pembentukan Karakter",
+          "desc": "Membentuk karakter siswa yang berakhlakul karimah, jujur, disiplin, dan bertanggung jawab berdasarkan Al-Quran dan As-Sunnah"
+        },
+        "potential": {
+          "title": "Pengembangan Potensi",
+          "desc": "Mengembangkan potensi akademik dan non-akademik siswa melalui program-program unggulan yang inovatif dan komprehensif"
+        },
+        "achievement": {
+          "title": "Prestasi Gemilang",
+          "desc": "Mencetak siswa yang berprestasi dan kompetitif di tingkat lokal, nasional, maupun internasional"
+        },
+        "environment": {
+          "title": "Lingkungan Islami",
+          "desc": "Menciptakan lingkungan pendidikan yang kondusif, Islami, dan mendukung perkembangan optimal siswa"
+        },
+        "partnership": {
+          "title": "Kemitraan Strategis",
+          "desc": "Membangun kemitraan dengan orang tua, masyarakat, dan stakeholder untuk mendukung pencapaian tujuan pendidikan"
+        }
+      }
+    },
+    "goals": {
+      "badge": "Strategic Goals",
+      "title": "Tujuan Strategis",
+      "subtitle": "Target pencapaian yang menjadi fokus utama dalam mewujudkan visi dan misi kami",
+      "items": {
+        "quran": {
+          "title": "Generasi Qur'ani",
+          "desc": "Mencetak generasi yang hafal Al-Quran dan mengamalkan nilai-nilainya",
+          "stats": "200+ Hafidz"
+        },
+        "innovation": {
+          "title": "Inovasi Pembelajaran",
+          "desc": "Menerapkan metode pembelajaran modern dan efektif",
+          "stats": "15+ Program"
+        },
+        "achievement": {
+          "title": "Prestasi Unggul",
+          "desc": "Meraih prestasi gemilang di berbagai kompetisi",
+          "stats": "200+ Penghargaan"
+        },
+        "hr": {
+          "title": "Kualitas SDM",
+          "desc": "Tenaga pendidik profesional dan berpengalaman",
+          "stats": "200+ Guru"
+        }
+      }
+    },
+    "values": {
+      "badge": "Core Values",
+      "title": "Nilai-Nilai Inti",
+      "subtitle": "Fondasi nilai yang menjadi pedoman dalam setiap aktivitas dan keputusan kami",
+      "items": {
+        "integrity": {
+          "title": "Integritas",
+          "desc": "Berpegang teguh pada nilai-nilai Islam dan kejujuran"
+        },
+        "excellence": {
+          "title": "Excellence",
+          "desc": "Selalu berusaha memberikan yang terbaik dalam segala hal"
+        },
+        "innovation": {
+          "title": "Innovation",
+          "desc": "Terus berinovasi dalam metode dan program pendidikan"
+        },
+        "collaboration": {
+          "title": "Collaboration",
+          "desc": "Membangun kerjasama yang solid dan sinergis"
+        },
+        "compassion": {
+          "title": "Compassion",
+          "desc": "Mendidik dengan penuh kasih sayang dan perhatian"
+        },
+        "accountability": {
+          "title": "Accountability",
+          "desc": "Bertanggung jawab atas amanah pendidikan"
+        }
+      }
+    },
+    "cta": {
+      "badge": "Bergabunglah Bersama Kami",
+      "title": "Wujudkan Visi Pendidikan Terbaik",
+      "subtitle": "Jadilah bagian dari keluarga Baituljannah dan berikan pendidikan terbaik untuk masa depan putra-putri Anda",
+      "button_programs": "Lihat Program Kami"
     }
   },
   "sidebar": {
@@ -656,6 +1144,505 @@
         "submitted": "Dikumpulkan",
         "score": "Nilai",
         "upload_task": "Upload Tugas"
+      }
+    }
+  },
+  "home": {
+    "hero": {
+      "slides": {
+        "foundation": {
+          "title": "Yayasan Baituljannah",
+          "description": "Membentuk Generasi Qur'ani yang Cerdas, Berakhlak Mulia, dan Berprestasi Global",
+          "badge": "🕌 Pendidikan Islam Terpadu"
+        },
+        "quality": {
+          "title": "Pendidikan Berkualitas",
+          "description": "Mengintegrasikan kurikulum nasional dengan nilai-nilai Al-Quran dan As-Sunnah",
+          "badge": "📚 Kurikulum Terpadu"
+        },
+        "achievement": {
+          "title": "Prestasi Gemilang",
+          "description": "Ratusan prestasi di tingkat lokal, nasional, dan internasional",
+          "badge": "🏆 Berprestasi"
+        },
+        "facilities": {
+          "title": "Fasilitas Modern",
+          "description": "Dilengkapi dengan fasilitas pembelajaran yang modern dan mendukung",
+          "badge": "🏫 Fasilitas Lengkap"
+        },
+        "teachers": {
+          "title": "Guru Profesional",
+          "description": "Tenaga pendidik yang kompeten, berpengalaman, dan berdedikasi tinggi",
+          "badge": "👨‍🏫 Pendidik Berpengalaman"
+        }
+      }
+    },
+    "units": {
+      "badge": "Jenjang Pendidikan",
+      "title": "Program Unggulan",
+      "subtitle": "Lima unit pendidikan terintegrasi dari PAUD hingga SMA untuk perjalanan pendidikan yang berkesinambungan",
+      "items": {
+        "tkit": "TKIT",
+        "sdit": "SDIT",
+        "smpit": "SMPIT",
+        "smait": "SMAIT",
+        "slbit": "SLBIT",
+        "asrama": "Asrama"
+      }
+    },
+    "video": {
+      "badge": "Video Profil",
+      "title": "Mengenal Lebih Dekat Baitul Jannah"
+    },
+    "why_choose_us": {
+      "badge": "Keunggulan Kami",
+      "title": "Mengapa Memilih Baituljannah?",
+      "subtitle": "Pendidikan Islam terpadu dengan standar berkualitas tinggi",
+      "items": {
+        "vision": { "title": "Visi yang Jelas", "desc": "Membentuk generasi Qurani dengan target hafalan dan prestasi akademik yang terukur" },
+        "teachers": { "title": "Guru Berkualitas", "desc": "Tim pendidik profesional, bersertifikat, dan berpengalaman di bidangnya" },
+        "achievement": { "title": "Prestasi Membanggakan", "desc": "Ratusan prestasi lokal, nasional, dan internasional di berbagai bidang" },
+        "environment": { "title": "Lingkungan Islami", "desc": "Suasana pembelajaran yang kondusif dengan nilai-nilai Islam yang kuat" },
+        "facilities": { "title": "Fasilitas Modern", "desc": "Lab komputer, perpustakaan digital, dan sarana olahraga yang lengkap" },
+        "curriculum": { "title": "Kurikulum Global", "desc": "Integrasi kurikulum nasional dengan standar internasional dan nilai Islam" }
+      }
+    },
+    "programs": {
+      "badge": "Program Unggulan",
+      "title": "Program Pendidikan Kami",
+      "subtitle": "Berbagai program unggulan yang dirancang khusus untuk membentuk generasi Qurani yang cerdas dan berkarakter",
+      "button": "Lihat Semua Program",
+      "items": {
+        "tahfidz": { "title": "Tahfidz Al-Qur'an", "desc": "Program unggulan menghafal Al-Qur'an dengan metode mudah, menyenangkan, dan terbukti efektif." },
+        "bilingual": { "title": "Bilingual Program", "desc": "Pembelajaran dua bahasa (Arab & Inggris) untuk mempersiapkan generasi global yang Islami." },
+        "character": { "title": "Character Building", "desc": "Pembentukan karakter Islami melalui pembiasaan akhlak mulia dalam kehidupan sehari-hari." },
+        "academic": { "title": "Academic Excellence", "desc": "Program akselerasi akademik dengan metode pembelajaran inovatif dan guru berpengalaman." }
+      }
+    },
+    "news": {
+      "title": "Berita Dan Kegiatan Sekolah",
+      "search_placeholder": "Cari berita...",
+      "load_error": "Gagal memuat berita",
+      "latest_news": "Berita Terbaru",
+      "meta": {
+        "by_foundation": "Oleh Baituljannah",
+        "published_on": "Dipublikasikan",
+        "views": "Dilihat",
+        "by_admin": "Oleh Admin",
+        "categories": "Kategori:",
+        "min_read": "menit baca",
+        "more_button": "BERITA KEGIATAN LAINNYA"
+      }
+    },
+    "social": {
+      "title": "Ikuti Kami",
+      "subtitle": "Dapatkan update terbaru melalui media sosial kami"
+    },
+    "achievement": {
+      "badge": "Prestasi Membanggakan",
+      "title": "Siswa Berprestasi",
+      "subtitle": "Mencetak generasi juara yang berprestasi di berbagai bidang kompetisi lokal, nasional, dan internasional",
+      "button": "Lihat Semua Prestasi",
+      "cards": {
+        "card1": { "achievement": "Peserta Olimpiade Terbaik", "rank": "JUARA 1", "category": "Cerdas Cermat" },
+        "card2": { "achievement": "Pencak Silat Tunggal", "rank": "JUARA 3", "category": "Perwakilan • Tinggi 2 • Tinggi 1" },
+        "card3": { "achievement": "Pidato Bahasa Inggris", "rank": "JUARA 2", "category": "Perwakilan • Tinggi 2 • Tinggi 3" }
+      }
+    },
+    "alumni": {
+      "badge": "Alumni Success Story",
+      "title": "Universitas Tujuan Alumni Kami",
+      "top_tier": "Top Tier Universities",
+      "popular": "Popular Choices",
+      "other": "Other Destinations",
+      "universities": {
+        "ui": "UI",
+        "ugm": "UGM",
+        "ipb": "IPB",
+        "itb": "ITB",
+        "ub": "UB",
+        "unpad": "UNPAD",
+        "undip": "UNDIP",
+        "unair": "UNAIR",
+        "its": "ITS",
+        "uns": "UNS",
+        "unila": "UNILA",
+        "telkom": "Telkom",
+        "uin": "UIN",
+        "upn": "UPN",
+        "unnes": "UNNES",
+        "upi": "UPI",
+        "binus": "BINUS"
+      }
+    },
+    "cta": {
+      "badge": "Daftar Sekarang",
+      "title": "Bergabunglah dengan Keluarga Baituljannah",
+      "subtitle": "Daftarkan putra-putri Anda sekarang dan berikan mereka pendidikan terbaik yang mengintegrasikan ilmu dan iman",
+      "button_admission": "Daftar PPDB 2025",
+      "button_contact": "Hubungi Kami"
+    }
+  },
+  "unit_school": {
+    "back_to_portal": "Kembali ke Portal Utama",
+    "about": {
+      "badge": "Tentang Kami",
+      "title": "Profil {unitName}",
+      "description": "{fullName} adalah lembaga pendidikan Islam terpadu yang berkomitmen untuk memberikan pendidikan berkualitas dengan mengintegrasikan kurikulum nasional dan nilai-nilai Islam. Kami fokus pada pengembangan kognitif, afektif, dan psikomotorik siswa secara seimbang.",
+      "items": {
+        "curriculum": { "title": "Kurikulum Terintegrasi", "desc": "Menggabungkan kurikulum nasional dengan pendidikan agama Islam yang komprehensif" },
+        "teachers": { "title": "Tenaga Pendidik Profesional", "desc": "Guru-guru berkualifikasi dan berpengalaman dalam pendidikan Islam terpadu" },
+        "facilities": { "title": "Fasilitas Lengkap", "desc": "Gedung modern, laboratorium, perpustakaan, dan fasilitas pendukung lainnya" }
+      }
+    },
+    "programs": {
+      "badge": "Program Unggulan",
+      "title": "Program Unggulan Kami",
+      "subtitle": "Program-program dirancang khusus untuk mengembangkan potensi siswa secara maksimal",
+      "items": {
+        "tahfidz": { "title": "Tahfidz Al-Qur'an", "desc": "Program menghafal Al-Qur'an dengan metode yang mudah dan menyenangkan." },
+        "character": { "title": "Character Building", "desc": "Pembentukan karakter Islami melalui pembiasaan akhlak mulia setiap hari." },
+        "academic": { "title": "Prestasi Akademik", "desc": "Pembelajaran berkualitas untuk meraih prestasi akademik terbaik." }
+      }
+    },
+    "curriculum": {
+      "badge": "Kurikulum",
+      "title": "Kurikulum Terintegrasi",
+      "subtitle": "Kombinasi sempurna antara kurikulum nasional dan nilai-nilai Islam",
+      "national": {
+        "title": "Kurikulum Nasional",
+        "items": [
+          "Kurikulum Merdeka yang adaptif dan inovatif",
+          "Pembelajaran berbasis project dan problem solving",
+          "STEAM (Science, Technology, Engineering, Arts, Math)",
+          "Bahasa Indonesia, Inggris, dan Arab"
+        ]
+      },
+      "islamic": {
+        "title": "Kurikulum Islam",
+        "items": [
+          "Tahfidz Al-Qur'an dengan target hafalan bertahap",
+          "Aqidah, Fiqih, dan Akhlak dalam kehidupan sehari-hari",
+          "Hadits dan Sirah Nabawiyah",
+          "Praktik ibadah dan pembiasaan adab Islami"
+        ]
+      }
+    },
+    "schedule": {
+      "title": "Jadwal Pembelajaran",
+      "time": {
+        "title": "Waktu Belajar",
+        "mon_thu": "Senin - Kamis",
+        "fri": "Jumat",
+        "sat": "Sabtu",
+        "extracurricular": "Ekstrakurikuler"
+      },
+      "focus": {
+        "title": "Fokus Pembelajaran",
+        "items": [
+          "Character & Leadership Building",
+          "Critical Thinking & Problem Solving",
+          "Collaboration & Communication"
+        ]
+      }
+    },
+    "facilities": {
+      "badge": "Fasilitas",
+      "title": "Fasilitas Lengkap & Modern",
+      "subtitle": "Didukung fasilitas terbaik untuk mendukung proses belajar mengajar",
+      "items": {
+        "classroom": { "title": "Ruang Kelas", "desc": "Ruang kelas ber-AC dengan kapasitas 25-30 siswa, dilengkapi smart TV dan sound system" },
+        "library": { "title": "Perpustakaan", "desc": "Koleksi 5000+ buku, ruang baca nyaman, dan sistem peminjaman digital" },
+        "lab": { "title": "Laboratorium", "desc": "Lab Komputer, Sains, dan Bahasa dengan peralatan modern dan lengkap" },
+        "sports": { "title": "Lapangan Olahraga", "desc": "Fasilitas olahraga futsal, basket, badminton, dan area panahan" }
+      },
+      "additional": {
+        "title": "Fasilitas Tambahan",
+        "items": {
+          "mosque": { "title": "Masjid/Musholla", "desc": "Tempat ibadah yang nyaman dan bersih" },
+          "canteen": { "title": "Kantin Sehat", "desc": "Menyediakan makanan bergizi dan halal" },
+          "clinic": { "title": "Klinik Kesehatan", "desc": "UKS dengan tenaga medis profesional" },
+          "wifi": { "title": "WiFi & Internet", "desc": "Akses internet cepat di seluruh area" },
+          "cctv": { "title": "CCTV 24/7", "desc": "Keamanan terpantau sepanjang waktu" },
+          "parking": { "title": "Parkir Luas", "desc": "Area parkir yang aman dan tertata" }
+        }
+      }
+    },
+    "achievements": {
+      "badge": "Prestasi",
+      "title": "Prestasi & Statistik",
+      "subtitle": "Bukti nyata kualitas pendidikan kami",
+      "stats": {
+        "graduation": { "value": "95%", "label": "Lulus UN/USBN" },
+        "tahfidz": { "value": "30+", "label": "Hafidz Quran" },
+        "medals": { "value": "50+", "label": "Medali Emas" },
+        "alumni": { "value": "1000+", "label": "Alumni Sukses" }
+      },
+      "list": {
+         "title": "Prestasi Terbaru",
+         "view_all": "Lihat Semua Prestasi",
+         "items": {
+           "0": { "title": "Juara 1 Olimpiade Sains Nasional", "desc": "Tingkat Provinsi - Bidang Matematika", "date": "Desember 2024" },
+           "1": { "title": "Juara 2 Kompetisi Hafidz", "desc": "Tingkat Nasional - Kategori 10 Juz", "date": "November 2024" },
+           "2": { "title": "Juara 1 Lomba Robotika", "desc": "Tingkat Kota - Line Follower", "date": "Oktober 2024" },
+           "3": { "title": "Juara 3 English Competition", "desc": "Tingkat Provinsi - Story Telling", "date": "September 2024" }
+         }
+       }
+     },
+     "fees": {
+       "badge": "Biaya Pendidikan",
+       "title": "Investasi Pendidikan Terbaik",
+       "subtitle": "Biaya yang transparan dan kompetitif untuk pendidikan berkualitas",
+       "registration": {
+         "title": "Biaya Pendaftaran",
+         "form": "Formulir Pendaftaran",
+         "entrance_fee": "Uang Pangkal",
+         "uniform_book": "Seragam & Buku",
+         "total": "Total Awal"
+       },
+       "monthly": {
+         "title": "Biaya Bulanan",
+         "tuition": "SPP",
+         "catering": "Catering (Opsional)",
+         "transport": "Transportasi (Opsional)",
+         "total": "Per Bulan"
+       },
+       "discounts": {
+         "early_bird": { "title": "Diskon Pendaftar Awal", "desc": "Hingga 20%" },
+         "sibling": { "title": "Diskon Kakak Beradik", "desc": "10% untuk adik" },
+         "scholarship": { "title": "Beasiswa Prestasi", "desc": "Tersedia" }
+       },
+       "note": "Catatan: Biaya dapat berubah sewaktu-waktu. Silakan hubungi bagian administrasi untuk informasi terkini dan detail cicilan."
+     },
+     "teachers": {
+       "badge": "Tenaga Pendidik",
+       "title": "Guru & Staff",
+       "subtitle": "Tim pendidik profesional yang berdedikasi untuk pendidikan terbaik",
+       "roles": {
+         "principal": "Kepala Sekolah",
+         "tahfidz": "Guru Tahfidz",
+         "math": "Guru Matematika",
+         "arabic": "Guru Bahasa Arab"
+       }
+     },
+     "ppdb": {
+        "title": "Pendaftaran Peserta Didik Baru (PPDB)",
+        "subtitle": "Bergabunglah dengan keluarga besar {fullName}. Kami membuka pendaftaran untuk tahun ajaran 2025/2026.",
+        "period": "Periode Pendaftaran",
+        "period_date": "1 Januari - 31 Maret 2025",
+        "quota": "Kuota",
+        "quota_value": "120 Siswa",
+        "button": "Daftar Sekarang"
+      },
+      "contact": {
+        "title": "Hubungi Kami",
+        "subtitle": "Kami siap membantu menjawab pertanyaan Anda",
+        "address": "Alamat",
+        "phone": "Telepon",
+        "email": "Email"
+      }
+   },
+  "contact": {
+    "title": "Hubungi Kami",
+    "subtitle": "Kami siap membantu Anda. Jangan ragu untuk menghubungi kami melalui berbagai saluran komunikasi",
+    "form": {
+      "title": "Kirim Pesan",
+      "subtitle": "Isi formulir di bawah ini dan kami akan segera merespon pesan Anda",
+      "name": "Nama Lengkap",
+      "name_placeholder": "Masukkan nama lengkap",
+      "email": "Email",
+      "email_placeholder": "email@example.com",
+      "phone": "Nomor Telepon",
+      "phone_placeholder": "08xx-xxxx-xxxx",
+      "unit": "Unit Sekolah yang Dituju",
+      "unit_placeholder": "Pilih unit sekolah",
+      "subject": "Subjek",
+      "subject_placeholder": "Topik pesan Anda",
+      "message": "Pesan",
+      "message_placeholder": "Tulis pesan Anda di sini...",
+      "submit": "Kirim Pesan",
+      "success": "Pesan Anda telah terkirim! Kami akan menghubungi Anda segera.",
+      "units_options": {
+        "tkit": "TKIT Baituljannah",
+        "sdit": "SDIT Baituljannah",
+        "smpit": "SMPIT Baituljannah",
+        "smait": "SMAIT Baituljannah",
+        "slbit": "SLBIT Baituljannah",
+        "yayasan": "Yayasan (Umum)"
+      }
+    },
+    "info": {
+      "title": "Lokasi Kami",
+      "map_preview": "Map Preview",
+      "address": "Alamat",
+      "phone": "Telepon",
+      "email": "Email",
+      "hours": "Jam Operasional",
+      "units_contact": "Kontak Unit Sekolah"
+    },
+    "faq": {
+      "title": "Pertanyaan Umum?",
+      "subtitle": "Lihat halaman FAQ kami untuk jawaban cepat atas pertanyaan yang sering diajukan",
+      "button": "Lihat FAQ"
+    }
+  },
+  "news_page": {
+    "hero": {
+      "badge": "Update Terkini",
+      "title": "Berita & Kegiatan",
+      "subtitle": "Ikuti perkembangan terbaru dan prestasi siswa-siswi Baituljannah melalui berita dan artikel pilihan"
+    },
+    "search": {
+      "placeholder": "Cari berita...",
+      "filter_active": "Filter aktif:"
+    },
+    "categories": {
+      "all": "Semua",
+      "achievement": "Prestasi",
+      "activity": "Kegiatan",
+      "academic": "Akademik",
+      "announcement": "Pengumuman",
+      "event": "Event",
+      "program": "Program"
+    },
+    "featured": {
+      "badge": "Berita Utama",
+      "read_more": "Baca Selengkapnya"
+    },
+    "list": {
+      "title": "Semua Berita",
+      "showing": "Menampilkan {shown} dari {total} berita",
+      "read_more": "Baca Selengkapnya"
+    }
+  },
+  "gallery_page": {
+    "hero": {
+      "badge": "Galeri Foto",
+      "title": "Galeri Sekolah",
+      "subtitle": "Dokumentasi kegiatan dan fasilitas sekolah sebagai wujud transparansi dan kenangan indah"
+    },
+    "filter": {
+      "showing": "Menampilkan {count} foto",
+      "empty_title": "Tidak ada foto ditemukan",
+      "empty_desc": "Coba pilih kategori lain",
+      "view_all": "Lihat Semua Foto"
+    },
+    "categories": {
+      "all": "Semua",
+      "activity": "Kegiatan",
+      "facility": "Fasilitas",
+      "event": "Event",
+      "learning": "Pembelajaran"
+    }
+  },
+  "programs_page": {
+    "hero": {
+      "badge": "Program Unggulan",
+      "title": "Program Pendidikan",
+      "subtitle": "Berbagai program unggulan yang dirancang untuk mengembangkan potensi siswa secara maksimal"
+    },
+    "highlights": {
+      "available_programs": "Program Tersedia",
+      "active_students": "Siswa Aktif",
+      "achievements": "Prestasi Diraih",
+      "years_experience": "Tahun Pengalaman"
+    },
+    "categories": {
+      "all": "Semua",
+      "academic": "Akademik",
+      "religious": "Keagamaan",
+      "extracurricular": "Ekstrakurikuler",
+      "development": "Pengembangan"
+    },
+    "list": {
+      "showing": "Menampilkan {count} program",
+      "view_detail": "Lihat Detail"
+    },
+    "featured": {
+      "badge": "Program Terbaru",
+      "title": "Program Unggulan Terbaru",
+      "subtitle": "Program-program inovatif yang dirancang khusus untuk mempersiapkan siswa menghadapi tantangan masa depan",
+      "new_badge": "PROGRAM BARU",
+      "register": "Daftar Sekarang",
+      "international": {
+        "title": "International Class Program",
+        "desc": "Program kelas internasional dengan kurikulum Cambridge dan pembelajaran bilingual untuk mempersiapkan siswa berkompetisi di tingkat global.",
+        "features": {
+          "teachers": "Guru Bersertifikat Cambridge",
+          "curriculum": "Kurikulum Internasional",
+          "global": "Pengembangan Kompetensi Global"
+        }
+      },
+      "steam": {
+        "title": "STEAM Innovation Lab",
+        "desc": "Pusat inovasi dan kreativitas siswa dalam bidang Science, Technology, Engineering, Arts, dan Mathematics.",
+        "features": {
+          "equipment": "Peralatan Modern",
+          "project": "Pembelajaran Berbasis Proyek",
+          "skill": "Keterampilan Abad 21"
+        }
+      }
+    },
+    "items": {
+      "tahfidz": { 
+        "title": "Program Tahfidz Al-Quran", 
+        "desc": "Program menghafal Al-Quran dengan metode yang efektif dan terstruktur untuk semua jenjang pendidikan dengan bimbingan ustadz berpengalaman.",
+        "features": ["Target 30 juz", "Bimbingan Ustadz berpengalaman", "Metode terbukti efektif", "Wisuda Tahfidz"]
+      },
+      "language": { 
+        "title": "Bahasa Asing (English & Arabic)", 
+        "desc": "Program pembelajaran bahasa Inggris dan Arab dengan metode praktis dan komunikatif untuk persiapan komunikasi global.",
+        "features": ["Native speaker", "Language lab", "Sertifikasi Internasional", "Percakapan Harian"]
+      },
+      "olympiad": { 
+        "title": "Olimpiade & Kompetisi", 
+        "desc": "Pembinaan khusus untuk persiapan olimpiade sains, matematika, dan kompetisi akademik lainnya dengan track record juara.",
+        "features": ["Pembimbing ahli", "Latihan intensif", "Track record juara", "Kompetisi rutin"]
+      },
+      "character": { 
+        "title": "Character Building", 
+        "desc": "Program pembentukan karakter Islami melalui pembiasaan dan keteladanan dalam kehidupan sehari-hari di lingkungan sekolah.",
+        "features": ["Kebiasaan harian", "Mentoring", "Nilai-nilai Islami", "Keteladanan"]
+      },
+      "leadership": { 
+        "title": "Leadership Training", 
+        "desc": "Pelatihan kepemimpinan untuk membentuk karakter pemimpin yang amanah, bertanggung jawab, dan visioner.",
+        "features": ["Outbound", "Public speaking", "Team building", "Manajemen proyek"]
+      },
+      "tahsin": { 
+        "title": "Tahsin & Tajwid", 
+        "desc": "Program memperbaiki bacaan Al-Quran dengan tajwid yang benar dan tartil yang indah dengan metode talaqqi.",
+        "features": ["Sesi privat", "Tracking progress", "Bersertifikat", "Metode Talaqqi"]
+      },
+      "robotics": { 
+        "title": "Robotika & Coding", 
+        "desc": "Program pembelajaran robotika dan pemrograman untuk menghadapi era digital dengan peralatan modern.",
+        "features": ["Peralatan modern", "Berbasis proyek", "Siap kompetisi", "AI & IoT"]
+      },
+      "counseling": { 
+        "title": "Bimbingan Konseling", 
+        "desc": "Layanan konseling profesional untuk membantu perkembangan psikologis, sosial, dan akademik siswa secara optimal.",
+        "features": ["Konselor profesional", "Rahasia terjamin", "Konsultasi orang tua", "Bimbingan karir"]
+      },
+      "sports_arts": { 
+        "title": "Olahraga & Seni", 
+        "desc": "Ekstrakurikuler olahraga dan seni untuk mengembangkan bakat dan minat siswa dengan fasilitas lengkap.",
+        "features": ["Futsal", "Basket", "Beladiri", "Musik", "Kaligrafi"]
+      },
+      "kitab": { 
+        "title": "Kajian Kitab Kuning", 
+        "desc": "Program pembelajaran kitab-kitab klasik Islam untuk memperdalam ilmu agama dengan sanad dan ijazah.",
+        "features": ["Ulama berpengalaman", "Sanad pembelajaran", "Ijazah", "Metode salaf"]
+      },
+      "entrepreneur": { 
+        "title": "Kelas Entrepreneur", 
+        "desc": "Program kewirausahaan untuk menumbuhkan jiwa bisnis Islami sejak dini dengan praktik langsung.",
+        "features": ["Rencana bisnis", "Market day", "Mentor bisnis", "Proyek nyata"]
+      },
+      "study_tour": { 
+        "title": "Study Tour & Exchange", 
+        "desc": "Program kunjungan edukatif ke dalam dan luar negeri untuk memperluas wawasan dan pengalaman siswa.",
+        "features": ["Domestik & internasional", "Edukatif", "Pertukaran budaya", "Wawasan global"]
       }
     }
   }

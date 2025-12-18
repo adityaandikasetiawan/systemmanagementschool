@@ -20,7 +20,8 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ onNavigate =
     { label: 'Nilai', href: '#', onClick: () => {} },
     { label: 'Absensi', href: '#', onClick: () => {} },
     { label: 'Tugas', href: '#', onClick: () => {} },
-    { label: 'Jadwal', href: '#', onClick: () => {} }
+    { label: 'Jadwal', href: '#', onClick: () => {} },
+    { label: 'Login', href: '#', onClick: () => onNavigate('login') }
   ];
 
   const stats = [

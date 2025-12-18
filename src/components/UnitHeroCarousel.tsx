@@ -24,7 +24,16 @@ export const UnitHeroCarousel: React.FC<UnitHeroCarouselProps> = ({
       image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1920&h=1080&fit=crop',
       title: `Selamat Datang di ${fullName}`,
       description: 'Membentuk Generasi Qur\'ani yang Cerdas, Berakhlak Mulia, dan Berprestasi',
-      badge: `${icon} ${unitName} Baituljannah`
+      badge: (
+        <span className="flex items-center gap-2">
+          {(icon.startsWith('/') || icon.startsWith('http')) ? (
+             <img src={icon} alt="" className="w-5 h-5 object-contain" />
+          ) : (
+             <span>{icon}</span>
+          )}
+          <span>{unitName} Baituljannah</span>
+        </span>
+      )
     },
     {
       image: 'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=1920&h=1080&fit=crop',

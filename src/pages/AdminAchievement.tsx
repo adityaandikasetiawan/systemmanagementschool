@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+import { Pagination as Pager } from '../components/Pagination';
+import { Navbar } from '../components/Navbar';
 import { Plus, Edit, Trash2, Search, Filter, Trophy, Award, Medal, Image as ImageIcon, Calendar, User, Target, Save, X, Upload } from 'lucide-react';
 
 interface AdminAchievementProps {
   onNavigate?: (page: string) => void;
+  embedded?: boolean;
 }
 
 interface AchievementItem {
@@ -18,7 +21,15 @@ interface AchievementItem {
   status: 'published' | 'draft';
 }
 
-export const AdminAchievement: React.FC<AdminAchievementProps> = ({ onNavigate = () => {} }) => {
+export const AdminAchievement: React.FC<AdminAchievementProps> = ({ onNavigate = () => {}, embedded = false }) => {
+  const menuItems = [
+    { label: 'Dashboard', href: '#', onClick: () => onNavigate('admin-super') },
+    { label: 'Berita & Artikel', href: '#', onClick: () => onNavigate('admin-news') },
+    { label: 'Galeri', href: '#', onClick: () => onNavigate('admin-gallery') },
+    { label: 'Prestasi', href: '#', onClick: () => {} },
+    { label: 'Program', href: '#', onClick: () => onNavigate('admin-programs') },
+    { label: 'Karir', href: '#', onClick: () => onNavigate('admin-career') }
+  ];
   const [achievements, setAchievements] = useState<AchievementItem[]>([
     {
       id: 1,
@@ -50,8 +61,36 @@ export const AdminAchievement: React.FC<AdminAchievementProps> = ({ onNavigate =
   const [isEditing, setIsEditing] = useState(false);
   const [currentAchievement, setCurrentAchievement] = useState<AchievementItem | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState('Semua');
   const [filterYear, setFilterYear] = useState('Semua');
+
+  React.useEffect(() => {
+    try {
+      const sq = localStorage.getItem('bj_admin_achievement_search');
+      const fc = localStorage.getItem('bj_admin_achievement_filter');
+      const fy = localStorage.getItem('bj_admin_achievement_year');
+      if (sq !== null) setSearchQuery(sq);
+      if (fc !== null) setFilterCategory(fc);
+      if (fy !== null) setFilterYear(fy);
+    } catch {}
+  }, []);
+
+  React.useEffect(() => {
+    const t = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+      try { localStorage.setItem('bj_admin_achievement_search', searchQuery); } catch {}
+    }, 200);
+    return () => clearTimeout(t);
+  }, [searchQuery]);
+
+  React.useEffect(() => {
+    try { localStorage.setItem('bj_admin_achievement_filter', filterCategory); } catch {}
+  }, [filterCategory]);
+
+  React.useEffect(() => {
+    try { localStorage.setItem('bj_admin_achievement_year', filterYear); } catch {}
+  }, [filterYear]);
 
   const categories = ['Semua', 'Olimpiade', 'Olahraga', 'Seni & Budaya', 'Tahfidz', 'Sains'];
   const years = ['Semua', '2025', '2024', '2023', '2022'];
@@ -142,13 +181,25 @@ export const AdminAchievement: React.FC<AdminAchievementProps> = ({ onNavigate =
     }
   };
 
-  const filteredAchievements = achievements.filter(item => {
-    const matchSearch = item.studentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                        item.achievement.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchCategory = filterCategory === 'Semua' || item.category === filterCategory;
-    const matchYear = filterYear === 'Semua' || item.year === filterYear;
-    return matchSearch && matchCategory && matchYear;
-  });
+  const filteredAchievements = useMemo(() => {
+    const q = (debouncedQuery || '').toLowerCase();
+    return achievements.filter(item => {
+      const matchSearch = item.studentName.toLowerCase().includes(q) || item.achievement.toLowerCase().includes(q);
+      const matchCategory = filterCategory === 'Semua' || item.category === filterCategory;
+      const matchYear = filterYear === 'Semua' || item.year === filterYear;
+      return matchSearch && matchCategory && matchYear;
+    });
+  }, [achievements, debouncedQuery, filterCategory, filterYear]);
+
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(9);
+  const totalPages = Math.max(Math.ceil(filteredAchievements.length / limit), 1);
+  const pagedAchievements = useMemo(() => {
+    const start = (page - 1) * limit;
+    return filteredAchievements.slice(start, start + limit);
+  }, [filteredAchievements, page, limit]);
+
+  React.useEffect(() => { setPage(1); }, [debouncedQuery, filterCategory, filterYear]);
 
   const stats = [
     { label: 'Total Prestasi', value: achievements.length, icon: Trophy, color: 'from-blue-500 to-cyan-600' },
@@ -158,44 +209,45 @@ export const AdminAchievement: React.FC<AdminAchievementProps> = ({ onNavigate =
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-yellow-500 to-amber-600 text-white py-8">
-        <div className="container-custom">
-          <div className="flex items-center justify-between">
+    <div className={embedded ? '' : 'min-h-screen bg-gray-50'}>
+      {!embedded && (
+        <Navbar 
+          siteName="Manajemen Prestasi"
+          accentColor="#1E4AB8"
+          menuItems={menuItems}
+        />
+      )}
+
+      <div className="container-custom py-8">
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <div className="flex items-center gap-3 mb-2">
-                <Trophy className="w-8 h-8" />
-                <h1 className="text-3xl">Kelola Prestasi Siswa</h1>
-              </div>
-              <p className="text-white/90">Manajemen data prestasi dan penghargaan siswa</p>
+              <h1 className="text-3xl mb-2">Kelola Prestasi Siswa</h1>
+              <p className="text-gray-600">Manajemen data prestasi dan penghargaan siswa</p>
             </div>
             <button
               onClick={() => handleOpenModal()}
-              className="bg-white text-yellow-600 px-6 py-3 rounded-xl hover:bg-yellow-50 transition-colors flex items-center gap-2 shadow-lg"
+              className="btn-primary flex items-center gap-2"
             >
               <Plus className="w-5 h-5" />
               <span>Tambah Prestasi</span>
             </button>
           </div>
-        </div>
-      </div>
 
-      {/* Stats Cards */}
-      <div className="container-custom py-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 -mt-16 mb-8">
-          {stats.map((stat, index) => {
-            const Icon = stat.icon;
-            return (
-              <div key={index} className="bg-white rounded-2xl p-6 shadow-strong">
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center mb-4`}>
-                  <Icon className="w-6 h-6 text-white" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {stats.map((stat, index) => {
+              const Icon = stat.icon;
+              return (
+                <div key={index} className="bg-white rounded-2xl p-6 shadow-soft">
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center mb-4`}>
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
+                  <p className="text-2xl mb-1">{stat.value}</p>
+                  <p className="text-sm text-gray-600">{stat.label}</p>
                 </div>
-                <p className="text-3xl mb-1">{stat.value}</p>
-                <p className="text-sm text-gray-600">{stat.label}</p>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
 
         {/* Filters */}
@@ -258,7 +310,7 @@ export const AdminAchievement: React.FC<AdminAchievementProps> = ({ onNavigate =
                 </tr>
               </thead>
               <tbody>
-                {filteredAchievements.map((item, index) => (
+                {pagedAchievements.map((item, index) => (
                   <tr key={item.id} className={`border-b hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}`}>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
@@ -266,6 +318,8 @@ export const AdminAchievement: React.FC<AdminAchievementProps> = ({ onNavigate =
                           src={item.studentImage}
                           alt={item.studentName}
                           className="w-12 h-12 rounded-xl object-cover"
+                          loading="lazy"
+                          decoding="async"
                         />
                         <span className="font-medium">{item.studentName}</span>
                       </div>
@@ -322,6 +376,11 @@ export const AdminAchievement: React.FC<AdminAchievementProps> = ({ onNavigate =
             <div className="text-center py-12">
               <Trophy className="w-16 h-16 mx-auto text-gray-300 mb-4" />
               <p className="text-gray-500">Tidak ada prestasi ditemukan</p>
+            </div>
+          )}
+          {filteredAchievements.length > 0 && totalPages > 1 && (
+            <div className="p-4 border-t">
+              <Pager currentPage={page} totalPages={totalPages} onPageChange={setPage} accentColor="#1E4AB8" />
             </div>
           )}
         </div>

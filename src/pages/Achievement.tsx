@@ -4,6 +4,7 @@ import { Footer } from '../components/Footer';
 import { Breadcrumb } from '../components/Breadcrumb';
 import { Trophy, Award, Medal, Filter, Search, Calendar, Star, ArrowRight, Sparkles } from 'lucide-react';
 import { AchievementCard } from '../components/AchievementCard';
+import { t } from '../i18n';
 
 interface AchievementProps {
   onNavigate?: (page: string) => void;
@@ -186,7 +187,7 @@ export const Achievement: React.FC<AchievementProps> = ({ onNavigate = () => {} 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar
-        siteName="Baitul Jannah Islamic School"
+        siteName={t('site.name')}
         siteTagline="Sekolahnya Para Juara"
         accentColor="#1E4AB8"
         menuItems={menuItems}
@@ -394,7 +395,7 @@ export const Achievement: React.FC<AchievementProps> = ({ onNavigate = () => {} 
         </div>
       </section>
 
-      <Footer siteName="Baitul Jannah Islamic School" accentColor="#1E4AB8" onNavigate={onNavigate} />
+      <Footer siteName={t('site.name')} accentColor="#1E4AB8" onNavigate={onNavigate} />
     </div>
   );
 };

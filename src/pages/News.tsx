@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { Breadcrumb } from '../components/Breadcrumb';
@@ -6,6 +6,8 @@ import { NewsCard } from '../components/NewsCard';
 import { Pagination } from '../components/Pagination';
 import { Search, Calendar, Tag, TrendingUp, Filter, X, ArrowRight, Sparkles, Eye, Share2, Clock } from 'lucide-react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { api } from '../services/api';
+import { t, tf } from '../i18n';
 
 interface NewsProps {
   onNavigate?: (page: string) => void;
@@ -16,63 +18,67 @@ export const News: React.FC<NewsProps> = ({ onNavigate = () => {} }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Semua');
   const [selectedNews, setSelectedNews] = useState<any | null>(null);
+  const [apiNews, setApiNews] = useState<any[]>([]);
+  const [loadingApi, setLoadingApi] = useState(true);
+  const [errorApi, setErrorApi] = useState('');
 
   const menuItems = [
-    { label: 'Beranda', href: '#', onClick: () => onNavigate('main') },
+    { label: t('menu.home'), href: '#', onClick: () => onNavigate('main') },
     {
-      label: 'Tentang',
+      label: t('menu.about'),
       href: '#',
       submenu: [
-        { label: 'Visi & Misi', href: '#', onClick: () => onNavigate('vision-mission') },
-        { label: 'Kurikulum', href: '#', onClick: () => onNavigate('about') },
-        { label: 'Fasilitas', href: '#', onClick: () => onNavigate('about') },
-        { label: 'Kepengurusan', href: '#', onClick: () => onNavigate('about') }
+        { label: t('menu.vision_mission'), href: '#', onClick: () => onNavigate('vision-mission') },
+        { label: t('menu.curriculum'), href: '#', onClick: () => onNavigate('about') },
+        { label: t('menu.facilities'), href: '#', onClick: () => onNavigate('about') },
+        { label: t('menu.organization'), href: '#', onClick: () => onNavigate('about') }
       ]
     },
     {
-      label: 'Profile',
+      label: t('menu.profile'),
       href: '#',
       submenu: [
-        { label: 'Profil Yayasan', href: '#', onClick: () => onNavigate('about') },
-        { label: 'Sejarah', href: '#', onClick: () => onNavigate('about') },
-        { label: 'Struktur Organisasi', href: '#', onClick: () => onNavigate('about') }
+        { label: t('menu.foundation_profile'), href: '#', onClick: () => onNavigate('about') },
+        { label: t('menu.history'), href: '#', onClick: () => onNavigate('about') },
+        { label: t('menu.organization_structure'), href: '#', onClick: () => onNavigate('about') }
       ]
     },
     {
-      label: 'Informasi',
+      label: t('menu.information'),
       href: '#',
       submenu: [
-        { label: 'Berita', href: '#', onClick: () => onNavigate('news') },
-        { label: 'Galeri', href: '#', onClick: () => onNavigate('gallery') },
-        { label: 'Program', href: '#', onClick: () => onNavigate('programs') }
+        { label: t('menu.news'), href: '#', onClick: () => onNavigate('news') },
+        { label: t('menu.gallery'), href: '#', onClick: () => onNavigate('gallery') },
+        { label: t('menu.program'), href: '#', onClick: () => onNavigate('programs') }
       ]
     },
-    { label: 'Karir', href: '#', onClick: () => onNavigate('career') },
+    { label: t('menu.career'), href: '#', onClick: () => onNavigate('career') },
     {
-      label: 'SPMB',
+      label: t('menu.admission'),
       href: '#',
       submenu: [
-        { label: 'Pendaftaran', href: '#', onClick: () => onNavigate('admission') },
-        { label: 'Jadwal & Alur', href: '#', onClick: () => onNavigate('admission') },
-        { label: 'Biaya Pendidikan', href: '#', onClick: () => onNavigate('admission') }
+        { label: t('menu.registration'), href: '#', onClick: () => onNavigate('admission') },
+        { label: t('menu.schedule'), href: '#', onClick: () => onNavigate('admission') },
+        { label: t('menu.tuition'), href: '#', onClick: () => onNavigate('admission') }
       ]
     },
-    { label: 'Kontak', href: '#', onClick: () => onNavigate('contact') },
-    { label: 'Login', href: '#', onClick: () => onNavigate('login') }
+    { label: t('menu.contact'), href: '#', onClick: () => onNavigate('contact') },
+    { label: t('menu.login'), href: '#', onClick: () => onNavigate('login') }
   ];
 
   const breadcrumbItems = [
-    { label: 'Beranda', onClick: () => onNavigate('main') },
-    { label: 'Berita' }
+    { label: t('menu.home'), onClick: () => onNavigate('main') },
+    { label: t('menu.news') }
   ];
 
   const categories = [
-    { name: 'Semua', count: 15, color: 'from-gray-500 to-gray-600' },
-    { name: 'Prestasi', count: 5, color: 'from-purple-500 to-indigo-600' },
-    { name: 'Kegiatan', count: 4, color: 'from-orange-500 to-amber-600' },
-    { name: 'Akademik', count: 3, color: 'from-blue-500 to-cyan-600' },
-    { name: 'Pengumuman', count: 2, color: 'from-green-500 to-emerald-600' },
-    { name: 'Event', count: 1, color: 'from-pink-500 to-rose-600' }
+    { id: 'Semua', label: t('news_page.categories.all'), count: 15, color: 'from-gray-500 to-gray-600' },
+    { id: 'Prestasi', label: t('news_page.categories.achievement'), count: 5, color: 'from-purple-500 to-indigo-600' },
+    { id: 'Kegiatan', label: t('news_page.categories.activity'), count: 4, color: 'from-orange-500 to-amber-600' },
+    { id: 'Akademik', label: t('news_page.categories.academic'), count: 3, color: 'from-blue-500 to-cyan-600' },
+    { id: 'Pengumuman', label: t('news_page.categories.announcement'), count: 2, color: 'from-green-500 to-emerald-600' },
+    { id: 'Event', label: t('news_page.categories.event'), count: 1, color: 'from-pink-500 to-rose-600' },
+    { id: 'Program', label: t('news_page.categories.program'), count: 1, color: 'from-teal-500 to-emerald-600' }
   ];
 
   const featuredNews = {
@@ -162,7 +168,61 @@ export const News: React.FC<NewsProps> = ({ onNavigate = () => {} }) => {
     }
   ];
 
-  const filteredNews = allNews.filter(news => {
+  const transformNews = (n: any) => ({
+    id: n.id || n._id || n.id_str || undefined,
+    image: n.image || n.image_url || '',
+    title: n.title || '',
+    date: new Date(n.publish_date || n.created_at || Date.now()).toLocaleDateString('id-ID'),
+    category: n.category || 'Umum',
+    excerpt: n.excerpt || (n.content ? String(n.content).slice(0, 160) + '...' : ''),
+    views: String(n.views ?? '0'),
+    author: n.author || 'Admin',
+    categoryColor: '#1E4AB8',
+    content: n.content || n.excerpt || ''
+  });
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      setLoadingApi(true);
+      try {
+        const res = await api.news.getAll({ page: 1, limit: 30 });
+        if (!active) return;
+        if (res.success) {
+          const list = Array.isArray(res.data) ? res.data : [];
+          setApiNews(list);
+          setErrorApi('');
+        } else {
+          setErrorApi(res.message || 'Gagal memuat berita');
+        }
+      } catch {
+        if (!active) return;
+        setErrorApi('Gagal memuat berita');
+      } finally {
+        if (active) setLoadingApi(false);
+      }
+    })();
+    return () => { active = false; };
+  }, []);
+
+  useEffect(() => {
+    const id = (() => { try { return localStorage.getItem('bj_news_selected_id'); } catch { return null; } })();
+    if (!id) return;
+    (async () => {
+      try {
+        const res = await api.news.getById(Number(id));
+        if (res.success && res.data) {
+          const mapped = transformNews(res.data);
+          setSelectedNews(mapped);
+        }
+      } catch {}
+      try { localStorage.removeItem('bj_news_selected_id'); } catch {}
+    })();
+  }, []);
+
+  const baseNews = apiNews.length ? apiNews.map(transformNews) : allNews;
+
+  const filteredNews = baseNews.filter(news => {
     const matchesSearch = news.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          news.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === 'Semua' || news.category === selectedCategory;
@@ -176,8 +236,8 @@ export const News: React.FC<NewsProps> = ({ onNavigate = () => {} }) => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar
-        siteName="Baitul Jannah Islamic School"
+      <Navbar 
+        siteName={t('site.name')}
         siteTagline="Sekolahnya Para Juara"
         accentColor="#1E4AB8"
         menuItems={menuItems}
@@ -208,12 +268,10 @@ export const News: React.FC<NewsProps> = ({ onNavigate = () => {} }) => {
           <div className="mt-8">
             <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/20 backdrop-blur-sm rounded-full text-sm mb-6">
               <TrendingUp className="w-4 h-4" />
-              <span>Berita & Informasi</span>
+              <span>{t('news_page.hero.badge')}</span>
             </div>
-            <h1 className="text-5xl lg:text-6xl mb-6">Berita Terkini</h1>
-            <p className="text-xl text-white/90 max-w-3xl leading-relaxed">
-              Ikuti perkembangan terbaru, prestasi, dan kegiatan di lingkungan Yayasan Baituljannah
-            </p>
+            <h1 className="text-5xl lg:text-6xl mb-6">{t('news_page.hero.title')}</h1>
+            <p className="text-xl text-white/90 max-w-3xl leading-relaxed">{t('news_page.hero.subtitle')}</p>
           </div>
         </div>
       </div>
@@ -227,7 +285,7 @@ export const News: React.FC<NewsProps> = ({ onNavigate = () => {} }) => {
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
-                placeholder="Cari berita..."
+                placeholder={t('news_page.search.placeholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#1E4AB8] transition-colors"
@@ -239,17 +297,17 @@ export const News: React.FC<NewsProps> = ({ onNavigate = () => {} }) => {
               {categories.map((cat, index) => (
                 <button
                   key={index}
-                  onClick={() => setSelectedCategory(cat.name)}
+                  onClick={() => setSelectedCategory(cat.id)}
                   className={`px-4 py-2 rounded-xl whitespace-nowrap transition-all duration-300 flex items-center gap-2 ${
-                    selectedCategory === cat.name
+                    selectedCategory === cat.id
                       ? `bg-gradient-to-r ${cat.color} text-white shadow-lg scale-105`
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
                   <Tag className="w-4 h-4" />
-                  <span>{cat.name}</span>
+                  <span>{cat.label}</span>
                   <span className={`px-2 py-0.5 rounded-full text-xs ${
-                    selectedCategory === cat.name ? 'bg-white/30' : 'bg-gray-200'
+                    selectedCategory === cat.id ? 'bg-white/30' : 'bg-gray-200'
                   }`}>
                     {cat.count}
                   </span>
@@ -261,7 +319,7 @@ export const News: React.FC<NewsProps> = ({ onNavigate = () => {} }) => {
           {/* Active Filters */}
           {(searchQuery || selectedCategory !== 'Semua') && (
             <div className="mt-4 flex items-center gap-2 flex-wrap">
-              <span className="text-sm text-gray-600">Filter aktif:</span>
+              <span className="text-sm text-gray-600">{t('news_page.search.filter_active')}</span>
               {searchQuery && (
                 <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm flex items-center gap-2">
                   <Search className="w-3 h-3" />
@@ -274,7 +332,7 @@ export const News: React.FC<NewsProps> = ({ onNavigate = () => {} }) => {
               {selectedCategory !== 'Semua' && (
                 <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm flex items-center gap-2">
                   <Tag className="w-3 h-3" />
-                  {selectedCategory}
+                  {categories.find(c => c.id === selectedCategory)?.label || selectedCategory}
                   <button onClick={() => setSelectedCategory('Semua')} className="hover:bg-purple-200 rounded-full p-0.5">
                     <X className="w-3 h-3" />
                   </button>
@@ -291,7 +349,7 @@ export const News: React.FC<NewsProps> = ({ onNavigate = () => {} }) => {
           <div className="mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-100 text-red-700 rounded-full text-sm mb-4">
               <Sparkles className="w-4 h-4" />
-              <span>Berita Utama</span>
+              <span>{t('news_page.featured.badge')}</span>
             </div>
           </div>
 
@@ -335,7 +393,7 @@ export const News: React.FC<NewsProps> = ({ onNavigate = () => {} }) => {
               </p>
               <div className="flex items-center gap-4">
                 <button className="btn-primary flex items-center gap-2 group/btn">
-                  <span>Baca Selengkapnya</span>
+                  <span>{t('news_page.featured.read_more')}</span>
                   <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
                 </button>
                 <button className="p-3 border-2 border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
@@ -357,7 +415,17 @@ export const News: React.FC<NewsProps> = ({ onNavigate = () => {} }) => {
             </span>
           </div>
 
-          {displayedNews.length > 0 ? (
+          {loadingApi ? (
+            <div className="space-y-4">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="p-6 bg-white rounded-2xl shadow-soft">
+                  <div className="h-40 bg-gray-200 animate-pulse rounded mb-4" />
+                  <div className="h-5 bg-gray-200 animate-pulse rounded w-3/4 mb-2" />
+                  <div className="h-4 bg-gray-200 animate-pulse rounded w-1/2" />
+                </div>
+              ))}
+            </div>
+          ) : displayedNews.length > 0 ? (
             <>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {displayedNews.map((news) => (
@@ -512,7 +580,7 @@ export const News: React.FC<NewsProps> = ({ onNavigate = () => {} }) => {
         </div>
       )}
 
-      <Footer siteName="Baitul Jannah Islamic School" accentColor="#1E4AB8" onNavigate={onNavigate} />
+      <Footer siteName={t('site.name')} accentColor="#1E4AB8" onNavigate={onNavigate} />
     </div>
   );
 };

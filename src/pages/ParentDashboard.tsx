@@ -49,7 +49,8 @@ export const ParentDashboard: React.FC<ParentDashboardProps> = ({ onNavigate = (
     { label: 'Akademik Anak', href: '#', onClick: () => {} },
     { label: 'Keuangan', href: '#', onClick: () => {} },
     { label: 'Komunikasi', href: '#', onClick: () => setShowMessageModal(true) },
-    { label: 'Profile', href: '#', onClick: () => {} }
+    { label: 'Profile', href: '#', onClick: () => {} },
+    { label: 'Login', href: '#', onClick: () => onNavigate('login') }
   ];
 
   const currentChild = children[selectedChild];

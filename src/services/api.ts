@@ -4,7 +4,8 @@
  */
 
 // API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+const API_BASE_URL = (import.meta.env.DEV ? (import.meta.env.VITE_API_URL || '/api') : (import.meta.env.VITE_API_URL || ''));
+const USE_BACKEND_IN_DEV = !!import.meta.env.VITE_API_URL;
 
 // Storage keys
 const TOKEN_KEY = 'baituljannah_token';
@@ -37,6 +38,7 @@ interface RequestOptions {
   headers?: Record<string, string>;
   body?: any;
   isFormData?: boolean;
+  allowUnauthorized?: boolean;
 }
 
 /**
@@ -94,7 +96,7 @@ const request = async <T = any>(
   endpoint: string,
   options: RequestOptions = {}
 ): Promise<ApiResponse<T>> => {
-  const { method = 'GET', headers = {}, body, isFormData = false } = options;
+  const { method = 'GET', headers = {}, body, isFormData = false, allowUnauthorized = false } = options;
 
   // Build URL
   const url = `${API_BASE_URL}${endpoint}`;
@@ -127,17 +129,19 @@ const request = async <T = any>(
   }
 
   try {
-    const response = await fetch(url, config);
-    const data = await response.json();
+    let response = await fetch(url, config);
+    let data: any;
+    try { data = await response.json(); } catch { data = {}; }
 
     // Handle 401 - Try to refresh token
     if (response.status === 401 && endpoint !== '/auth/refresh') {
+      if (allowUnauthorized) {
+        return data;
+      }
       const refreshed = await refreshAccessToken();
       if (refreshed) {
-        // Retry original request
         return request(endpoint, options);
       } else {
-        // Refresh failed, logout
         clearTokens();
         window.location.href = '/login';
         throw new Error('Session expired');
@@ -151,6 +155,20 @@ const request = async <T = any>(
 
     return data;
   } catch (error: any) {
+    // Fallback: if using relative base and proxy fails, try direct backend port
+    const base = API_BASE_URL;
+    if (base.startsWith('/')) {
+      try {
+        const direct = `http://localhost:5000${base}${endpoint}`;
+        const resp2 = await fetch(direct, config);
+        const data2 = await resp2.json();
+        if (!resp2.ok) throw new Error(data2.message || 'Request failed');
+        return data2;
+      } catch (e) {
+        console.error('API Error (fallback failed):', e);
+        throw e;
+      }
+    }
     console.error('API Error:', error);
     throw error;
   }
@@ -190,6 +208,19 @@ export const api = {
   // ============================================
   auth: {
     login: async (email: string, password: string) => {
+      if (import.meta.env.DEV && password === '123' && !USE_BACKEND_IN_DEV) {
+        const lower = email.toLowerCase();
+        let role = 'student';
+        if (lower.includes('admin.sdit')) role = 'admin_unit';
+        else if (lower.includes('admin@baituljannah')) role = 'super_admin';
+        else if (lower.includes('parent') || lower.includes('@parent.')) role = 'orang_tua';
+        else if (lower.includes('student') || lower.includes('@student.')) role = 'siswa';
+        else if (lower.includes('ahmad@baituljannah') || lower.includes('ustadz')) role = 'guru';
+        const mock = { success: true, data: { token: 'dev', refresh_token: 'dev', user: { id: 'dev', email, role } } } as ApiResponse;
+        setTokens('dev', 'dev');
+        setStoredUser(mock.data!.user);
+        return mock;
+      }
       const response = await request('/auth/login', {
         method: 'POST',
         body: { email, password },
@@ -244,7 +275,12 @@ export const api = {
   // ============================================
   units: {
     getAll: async () => {
-      return request('/units');
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_units');
+        const list = raw ? JSON.parse(raw) : [];
+        return { success: true, data: list } as ApiResponse;
+      }
+      return request('/units', { allowUnauthorized: true });
     },
 
     getById: async (id: number) => {
@@ -252,6 +288,16 @@ export const api = {
     },
 
     create: async (unitData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_units');
+        const list = raw ? JSON.parse(raw) : [];
+        const id = list.length ? Math.max(...list.map((u: any) => Number(u.id) || 0)) + 1 : 1;
+        const now = new Date().toISOString();
+        const newUnit = { id, created_at: now, updated_at: now, status: 'active', ...unitData };
+        list.push(newUnit);
+        localStorage.setItem('dev_units', JSON.stringify(list));
+        return { success: true, data: newUnit } as ApiResponse;
+      }
       return request('/units', {
         method: 'POST',
         body: unitData,
@@ -259,6 +305,18 @@ export const api = {
     },
 
     update: async (id: number, unitData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_units');
+        const list = raw ? JSON.parse(raw) : [];
+        const idx = list.findIndex((u: any) => String(u.id) === String(id));
+        if (idx >= 0) {
+          const now = new Date().toISOString();
+          list[idx] = { ...list[idx], ...unitData, id: list[idx].id, updated_at: now };
+          localStorage.setItem('dev_units', JSON.stringify(list));
+          return { success: true, data: list[idx] } as ApiResponse;
+        }
+        return { success: false, message: 'Unit not found' } as ApiResponse;
+      }
       return request(`/units/${id}`, {
         method: 'PUT',
         body: unitData,
@@ -266,6 +324,13 @@ export const api = {
     },
 
     delete: async (id: number) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_units');
+        const list = raw ? JSON.parse(raw) : [];
+        const filtered = list.filter((u: any) => String(u.id) !== String(id));
+        localStorage.setItem('dev_units', JSON.stringify(filtered));
+        return { success: true, data: {} } as ApiResponse;
+      }
       return request(`/units/${id}`, {
         method: 'DELETE',
       });
@@ -278,6 +343,11 @@ export const api = {
   users: {
     getAll: async (params?: any) => {
       const query = new URLSearchParams(params).toString();
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_users');
+        const list = raw ? JSON.parse(raw) : [];
+        return { success: true, data: list } as ApiResponse;
+      }
       return request(`/users${query ? `?${query}` : ''}`);
     },
 
@@ -286,6 +356,17 @@ export const api = {
     },
 
     create: async (userData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_users');
+        const list = raw ? JSON.parse(raw) : [];
+        const id = list.length ? Math.max(...list.map((u: any) => Number(u.id) || 0)) + 1 : 1;
+        const now = new Date().toISOString();
+        const username = userData.username || (userData.email ? String(userData.email).split('@')[0] : `user${id}`);
+        const newUser = { id, created_at: now, updated_at: now, status: 'active', username, ...userData };
+        list.push(newUser);
+        localStorage.setItem('dev_users', JSON.stringify(list));
+        return { success: true, data: newUser } as ApiResponse;
+      }
       return request('/users', {
         method: 'POST',
         body: userData,
@@ -293,6 +374,18 @@ export const api = {
     },
 
     update: async (id: number, userData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_users');
+        const list = raw ? JSON.parse(raw) : [];
+        const idx = list.findIndex((u: any) => String(u.id) === String(id));
+        if (idx >= 0) {
+          const now = new Date().toISOString();
+          list[idx] = { ...list[idx], ...userData, id: list[idx].id, updated_at: now };
+          localStorage.setItem('dev_users', JSON.stringify(list));
+          return { success: true, data: list[idx] } as ApiResponse;
+        }
+        return { success: false, message: 'User not found' } as ApiResponse;
+      }
       return request(`/users/${id}`, {
         method: 'PUT',
         body: userData,
@@ -300,6 +393,13 @@ export const api = {
     },
 
     delete: async (id: number) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_users');
+        const list = raw ? JSON.parse(raw) : [];
+        const filtered = list.filter((u: any) => String(u.id) !== String(id));
+        localStorage.setItem('dev_users', JSON.stringify(filtered));
+        return { success: true, data: {} } as ApiResponse;
+      }
       return request(`/users/${id}`, {
         method: 'DELETE',
       });
@@ -765,7 +865,7 @@ export const api = {
 
     getLatest: async (params?: any) => {
       const query = new URLSearchParams(params).toString();
-      return request(`/news/latest${query ? `?${query}` : ''}`);
+      return request(`/news/latest${query ? `?${query}` : ''}`, { allowUnauthorized: true });
     },
 
     getById: async (id: number) => {
@@ -777,16 +877,20 @@ export const api = {
     },
 
     create: async (newsData: any) => {
+      const isFD = typeof FormData !== 'undefined' && newsData instanceof FormData;
       return request('/news', {
         method: 'POST',
         body: newsData,
+        isFormData: !!isFD,
       });
     },
 
     update: async (id: number, newsData: any) => {
+      const isFD = typeof FormData !== 'undefined' && newsData instanceof FormData;
       return request(`/news/${id}`, {
         method: 'PUT',
         body: newsData,
+        isFormData: !!isFD,
       });
     },
 
@@ -811,7 +915,16 @@ export const api = {
       });
     },
 
-    delete: async (id: number) => {
+    update: async (id: number | string, data: FormData | any) => {
+      const isFD = typeof FormData !== 'undefined' && data instanceof FormData;
+      return request(`/gallery/${id}`, {
+        method: 'PUT',
+        body: data,
+        isFormData: !!isFD,
+      });
+    },
+
+    delete: async (id: number | string) => {
       return request(`/gallery/${id}`, {
         method: 'DELETE',
       });
@@ -825,16 +938,20 @@ export const api = {
     },
 
     create: async (achievementData: any) => {
+      const isFD = typeof FormData !== 'undefined' && achievementData instanceof FormData;
       return request('/achievements', {
         method: 'POST',
         body: achievementData,
+        isFormData: !!isFD,
       });
     },
 
     update: async (id: number, achievementData: any) => {
+      const isFD = typeof FormData !== 'undefined' && achievementData instanceof FormData;
       return request(`/achievements/${id}`, {
         method: 'PUT',
         body: achievementData,
+        isFormData: !!isFD,
       });
     },
 
@@ -867,6 +984,178 @@ export const api = {
 
     delete: async (id: number) => {
       return request(`/programs/${id}`, {
+        method: 'DELETE',
+      });
+    },
+  },
+
+  // ============================================
+  // HOMEPAGE HERO SLIDES
+  // ============================================
+  heroSlides: {
+    getAll: async () => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_hero_slides');
+        const list = raw ? JSON.parse(raw) : [];
+        return { success: true, data: list } as ApiResponse;
+      }
+      return request('/hero-slides', { allowUnauthorized: true });
+    },
+
+    create: async (slideData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_hero_slides');
+        const list = raw ? JSON.parse(raw) : [];
+        const id = list.length ? Math.max(...list.map((s: any) => Number(s.id) || 0)) + 1 : 1;
+        const now = new Date().toISOString();
+        const order = typeof slideData.order === 'number' ? slideData.order : list.length + 1;
+        const newSlide = { id, created_at: now, updated_at: now, status: 'published', order, ...slideData };
+        list.push(newSlide);
+        localStorage.setItem('dev_hero_slides', JSON.stringify(list));
+        return { success: true, data: newSlide } as ApiResponse;
+      }
+      return request('/hero-slides', {
+        method: 'POST',
+        body: slideData,
+      });
+    },
+
+    update: async (id: number, slideData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_hero_slides');
+        const list = raw ? JSON.parse(raw) : [];
+        const idx = list.findIndex((s: any) => String(s.id) === String(id));
+        if (idx >= 0) {
+          const now = new Date().toISOString();
+          list[idx] = { ...list[idx], ...slideData, id: list[idx].id, updated_at: now };
+          localStorage.setItem('dev_hero_slides', JSON.stringify(list));
+          return { success: true, data: list[idx] } as ApiResponse;
+        }
+        return { success: false, message: 'Slide not found' } as ApiResponse;
+      }
+      return request(`/hero-slides/${id}`, {
+        method: 'PUT',
+        body: slideData,
+      });
+    },
+
+    delete: async (id: number) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_hero_slides');
+        const list = raw ? JSON.parse(raw) : [];
+        const filtered = list.filter((s: any) => String(s.id) !== String(id));
+        localStorage.setItem('dev_hero_slides', JSON.stringify(filtered));
+        return { success: true, data: {} } as ApiResponse;
+      }
+      return request(`/hero-slides/${id}`, {
+        method: 'DELETE',
+      });
+    },
+  },
+  dashboardEvents: {
+    getAll: async () => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_dashboard_events');
+        const list = raw ? JSON.parse(raw) : [];
+        return { success: true, data: list } as ApiResponse;
+      }
+      return request('/dashboard/events');
+    },
+    create: async (eventData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_dashboard_events');
+        const list = raw ? JSON.parse(raw) : [];
+        const id = String(Date.now());
+        const newItem = { id, ...eventData };
+        list.push(newItem);
+        localStorage.setItem('dev_dashboard_events', JSON.stringify(list));
+        return { success: true, data: newItem } as ApiResponse;
+      }
+      return request('/dashboard/events', {
+        method: 'POST',
+        body: eventData,
+      });
+    },
+    update: async (id: string | number, eventData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_dashboard_events');
+        const list = raw ? JSON.parse(raw) : [];
+        const idx = list.findIndex((e: any) => String(e.id) === String(id));
+        if (idx >= 0) {
+          list[idx] = { ...list[idx], ...eventData, id: list[idx].id };
+          localStorage.setItem('dev_dashboard_events', JSON.stringify(list));
+          return { success: true, data: list[idx] } as ApiResponse;
+        }
+        return { success: false, message: 'Event not found' } as ApiResponse;
+      }
+      return request(`/dashboard/events/${id}`, {
+        method: 'PUT',
+        body: eventData,
+      });
+    },
+    delete: async (id: string | number) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_dashboard_events');
+        const list = raw ? JSON.parse(raw) : [];
+        const filtered = list.filter((e: any) => String(e.id) !== String(id));
+        localStorage.setItem('dev_dashboard_events', JSON.stringify(filtered));
+        return { success: true, data: {} } as ApiResponse;
+      }
+      return request(`/dashboard/events/${id}`, {
+        method: 'DELETE',
+      });
+    },
+  },
+  dashboardActivities: {
+    getAll: async () => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_dashboard_activities');
+        const list = raw ? JSON.parse(raw) : [];
+        return { success: true, data: list } as ApiResponse;
+      }
+      return request('/dashboard/activities');
+    },
+    create: async (activityData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_dashboard_activities');
+        const list = raw ? JSON.parse(raw) : [];
+        const id = String(Date.now());
+        const newItem = { id, ...activityData };
+        const next = [newItem, ...list];
+        localStorage.setItem('dev_dashboard_activities', JSON.stringify(next));
+        return { success: true, data: newItem } as ApiResponse;
+      }
+      return request('/dashboard/activities', {
+        method: 'POST',
+        body: activityData,
+      });
+    },
+    update: async (id: string | number, activityData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_dashboard_activities');
+        const list = raw ? JSON.parse(raw) : [];
+        const idx = list.findIndex((a: any) => String(a.id) === String(id));
+        if (idx >= 0) {
+          list[idx] = { ...list[idx], ...activityData, id: list[idx].id };
+          localStorage.setItem('dev_dashboard_activities', JSON.stringify(list));
+          return { success: true, data: list[idx] } as ApiResponse;
+        }
+        return { success: false, message: 'Activity not found' } as ApiResponse;
+      }
+      return request(`/dashboard/activities/${id}`, {
+        method: 'PUT',
+        body: activityData,
+      });
+    },
+    delete: async (id: string | number) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_dashboard_activities');
+        const list = raw ? JSON.parse(raw) : [];
+        const filtered = list.filter((a: any) => String(a.id) !== String(id));
+        localStorage.setItem('dev_dashboard_activities', JSON.stringify(filtered));
+        return { success: true, data: {} } as ApiResponse;
+      }
+      return request(`/dashboard/activities/${id}`, {
         method: 'DELETE',
       });
     },

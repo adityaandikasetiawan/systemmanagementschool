@@ -3,6 +3,7 @@ import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { BookOpen, GraduationCap, Award, Mail, Phone, Star, X, Search, Filter, Users, Target, TrendingUp, Sparkles, ChevronDown } from 'lucide-react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { t } from '../i18n';
 
 interface TeachersProps {
   onNavigate?: (page: string) => void;
@@ -229,8 +230,8 @@ export const Teachers: React.FC<TeachersProps> = ({ onNavigate = () => {} }) => 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar 
-        siteName="Baitul Jannah Islamic School"
-        siteTagline="Sekolahnya Para Juara"
+        siteName={t('site.name')}
+        siteTagline={t('navbar.tagline', "Sekolahnya Para Juara")}
         accentColor="#1E4AB8"
         menuItems={menuItems} 
       />
@@ -595,7 +596,7 @@ export const Teachers: React.FC<TeachersProps> = ({ onNavigate = () => {} }) => 
       </section>
 
       <Footer 
-        siteName="Baitul Jannah Islamic School"
+        siteName={t('site.name')}
         accentColor="#1E4AB8"
         onNavigate={onNavigate}
       />

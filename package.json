@@ -33,17 +33,21 @@
             "class-variance-authority": "^0.7.1",
             "clsx": "*",
             "cmdk": "^1.1.1",
+            "compression": "^1.8.1",
             "cors": "*",
             "dotenv": "*",
             "embla-carousel-react": "^8.6.0",
             "express": "*",
+            "express-rate-limit": "^8.2.1",
             "helmet": "*",
             "input-otp": "^1.4.2",
             "jsonwebtoken": "*",
             "lucide-react": "^0.487.0",
             "morgan": "*",
             "mysql2": "*",
+            "mysqldump": "*",
             "next-themes": "^0.4.6",
+            "node-cron": "^3.0.2",
             "react": "^18.3.1",
             "react-day-picker": "^8.10.1",
             "react-dom": "^18.3.1",
@@ -58,11 +62,57 @@
             "@types/node": "^20.10.0",
             "@types/react": "^19.2.7",
             "@types/react-dom": "^19.2.3",
+            "@typescript-eslint/eslint-plugin": "^8.13.0",
+            "@typescript-eslint/parser": "^8.13.0",
             "@vitejs/plugin-react-swc": "^3.10.2",
+            "eslint": "^9.14.0",
+            "eslint-plugin-react": "^7.37.2",
+            "eslint-plugin-react-hooks": "^5.0.0",
+            "typescript": "^5.6.3",
             "vite": "6.3.5"
       },
       "scripts": {
             "dev": "vite",
-            "build": "vite build"
+            "build": "vite build",
+            "typecheck": "tsc --noEmit",
+            "lint": "eslint \"src/**/*.{ts,tsx}\"",
+            "start:prod": "node server.js",
+    "start:api": "node src/backend/server.js",
+    "serve:prod": "npm run build && node server.js",
+            "backup:db": "node scripts/backup-db.js",
+            "schedule:backup": "node scripts/schedule-backup.js"
+      },
+      "eslintConfig": {
+            "env": {
+                  "browser": true,
+                  "es2021": true
+            },
+            "parser": "@typescript-eslint/parser",
+            "parserOptions": {
+                  "ecmaVersion": "latest",
+                  "sourceType": "module"
+            },
+            "plugins": [
+                  "react",
+                  "@typescript-eslint",
+                  "react-hooks"
+            ],
+            "extends": [
+                  "eslint:recommended",
+                  "plugin:react/recommended",
+                  "plugin:@typescript-eslint/recommended",
+                  "plugin:react-hooks/recommended"
+            ],
+            "settings": {
+                  "react": {
+                        "version": "detect"
+                  }
+            },
+            "ignorePatterns": [
+                  "src/backend/**",
+                  "src/backend-starter/**",
+                  "dist/**",
+                  "build/**"
+            ]
       }
 }

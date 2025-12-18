@@ -1615,19 +1615,74 @@ const TeachersManagement: React.FC<{ accentColor: string }> = ({ accentColor }) 
 };
 
 // Classes Management Component
+type TeacherClass = { id: number; name: string; level: string; students: number; waliKelas: string; subject: string; schedule: string };
+type AdminClass = { id: number; name: string; level: string; students: number; waliKelas: string };
+
 const ClassesManagement: React.FC<{ accentColor: string; userRole: string }> = ({ accentColor, userRole }) => {
-  const classes = userRole === 'Guru' 
-    ? [
-        { id: 1, name: '4A', level: 'Kelas 4', students: 30, waliKelas: 'Ustadz Ahmad', subject: 'Matematika', schedule: 'Senin, Rabu, Jumat' },
-        { id: 2, name: '4B', level: 'Kelas 4', students: 30, waliKelas: 'Ustadzah Siti', subject: 'Matematika', schedule: 'Selasa, Kamis' },
-        { id: 3, name: '5A', level: 'Kelas 5', students: 28, waliKelas: 'Ustadzah Maryam', subject: 'Matematika', schedule: 'Rabu, Jumat' }
-      ]
-    : [
-        { id: 1, name: '1A', level: 'Kelas 1', students: 30, waliKelas: 'Ustadzah Aisyah' },
-        { id: 2, name: '1B', level: 'Kelas 1', students: 28, waliKelas: 'Ustadz Abdullah' },
-        { id: 3, name: '2A', level: 'Kelas 2', students: 32, waliKelas: 'Ustadzah Fatimah' },
-        { id: 4, name: '2B', level: 'Kelas 2', students: 30, waliKelas: 'Ustadz Muhammad' }
-      ];
+  if (userRole === 'Guru') {
+    const classes: TeacherClass[] = [
+      { id: 1, name: '4A', level: 'Kelas 4', students: 30, waliKelas: 'Ustadz Ahmad', subject: 'Matematika', schedule: 'Senin, Rabu, Jumat' },
+      { id: 2, name: '4B', level: 'Kelas 4', students: 30, waliKelas: 'Ustadzah Siti', subject: 'Matematika', schedule: 'Selasa, Kamis' },
+      { id: 3, name: '5A', level: 'Kelas 5', students: 28, waliKelas: 'Ustadzah Maryam', subject: 'Matematika', schedule: 'Rabu, Jumat' }
+    ];
+    return (
+      <div>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex-1 relative max-w-md">
+            <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Cari kelas..."
+              className="input-field pl-10"
+            />
+          </div>
+        </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {classes.map((cls) => (
+            <div key={cls.id} className="card hover:shadow-strong transition-shadow">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h4>{cls.name}</h4>
+                  <p className="text-sm text-gray-600">{cls.level}</p>
+                </div>
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${accentColor}20`, color: accentColor }}>
+                  <Users className="w-6 h-6" />
+                </div>
+              </div>
+              <div className="space-y-2 mb-4">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">Jumlah Siswa</span>
+                  <span>{cls.students} siswa</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">Wali Kelas</span>
+                  <span>{cls.waliKelas}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">Mata Pelajaran</span>
+                  <span>{cls.subject}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">Jadwal</span>
+                  <span className="text-xs">{cls.schedule}</span>
+                </div>
+              </div>
+              <button className="w-full btn-primary" style={{ backgroundColor: accentColor }}>
+                Lihat Detail
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  const classes: AdminClass[] = [
+    { id: 1, name: '1A', level: 'Kelas 1', students: 30, waliKelas: 'Ustadzah Aisyah' },
+    { id: 2, name: '1B', level: 'Kelas 1', students: 28, waliKelas: 'Ustadz Abdullah' },
+    { id: 3, name: '2A', level: 'Kelas 2', students: 32, waliKelas: 'Ustadzah Fatimah' },
+    { id: 4, name: '2B', level: 'Kelas 2', students: 30, waliKelas: 'Ustadz Muhammad' }
+  ];
 
   return (
     <div>
@@ -1640,12 +1695,10 @@ const ClassesManagement: React.FC<{ accentColor: string; userRole: string }> = (
             className="input-field pl-10"
           />
         </div>
-        {userRole !== 'Guru' && (
-          <button className="btn-primary flex items-center gap-2" style={{ backgroundColor: accentColor }}>
-            <Plus className="w-5 h-5" />
-            <span>Tambah Kelas</span>
-          </button>
-        )}
+        <button className="btn-primary flex items-center gap-2" style={{ backgroundColor: accentColor }}>
+          <Plus className="w-5 h-5" />
+          <span>Tambah Kelas</span>
+        </button>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -1669,18 +1722,6 @@ const ClassesManagement: React.FC<{ accentColor: string; userRole: string }> = (
                 <span className="text-gray-600">Wali Kelas</span>
                 <span>{cls.waliKelas}</span>
               </div>
-              {userRole === 'Guru' && (
-                <>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">Mata Pelajaran</span>
-                    <span>{cls.subject}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">Jadwal</span>
-                    <span className="text-xs">{cls.schedule}</span>
-                  </div>
-                </>
-              )}
             </div>
             <button className="w-full btn-primary" style={{ backgroundColor: accentColor }}>
               Lihat Detail
@@ -1869,20 +1910,16 @@ const LibraryManagement: React.FC<{ accentColor: string }> = ({ accentColor }) =
 };
 
 // Attendance Management Component
-const AttendanceManagement: React.FC<{ accentColor: string; userRole: string }> = ({ accentColor, userRole }) => {
-  const attendanceData = userRole === 'Siswa' 
-    ? [
-        { date: '2024-12-01', status: 'Hadir', subject: 'Matematika', teacher: 'Ustadz Ahmad' },
-        { date: '2024-12-01', status: 'Hadir', subject: 'Bahasa Arab', teacher: 'Ustadzah Fatimah' },
-        { date: '2024-12-01', status: 'Hadir', subject: 'Fisika', teacher: 'Ustadz Muhammad' }
-      ]
-    : [
-        { id: 1, class: '4A', date: '2024-12-01', present: 28, sick: 2, absent: 0, total: 30 },
-        { id: 2, class: '4B', date: '2024-12-01', present: 27, sick: 1, absent: 2, total: 30 },
-        { id: 3, class: '5A', date: '2024-12-01', present: 26, sick: 2, absent: 0, total: 28 }
-      ];
+type StudentAttendance = { date: string; status: string; subject: string; teacher: string };
+type ClassAttendance = { id: number; class: string; date: string; present: number; sick: number; absent: number; total: number };
 
+const AttendanceManagement: React.FC<{ accentColor: string; userRole: string }> = ({ accentColor, userRole }) => {
   if (userRole === 'Siswa') {
+    const attendanceData: StudentAttendance[] = [
+      { date: '2024-12-01', status: 'Hadir', subject: 'Matematika', teacher: 'Ustadz Ahmad' },
+      { date: '2024-12-01', status: 'Hadir', subject: 'Bahasa Arab', teacher: 'Ustadzah Fatimah' },
+      { date: '2024-12-01', status: 'Hadir', subject: 'Fisika', teacher: 'Ustadz Muhammad' }
+    ];
     return (
       <div>
         <div className="grid md:grid-cols-4 gap-6 mb-6">
@@ -1944,7 +1981,11 @@ const AttendanceManagement: React.FC<{ accentColor: string; userRole: string }> 
       <div className="card">
         <h4 className="mb-4">Absensi Hari Ini</h4>
         <div className="space-y-3">
-          {attendanceData.map((item: any) => (
+          {([
+            { id: 1, class: '4A', date: '2024-12-01', present: 28, sick: 2, absent: 0, total: 30 },
+            { id: 2, class: '4B', date: '2024-12-01', present: 27, sick: 1, absent: 2, total: 30 },
+            { id: 3, class: '5A', date: '2024-12-01', present: 26, sick: 2, absent: 0, total: 28 }
+          ] as ClassAttendance[]).map((item) => (
             <div key={item.id} className="flex items-center justify-between p-4 border rounded-xl">
               <div>
                 <h5>Kelas {item.class}</h5>
@@ -2026,20 +2067,16 @@ const MaterialsManagement: React.FC<{ accentColor: string; userRole: string }> =
 };
 
 // Assignments Management Component
-const AssignmentsManagement: React.FC<{ accentColor: string; userRole: string }> = ({ accentColor, userRole }) => {
-  const assignments = userRole === 'Siswa'
-    ? [
-        { id: 1, title: 'Latihan Soal Perkalian', subject: 'Matematika', teacher: 'Ustadz Ahmad', deadline: '2024-12-05', status: 'Belum Dikumpulkan' },
-        { id: 2, title: 'Essay Bahasa Arab', subject: 'Bahasa Arab', teacher: 'Ustadzah Fatimah', deadline: '2024-12-03', status: 'Terlambat' },
-        { id: 3, title: 'Laporan Praktikum', subject: 'IPA', teacher: 'Ustadz Muhammad', deadline: '2024-12-10', status: 'Sudah Dikumpulkan' }
-      ]
-    : [
-        { id: 1, title: 'Latihan Soal Perkalian', class: '4A, 4B', deadline: '2024-12-05', submitted: 45, total: 60 },
-        { id: 2, title: 'Essay Matematika', class: '5A', deadline: '2024-12-03', submitted: 28, total: 28 },
-        { id: 3, title: 'Tugas Kelompok', class: '4A', deadline: '2024-12-10', submitted: 20, total: 30 }
-      ];
+type StudentAssignment = { id: number; title: string; subject: string; teacher: string; deadline: string; status: string };
+type TeacherAssignment = { id: number; title: string; class: string; deadline: string; submitted: number; total: number };
 
+const AssignmentsManagement: React.FC<{ accentColor: string; userRole: string }> = ({ accentColor, userRole }) => {
   if (userRole === 'Siswa') {
+    const assignments: StudentAssignment[] = [
+      { id: 1, title: 'Latihan Soal Perkalian', subject: 'Matematika', teacher: 'Ustadz Ahmad', deadline: '2024-12-05', status: 'Belum Dikumpulkan' },
+      { id: 2, title: 'Essay Bahasa Arab', subject: 'Bahasa Arab', teacher: 'Ustadzah Fatimah', deadline: '2024-12-03', status: 'Terlambat' },
+      { id: 3, title: 'Laporan Praktikum', subject: 'IPA', teacher: 'Ustadz Muhammad', deadline: '2024-12-10', status: 'Sudah Dikumpulkan' }
+    ];
     return (
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {assignments.map((assignment) => (
@@ -2090,7 +2127,14 @@ const AssignmentsManagement: React.FC<{ accentColor: string; userRole: string }>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {assignments.map((assignment) => (
+        {(function() {
+          const assignments: TeacherAssignment[] = [
+            { id: 1, title: 'Latihan Soal Perkalian', class: '4A, 4B', deadline: '2024-12-05', submitted: 45, total: 60 },
+            { id: 2, title: 'Essay Matematika', class: '5A', deadline: '2024-12-03', submitted: 28, total: 28 },
+            { id: 3, title: 'Tugas Kelompok', class: '4A', deadline: '2024-12-10', submitted: 20, total: 30 }
+          ];
+          return assignments;
+        })().map((assignment) => (
           <div key={assignment.id} className="card hover:shadow-strong transition-shadow">
             <h5 className="mb-2">{assignment.title}</h5>
             <p className="text-sm text-gray-600 mb-4">Kelas {assignment.class}</p>
@@ -2166,7 +2210,7 @@ const GradesManagement: React.FC<{ accentColor: string; userRole: string }> = ({
                 </tr>
               </thead>
               <tbody>
-                {grades.map((grade, index) => (
+                {(grades as Array<{ subject: string; uts: number; uas: number; tugas: number; final: number }>).map((grade, index) => (
                   <tr key={index} className="border-b hover:bg-gray-50">
                     <td className="py-3 px-4">{grade.subject}</td>
                     <td className="py-3 px-4 text-center">{grade.uts}</td>
