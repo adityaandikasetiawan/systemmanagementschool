@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { api } from '../services/api';
 import { Menu, X, ChevronDown, LogIn } from 'lucide-react';
@@ -48,7 +48,9 @@ export const Navbar: React.FC<NavbarProps> = ({ logo, siteName, siteTagline = t(
     'Profile': 'site.menu.profile',
     'Informasi': 'site.menu.info',
     'Karir': 'site.menu.career',
+    'Career': 'site.menu.career',
     'SPMB': 'site.menu.admission',
+    'PPDB': 'site.menu.admission',
     'Kontak': 'site.menu.contact',
     'Visi & Misi': 'site.submenu.vision_mission',
     'Kurikulum': 'site.submenu.curriculum',
@@ -104,6 +106,53 @@ export const Navbar: React.FC<NavbarProps> = ({ logo, siteName, siteTagline = t(
     } catch {}
   };
 
+  const nameRef = useRef<HTMLHeadingElement | null>(null);
+  const taglineRef = useRef<HTMLParagraphElement | null>(null);
+  const [taglineSpacing, setTaglineSpacing] = useState<number>(0);
+
+  const recalcSpacing = () => {
+    const nameEl = nameRef.current;
+    const tagEl = taglineRef.current;
+    if (!nameEl || !tagEl) return;
+    const nameWidth = nameEl.getBoundingClientRect().width;
+    const tagWidth = tagEl.getBoundingClientRect().width;
+    const rawText = tagEl.textContent || '';
+    const chars = Math.max(rawText.length, 2);
+
+    const pxPerCm = 96 / 2.54;
+    const extraTotalPx = pxPerCm * 2;
+    const targetWidth = nameWidth + extraTotalPx;
+    const delta = targetWidth - tagWidth;
+    if (chars < 2) {
+      setTaglineSpacing(0);
+      return;
+    }
+
+    const gaps = chars - 1;
+    const spacingPx = Math.max(delta / gaps, 1.5);
+    setTaglineSpacing(spacingPx);
+
+    requestAnimationFrame(() => {
+      const targetW = nameEl.getBoundingClientRect().width + extraTotalPx;
+      const currentTagW = tagEl.getBoundingClientRect().width;
+      const remain = targetW - currentTagW;
+      if (remain > 0.5) {
+        const add = remain / gaps;
+        setTaglineSpacing((prev) => prev + add);
+      }
+    });
+  };
+
+  useEffect(() => {
+    recalcSpacing();
+  }, [siteName, siteTagline, locale]);
+
+  useEffect(() => {
+    const onResize = () => recalcSpacing();
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
       <div className="container-custom">
@@ -118,8 +167,8 @@ export const Navbar: React.FC<NavbarProps> = ({ logo, siteName, siteTagline = t(
               </div>
             )}
             <div>
-              <h1 className="text-xl" style={{ color: accentColor }}>{siteName}</h1>
-              <p className="text-xs text-gray-500">{siteTagline}</p>
+              <h1 ref={nameRef} className="text-xl" style={{ color: accentColor }}>{siteName}</h1>
+              <p ref={taglineRef} className="text-xs text-gray-500" style={{ letterSpacing: taglineSpacing ? `${taglineSpacing}px` : undefined }}>{siteTagline}</p>
             </div>
           </div>
 

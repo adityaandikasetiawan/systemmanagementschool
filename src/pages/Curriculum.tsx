@@ -1,4 +1,6 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
+import curriculumMd from '../content/curriculum.md?raw';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { Breadcrumb } from '../components/Breadcrumb';
@@ -106,6 +108,13 @@ export const Curriculum: React.FC<CurriculumProps> = ({ onNavigate = () => {} })
               dan Kurikulum Khas Baituljannah untuk melahirkan generasi yang cerdas, berkarakter, 
               dan berwawasan global.
             </p>
+          </div>
+
+          {/* Markdown Content */}
+          <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 mb-16">
+            <div className="text-gray-800 text-base leading-relaxed space-y-4">
+              <ReactMarkdown>{curriculumMd}</ReactMarkdown>
+            </div>
           </div>
 
           {/* Pillars Grid */}

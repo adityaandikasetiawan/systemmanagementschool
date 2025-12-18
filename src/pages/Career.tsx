@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { t } from '../i18n';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { EmailService } from '../components/EmailService';
@@ -335,7 +336,7 @@ export const Career: React.FC<CareerProps> = ({ onNavigate = () => {} }) => {
     <div className="min-h-screen bg-gray-50">
       <Navbar 
         siteName={t('site.name')}
-        siteTagline="Sekolahnya Para Juara"
+        siteTagline={t('navbar.tagline')}
         accentColor="#1E4AB8"
         menuItems={menuItems} 
       />

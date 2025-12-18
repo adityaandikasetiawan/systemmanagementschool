@@ -268,7 +268,7 @@ export const Events: React.FC<EventsProps> = ({ onNavigate = () => {} }) => {
     <div className="min-h-screen bg-gray-50">
       <Navbar
         siteName={t('site.name')}
-        siteTagline="Sekolahnya Para Juara"
+        siteTagline={t('navbar.tagline')}
         accentColor="#1E4AB8"
         menuItems={menuItems} 
       />

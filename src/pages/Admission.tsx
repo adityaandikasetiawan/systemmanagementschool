@@ -167,7 +167,7 @@ export const Admission: React.FC<AdmissionProps> = ({ onNavigate = () => {} }) =
     <div className="min-h-screen bg-gray-50">
       <Navbar 
         siteName={t('site.name')}
-        siteTagline="Sekolahnya Para Juara"
+        siteTagline={t('navbar.tagline')}
         menuItems={menuItems}
         accentColor="var(--color-primary)"
       />

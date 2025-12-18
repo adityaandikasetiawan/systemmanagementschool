@@ -215,7 +215,7 @@ export const Programs: React.FC<ProgramsProps> = ({ onNavigate = () => {} }) => 
     <div className="min-h-screen bg-gray-50">
       <Navbar 
         siteName={t('site.name')}
-        siteTagline="Sekolahnya Para Juara"
+        siteTagline={t('navbar.tagline')}
         menuItems={menuItems}
         accentColor="#1E4AB8"
       />

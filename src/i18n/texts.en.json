@@ -10,6 +10,17 @@
       "delete": "Delete"
     }
   },
+  "navbar": {
+    "tagline": "Sekolahnya para juara",
+    "ppdb_cta": "PPDB 2025",
+    "role": {
+      "super_admin": "Super Admin",
+      "admin_unit": "Admin Unit",
+      "guru": "Teacher",
+      "siswa": "Student",
+      "default": "User"
+    }
+  },
   "about": {
     "hero": {
       "badge": "Foundation Profile",

@@ -11,7 +11,7 @@
     }
   },
   "navbar": {
-    "tagline": "Pendidikan Islam",
+    "tagline": "Sekolahnya para juara",
     "ppdb_cta": "PPDB 2025",
     "role": {
       "super_admin": "Super Admin",
@@ -29,7 +29,7 @@
       "profile": "Profile",
       "info": "Informasi",
       "career": "Karir",
-      "admission": "SPMB",
+      "admission": "PPDB",
       "contact": "Kontak"
     },
     "submenu": {
