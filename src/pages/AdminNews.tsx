@@ -3,9 +3,11 @@ import { Navbar } from '../components/Navbar';
 import { t, tf } from '../i18n';
 import { FileText, Plus, Edit, Trash2, Eye, Search, Filter, Calendar, Tag, X, Check, Image as ImageIcon, Upload } from 'lucide-react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { api } from '../services/api';
 
 interface AdminNewsProps {
   onNavigate?: (page: string) => void;
+  embedded?: boolean;
 }
 
 interface NewsItem {
@@ -22,7 +24,7 @@ interface NewsItem {
   views: number;
 }
 
-export const AdminNews: React.FC<AdminNewsProps> = ({ onNavigate = () => {} }) => {
+export const AdminNews: React.FC<AdminNewsProps> = ({ onNavigate = () => {}, embedded = false }) => {
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState<'create' | 'edit' | 'view'>('create');
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
@@ -30,6 +32,29 @@ export const AdminNews: React.FC<AdminNewsProps> = ({ onNavigate = () => {} }) =
   const [filterCategory, setFilterCategory] = useState('Semua');
   const [filterStatus, setFilterStatus] = useState('Semua');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<number | null>(null);
+
+  React.useEffect(() => {
+    try {
+      const sq = localStorage.getItem('bj_admin_news_search');
+      const fc = localStorage.getItem('bj_admin_news_filter');
+      const fs = localStorage.getItem('bj_admin_news_status');
+      if (sq !== null) setSearchQuery(sq);
+      if (fc !== null) setFilterCategory(fc);
+      if (fs !== null) setFilterStatus(fs);
+    } catch {}
+  }, []);
+
+  React.useEffect(() => {
+    try { localStorage.setItem('bj_admin_news_search', searchQuery); } catch {}
+  }, [searchQuery]);
+
+  React.useEffect(() => {
+    try { localStorage.setItem('bj_admin_news_filter', filterCategory); } catch {}
+  }, [filterCategory]);
+
+  React.useEffect(() => {
+    try { localStorage.setItem('bj_admin_news_status', filterStatus); } catch {}
+  }, [filterStatus]);
 
   const menuItems = [
     { label: t('admin_news.menu.dashboard'), href: '#', onClick: () => onNavigate('admin-super') },
@@ -40,73 +65,7 @@ export const AdminNews: React.FC<AdminNewsProps> = ({ onNavigate = () => {} }) =
     { label: t('admin_news.menu.career'), href: '#', onClick: () => onNavigate('admin-career') }
   ];
 
-  const [newsList, setNewsList] = useState<NewsItem[]>([
-    {
-      id: 1,
-      title: 'Peringatan Maulid Nabi Muhammad SAW 1446 H',
-      category: 'Keagamaan',
-      unit: 'Semua Unit',
-      date: '2024-12-01',
-      author: 'Admin Yayasan',
-      excerpt: 'Alhamdulillah, Yayasan Baituljannah mengadakan peringatan Maulid Nabi Muhammad SAW dengan berbagai kegiatan.',
-      content: 'Alhamdulillah, pada hari Senin, 15 Desember 2024, Yayasan Baituljannah mengadakan peringatan Maulid Nabi Muhammad SAW yang diikuti oleh seluruh siswa dari TKIT hingga SLBIT. Kegiatan dimulai dengan pembacaan Al-Quran, dilanjutkan dengan ceramah tentang sirah nabawiyah, dan ditutup dengan pentas seni Islami yang meriah.',
-      image: 'https://images.unsplash.com/photo-1644380644655-fcf91fa5c43b',
-      status: 'Published',
-      views: 1250
-    },
-    {
-      id: 2,
-      title: 'Siswa SMAIT Raih Juara 1 Olimpiade Matematika Tingkat Provinsi',
-      category: 'Prestasi',
-      unit: 'SMAIT',
-      date: '2024-11-28',
-      author: 'Admin SMAIT',
-      excerpt: 'Muhammad Rizki, siswa kelas XI SMAIT Baituljannah berhasil meraih juara 1 Olimpiade Matematika.',
-      content: 'Prestasi membanggakan kembali ditorehkan oleh siswa SMAIT Baituljannah. Muhammad Rizki dari kelas XI IPA berhasil meraih juara 1 dalam Olimpiade Matematika Tingkat Provinsi yang diselenggarakan di Jakarta Convention Center. Pencapaian ini merupakan hasil dari pembinaan intensif yang dilakukan oleh tim olimpiade sekolah.',
-      image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c',
-      status: 'Published',
-      views: 890
-    },
-    {
-      id: 3,
-      title: 'Wisuda Tahfidz 10 Juz - 50 Siswa SDIT Lulus',
-      category: 'Keagamaan',
-      unit: 'SDIT',
-      date: '2024-11-25',
-      author: 'Admin SDIT',
-      excerpt: 'Sebanyak 50 siswa SDIT Baituljannah berhasil menyelesaikan hafalan 10 juz Al-Quran.',
-      content: 'Alhamdulillah, pada tanggal 20 Januari 2025, sebanyak 50 siswa SDIT Baituljannah akan diwisuda setelah berhasil menyelesaikan hafalan 10 juz Al-Quran. Wisuda akan dilaksanakan di Aula Baituljannah dengan menghadirkan para orang tua, guru, dan tamu undangan. Ini merupakan wisuda tahfidz terbesar yang pernah dilaksanakan oleh SDIT Baituljannah.',
-      image: 'https://images.unsplash.com/photo-1763673404724-2b27e7f6e6bc',
-      status: 'Published',
-      views: 1100
-    },
-    {
-      id: 4,
-      title: 'Pendaftaran PPDB Tahun Ajaran 2025/2026 Dibuka',
-      category: 'Akademik',
-      unit: 'Semua Unit',
-      date: '2024-12-05',
-      author: 'Admin Yayasan',
-      excerpt: 'Pendaftaran peserta didik baru untuk tahun ajaran 2025/2026 telah dibuka untuk semua unit.',
-      content: 'Yayasan Baituljannah membuka pendaftaran peserta didik baru untuk tahun ajaran 2025/2026. Pendaftaran dibuka mulai 1 Januari hingga 31 Maret 2025 untuk semua unit sekolah (TKIT, SDIT, SMPIT, SMAIT, SLBIT). Informasi lengkap dan formulir pendaftaran dapat diakses melalui website atau datang langsung ke kantor yayasan.',
-      image: 'https://images.unsplash.com/photo-1644380644655-fcf91fa5c43b',
-      status: 'Draft',
-      views: 0
-    },
-    {
-      id: 5,
-      title: 'Workshop Pembelajaran Kreatif untuk Guru',
-      category: 'Kegiatan',
-      unit: 'Yayasan',
-      date: '2024-11-20',
-      author: 'Admin Yayasan',
-      excerpt: 'Seluruh guru mengikuti workshop pembelajaran kreatif yang diselenggarakan oleh yayasan.',
-      content: 'Pada tanggal 15 November 2024, Yayasan Baituljannah mengadakan workshop pembelajaran kreatif untuk seluruh guru dari semua unit. Workshop ini menghadirkan narasumber dari Universitas Pendidikan Indonesia yang membagikan metode-metode pembelajaran inovatif dan engaging untuk meningkatkan kualitas pengajaran.',
-      image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c',
-      status: 'Published',
-      views: 450
-    }
-  ]);
+  const [newsList, setNewsList] = useState<any[]>([]);
 
   const [formData, setFormData] = useState<Partial<NewsItem>>({
     title: '',
@@ -119,18 +78,35 @@ export const AdminNews: React.FC<AdminNewsProps> = ({ onNavigate = () => {} }) =
     image: '',
     status: 'Draft'
   });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
   const categories = ['Semua', 'Akademik', 'Keagamaan', 'Prestasi', 'Kegiatan', 'Pengumuman'];
   const units = ['Semua Unit', 'TKIT', 'SDIT', 'SMPIT', 'SMAIT', 'SLBIT', 'Yayasan'];
   const statuses = ['Semua', 'Published', 'Draft'];
 
-  const filteredNews = newsList.filter(news => {
-    const matchesSearch = news.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         news.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = filterCategory === 'Semua' || news.category === filterCategory;
-    const matchesStatus = filterStatus === 'Semua' || news.status === filterStatus;
+  const filteredNews = newsList.filter((news: any) => {
+    const title = (news.title || '').toLowerCase();
+    const excerpt = (news.excerpt || news.content || '').toLowerCase();
+    const category = news.category || 'Semua';
+    const status = news.status || 'Draft';
+    const matchesSearch = title.includes(searchQuery.toLowerCase()) || excerpt.includes(searchQuery.toLowerCase());
+    const matchesCategory = filterCategory === 'Semua' || category === filterCategory;
+    const matchesStatus = filterStatus === 'Semua' || status === filterStatus;
     return matchesSearch && matchesCategory && matchesStatus;
   });
+
+  React.useEffect(() => {
+    const loadNews = async () => {
+      try {
+        const res = await api.news.getAll({ page: 1, limit: 100 });
+        if (res.success) {
+          setNewsList(res.data || []);
+        }
+      } catch {}
+    };
+    loadNews();
+  }, []);
 
   const handleCreate = () => {
     setModalMode('create');
@@ -145,6 +121,7 @@ export const AdminNews: React.FC<AdminNewsProps> = ({ onNavigate = () => {} }) =
       image: 'https://images.unsplash.com/photo-1644380644655-fcf91fa5c43b',
       status: 'Draft'
     });
+    setSelectedFile(null);
     setShowModal(true);
   };
 
@@ -162,26 +139,85 @@ export const AdminNews: React.FC<AdminNewsProps> = ({ onNavigate = () => {} }) =
     setShowModal(true);
   };
 
-  const handleSave = () => {
-    if (modalMode === 'create') {
-      const newNews: NewsItem = {
-        ...formData as NewsItem,
-        id: Math.max(...newsList.map(n => n.id), 0) + 1,
-        views: 0
-      };
-      setNewsList([newNews, ...newsList]);
-    } else if (modalMode === 'edit' && selectedNews) {
-      setNewsList(newsList.map(news => 
-        news.id === selectedNews.id ? { ...formData as NewsItem, id: selectedNews.id } : news
-      ));
+  const handleSave = async () => {
+    try {
+      if (modalMode === 'create') {
+        let res: any;
+        if (selectedFile) {
+          const fd = new FormData();
+          fd.append('title', String(formData.title || ''));
+          fd.append('content', String(formData.content || ''));
+          fd.append('category', String(formData.category || 'Akademik'));
+          fd.append('unit_sekolah', String(formData.unit || 'Semua'));
+          fd.append('status', (formData.status || 'Draft').toLowerCase() === 'published' ? 'published' : 'draft');
+          if (formData.date) fd.append('publish_date', String(formData.date));
+          fd.append('image', selectedFile);
+          res = await api.news.create(fd);
+        } else {
+          const payload: any = {
+            title: formData.title,
+            content: formData.content,
+            category: formData.category,
+            unit_sekolah: formData.unit,
+            image_url: formData.image,
+            status: (formData.status || 'Draft').toLowerCase() === 'published' ? 'published' : 'draft',
+            publish_date: formData.date
+          };
+          res = await api.news.create(payload);
+        }
+        if (res.success) {
+          const list = await api.news.getAll({ page: 1, limit: 100 });
+          if (list.success) setNewsList(list.data || []);
+        }
+      } else if (modalMode === 'edit' && selectedNews) {
+        let res: any;
+        if (selectedFile) {
+          const fd = new FormData();
+          fd.append('title', String(formData.title || ''));
+          fd.append('content', String(formData.content || ''));
+          fd.append('category', String(formData.category || 'Akademik'));
+          fd.append('unit_sekolah', String(formData.unit || 'Semua'));
+          fd.append('status', (formData.status || 'Draft').toLowerCase() === 'published' ? 'published' : 'draft');
+          if (formData.date) fd.append('publish_date', String(formData.date));
+          fd.append('image', selectedFile);
+          res = await api.news.update((selectedNews as any).id, fd);
+        } else {
+          const payload: any = {
+            title: formData.title,
+            content: formData.content,
+            category: formData.category,
+            unit_sekolah: formData.unit,
+            image_url: formData.image,
+            status: (formData.status || 'Draft').toLowerCase() === 'published' ? 'published' : 'draft',
+            publish_date: formData.date
+          };
+          res = await api.news.update((selectedNews as any).id, payload);
+        }
+        if (res.success) {
+          const list = await api.news.getAll({ page: 1, limit: 100 });
+          if (list.success) setNewsList(list.data || []);
+        }
+      }
+    } catch {} finally {
+      setShowModal(false);
+      setSelectedNews(null);
+      setSelectedFile(null);
     }
-    setShowModal(false);
-    setSelectedNews(null);
   };
 
   const handleDelete = (id: number) => {
-    setNewsList(newsList.filter(news => news.id !== id));
-    setShowDeleteConfirm(null);
+    const run = async () => {
+      try {
+        const res = await api.news.delete(id);
+        if (res.success) {
+          const list = await api.news.getAll({ page: 1, limit: 100 });
+          if (list.success) setNewsList(list.data || []);
+        }
+      } catch {} finally {
+        setShowDeleteConfirm(null);
+      }
+    };
+    run();
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -199,12 +235,14 @@ export const AdminNews: React.FC<AdminNewsProps> = ({ onNavigate = () => {} }) =
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar 
-        siteName={t('admin_news.site_title')}
-        accentColor="#1E4AB8"
-        menuItems={menuItems}
-      />
+    <div className={embedded ? '' : 'min-h-screen bg-gray-50'}>
+      {!embedded && (
+        <Navbar 
+          siteName={t('admin_news.site_title')}
+          accentColor="#1E4AB8"
+          menuItems={menuItems}
+        />
+      )}
 
       <div className="container-custom py-8">
         {/* Header */}
@@ -288,81 +326,81 @@ export const AdminNews: React.FC<AdminNewsProps> = ({ onNavigate = () => {} }) =
 
         {/* News List */}
         <div className="space-y-4">
-          {filteredNews.map((news) => (
-            <div key={news.id} className="bg-white rounded-2xl p-6 shadow-soft hover:shadow-strong transition-all">
-              <div className="flex gap-6">
-                {/* Image */}
-                <div className="w-48 h-32 rounded-xl overflow-hidden flex-shrink-0">
-                  <ImageWithFallback
-                    src={news.image}
-                    alt={news.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+            {filteredNews.map((news: any) => (
+              <div key={news.id} className="bg-white rounded-2xl p-6 shadow-soft hover:shadow-strong transition-all">
+                <div className="flex gap-6">
+                  {/* Image */}
+                  <div className="w-48 h-32 rounded-xl overflow-hidden flex-shrink-0">
+                    <ImageWithFallback
+                      src={news.image || news.image_url || ''}
+                      alt={news.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
 
-                {/* Content */}
-                <div className="flex-1">
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className={`px-3 py-1 rounded-full text-xs ${
-                          news.status === 'Published' 
+                  {/* Content */}
+                  <div className="flex-1">
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className={`px-3 py-1 rounded-full text-xs ${
+                          (news.status || 'Draft') === 'Published' || (news.status || 'draft') === 'published'
                             ? 'bg-green-100 text-green-700' 
                             : 'bg-yellow-100 text-yellow-700'
-                        }`}>
-                          {news.status}
-                        </span>
-                        <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs">
+                          }`}>
+                          {(news.status || 'Draft')}
+                          </span>
+                          <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs">
                           {news.category}
-                        </span>
-                        <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs">
-                          {news.unit}
-                        </span>
-                      </div>
-                      <h3 className="text-xl mb-2">{news.title}</h3>
-                      <p className="text-gray-600 text-sm mb-3 line-clamp-2">{news.excerpt}</p>
-                      <div className="flex items-center gap-4 text-xs text-gray-500">
-                        <div className="flex items-center gap-1">
-                          <Calendar className="w-4 h-4" />
-                          <span>{new Date(news.date).toLocaleDateString('id-ID')}</span>
+                          </span>
+                          <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs">
+                          {news.unit || news.unit_sekolah || 'Semua Unit'}
+                          </span>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <Eye className="w-4 h-4" />
-                          <span>{news.views} {t('admin_news.list.views_suffix')}</span>
+                        <h3 className="text-xl mb-2">{news.title}</h3>
+                        <p className="text-gray-600 text-sm mb-3 line-clamp-2">{news.excerpt || (news.content || '').slice(0, 160)}</p>
+                        <div className="flex items-center gap-4 text-xs text-gray-500">
+                          <div className="flex items-center gap-1">
+                            <Calendar className="w-4 h-4" />
+                            <span>{new Date(news.date || news.publish_date || news.created_at || Date.now()).toLocaleDateString('id-ID')}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Eye className="w-4 h-4" />
+                            <span>{(news.views || 0)} {t('admin_news.list.views_suffix')}</span>
+                          </div>
+                          <span>{t('admin_news.list.author_prefix')} {(news.author || news.author_name || 'Admin')}</span>
                         </div>
-                        <span>{t('admin_news.list.author_prefix')} {news.author}</span>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Actions */}
-                <div className="flex flex-col gap-2">
-                  <button
-                    onClick={() => handleView(news)}
-                    className="p-2 hover:bg-blue-50 text-blue-600 rounded-lg transition-colors"
-                    title={t('common.actions.view')}
-                  >
-                    <Eye className="w-5 h-5" />
-                  </button>
-                  <button
-                    onClick={() => handleEdit(news)}
-                    className="p-2 hover:bg-green-50 text-green-600 rounded-lg transition-colors"
-                    title={t('common.actions.edit')}
-                  >
-                    <Edit className="w-5 h-5" />
-                  </button>
-                  <button
-                    onClick={() => setShowDeleteConfirm(news.id)}
-                    className="p-2 hover:bg-red-50 text-red-600 rounded-lg transition-colors"
-                    title={t('common.actions.delete')}
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
+                  {/* Actions */}
+                  <div className="flex flex-col gap-2">
+                    <button
+                      onClick={() => handleView(news)}
+                      className="p-2 hover:bg-blue-50 text-blue-600 rounded-lg transition-colors"
+                      title={t('common.actions.view')}
+                    >
+                      <Eye className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={() => handleEdit(news)}
+                      className="p-2 hover:bg-green-50 text-green-600 rounded-lg transition-colors"
+                      title={t('common.actions.edit')}
+                    >
+                      <Edit className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={() => setShowDeleteConfirm((news as any).id)}
+                      className="p-2 hover:bg-red-50 text-red-600 rounded-lg transition-colors"
+                      title={t('common.actions.delete')}
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
 
           {filteredNews.length === 0 && (
             <div className="bg-white rounded-2xl p-12 text-center">
@@ -532,10 +570,11 @@ export const AdminNews: React.FC<AdminNewsProps> = ({ onNavigate = () => {} }) =
                         className="flex-1 px-4 py-2 border border-gray-200 rounded-xl outline-none focus:border-[#1E4AB8] focus:ring-2 focus:ring-[#1E4AB8]/20"
                         placeholder="https://example.com/image.jpg"
                       />
-                      <button className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors flex items-center gap-2">
+                      <button onClick={() => fileInputRef.current?.click()} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors flex items-center gap-2">
                         <Upload className="w-4 h-4" />
                         <span>{t('admin_news.modal.form.upload')}</span>
                       </button>
+                      <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0] || null; setSelectedFile(f); if (f) setFormData({ ...formData, image: '' }); }} />
                     </div>
                     {formData.image && (
                       <div className="mt-3 rounded-xl overflow-hidden">
@@ -545,6 +584,9 @@ export const AdminNews: React.FC<AdminNewsProps> = ({ onNavigate = () => {} }) =
                           className="w-full h-48 object-cover"
                         />
                       </div>
+                    )}
+                    {selectedFile && (
+                      <div className="mt-3 text-sm text-gray-600">{selectedFile.name}</div>
                     )}
                   </div>
                 </>

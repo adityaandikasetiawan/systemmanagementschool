@@ -1,221 +1,221 @@
-import React, { useState } from 'react';
+import { 
+  BookOpen, 
+  Users, 
+  Award, 
+  Star, 
+  Globe, 
+  Heart, 
+  Zap, 
+  TrendingUp, 
+  Sparkles, 
+  ArrowRight, 
+  CheckCircle, 
+  Lightbulb, 
+  Target, 
+  Shield
+} from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { Breadcrumb } from '../components/Breadcrumb';
-import { BookOpen, Users, Award, Globe, Heart, Star, Lightbulb, Target, Zap, Shield, ArrowRight, Sparkles, CheckCircle, TrendingUp } from 'lucide-react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { t, tf } from '../i18n';
 
 interface ProgramsProps {
   onNavigate?: (page: string) => void;
 }
 
 export const Programs: React.FC<ProgramsProps> = ({ onNavigate = () => {} }) => {
-  const [selectedCategory, setSelectedCategory] = useState('Semua');
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
   const menuItems = [
-    { label: 'Beranda', href: '#', onClick: () => onNavigate('main') },
+    { label: t('site.menu.home', 'Beranda'), href: '#', onClick: () => onNavigate('main') },
     {
-      label: 'Tentang',
+      label: t('site.menu.about', 'Tentang'),
       href: '#',
       submenu: [
-        { label: 'Visi & Misi', href: '#', onClick: () => onNavigate('vision-mission') },
-        { label: 'Kurikulum', href: '#', onClick: () => onNavigate('about') },
-        { label: 'Fasilitas', href: '#', onClick: () => onNavigate('about') },
-        { label: 'Kepengurusan', href: '#', onClick: () => onNavigate('about') }
+        { label: t('site.submenu.foundation_profile', 'Profile Yayasan'), href: '#', onClick: () => onNavigate('about') },
+        { label: t('site.submenu.vision_mission', 'Visi & Misi'), href: '#', onClick: () => onNavigate('vision-mission') },
+        { label: t('site.submenu.history', 'Sejarah'), href: '#', onClick: () => onNavigate('about') },
+        { label: t('site.submenu.organization', 'Struktur Organisasi'), href: '#', onClick: () => onNavigate('about') }
       ]
     },
     {
-      label: 'Profile',
+      label: t('navbar.units_menu', 'Unit Pendidikan'),
       href: '#',
       submenu: [
-        { label: 'Profil Yayasan', href: '#', onClick: () => onNavigate('about') },
-        { label: 'Sejarah', href: '#', onClick: () => onNavigate('about') },
-        { label: 'Struktur Organisasi', href: '#', onClick: () => onNavigate('about') }
+        { label: '🎨 ' + t('home.units.items.tkit', 'TKIT Baituljannah'), href: '#', onClick: () => onNavigate('tkit') },
+        { label: '📚 ' + t('home.units.items.sdit', 'SDIT Baituljannah'), href: '#', onClick: () => onNavigate('sdit') },
+        { label: '🎓 ' + t('home.units.items.smpit', 'SMPIT Baituljannah'), href: '#', onClick: () => onNavigate('smpit') },
+        { label: '🏆 ' + t('home.units.items.smait', 'SMAIT Baituljannah'), href: '#', onClick: () => onNavigate('smait') },
+        { label: '❤️ ' + t('home.units.items.slbit', 'SLBIT Baituljannah'), href: '#', onClick: () => onNavigate('slbit') }
       ]
     },
     {
-      label: 'Informasi',
+      label: t('site.menu.info', 'Informasi'),
       href: '#',
       submenu: [
-        { label: 'Berita', href: '#', onClick: () => onNavigate('news') },
-        { label: 'Galeri Foto', href: '#', onClick: () => onNavigate('gallery') },
-        { label: 'Prestasi', href: '#', onClick: () => onNavigate('achievement') },
-        { label: 'Program', href: '#', onClick: () => onNavigate('programs') }
+        { label: t('site.submenu.news', 'Berita'), href: '#', onClick: () => onNavigate('news') },
+        { label: t('site.submenu.gallery', 'Galeri'), href: '#', onClick: () => onNavigate('gallery') },
+        { label: t('site.submenu.programs', 'Kurikulum'), href: '#', onClick: () => onNavigate('curriculum') },
+        { label: t('site.submenu.achievement', 'Prestasi'), href: '#', onClick: () => onNavigate('achievement') }
       ]
     },
-    { label: 'Karir', href: '#', onClick: () => onNavigate('career') },
+    { label: t('site.menu.career', 'Karir'), href: '#', onClick: () => onNavigate('career') },
     {
-      label: 'SPMB',
+      label: t('site.menu.admission', 'PPDB'),
       href: '#',
       submenu: [
-        { label: 'Pendaftaran', href: '#', onClick: () => onNavigate('admission') },
-        { label: 'Jadwal & Alur', href: '#', onClick: () => onNavigate('admission') },
-        { label: 'Biaya Pendidikan', href: '#', onClick: () => onNavigate('admission') }
+        { label: t('site.submenu.admission_registration', 'Pendaftaran'), href: '#', onClick: () => onNavigate('admission') },
+        { label: t('site.submenu.admission_schedule', 'Jadwal & Alur'), href: '#', onClick: () => onNavigate('admission') },
+        { label: t('site.submenu.admission_fee', 'Biaya Pendidikan'), href: '#', onClick: () => onNavigate('admission') }
       ]
     },
-    { label: 'Kontak', href: '#', onClick: () => onNavigate('contact') },
-    { label: 'Login', href: '#', onClick: () => onNavigate('login') }
+    { label: t('site.menu.contact', 'Kontak'), href: '#', onClick: () => onNavigate('contact') }
+    ,
+    { label: t('common.login', 'Login'), href: '#', onClick: () => onNavigate('login') }
   ];
 
   const breadcrumbItems = [
-    { label: 'Beranda', onClick: () => onNavigate('main') },
-    { label: 'Program Unggulan' }
+    { label: t('site.menu.home'), onClick: () => onNavigate('main') },
+    { label: t('programs_page.hero.badge') }
   ];
 
   const categories = [
-    { name: 'Semua', icon: Star, count: 12 },
-    { name: 'Akademik', icon: BookOpen, count: 2 },
-    { name: 'Keagamaan', icon: Heart, count: 3 },
-    { name: 'Ekstrakurikuler', icon: Zap, count: 3 },
-    { name: 'Pengembangan', icon: TrendingUp, count: 4 }
+    { id: 'all', name: t('programs_page.categories.all'), icon: Star, count: 12 },
+    { id: 'academic', name: t('programs_page.categories.academic'), icon: BookOpen, count: 2 },
+    { id: 'religious', name: t('programs_page.categories.religious'), icon: Heart, count: 3 },
+    { id: 'extracurricular', name: t('programs_page.categories.extracurricular'), icon: Zap, count: 3 },
+    { id: 'development', name: t('programs_page.categories.development'), icon: TrendingUp, count: 4 }
   ];
 
   const programs = [
     {
       icon: BookOpen,
-      title: 'Program Tahfidz Al-Quran',
-      description: 'Program menghafal Al-Quran dengan metode yang efektif dan terstruktur untuk semua jenjang pendidikan dengan bimbingan ustadz berpengalaman.',
-      category: 'Keagamaan',
-      features: ['Target 30 juz', 'Bimbingan Ustadz berpengalaman', 'Metode terbukti efektif', 'Wisuda Tahfidz'],
+      title: t('programs_page.items.tahfidz.title'),
+      description: t('programs_page.items.tahfidz.desc'),
+      categoryId: 'religious',
+      features: t('programs_page.items.tahfidz.features', { returnObjects: true }) as string[],
       color: '#10B981',
       bgGradient: 'from-green-50 to-emerald-50'
     },
     {
       icon: Globe,
-      title: 'Bahasa Asing (English & Arabic)',
-      description: 'Program pembelajaran bahasa Inggris dan Arab dengan metode praktis dan komunikatif untuk persiapan komunikasi global.',
-      category: 'Akademik',
-      features: ['Native speaker', 'Language lab', 'International certification', 'Daily conversation'],
+      title: t('programs_page.items.language.title'),
+      description: t('programs_page.items.language.desc'),
+      categoryId: 'academic',
+      features: t('programs_page.items.language.features', { returnObjects: true }) as string[],
       color: '#3B82F6',
       bgGradient: 'from-blue-50 to-cyan-50'
     },
     {
       icon: Award,
-      title: 'Olimpiade & Kompetisi',
-      description: 'Pembinaan khusus untuk persiapan olimpiade sains, matematika, dan kompetisi akademik lainnya dengan track record juara.',
-      category: 'Akademik',
-      features: ['Pembimbing ahli', 'Latihan intensif', 'Track record juara', 'Kompetisi rutin'],
+      title: t('programs_page.items.olympiad.title'),
+      description: t('programs_page.items.olympiad.desc'),
+      categoryId: 'academic',
+      features: t('programs_page.items.olympiad.features', { returnObjects: true }) as string[],
       color: '#F97316',
       bgGradient: 'from-orange-50 to-amber-50'
     },
     {
       icon: Heart,
-      title: 'Character Building',
-      description: 'Program pembentukan karakter Islami melalui pembiasaan dan keteladanan dalam kehidupan sehari-hari di lingkungan sekolah.',
-      category: 'Pengembangan',
-      features: ['Daily habits', 'Mentoring', 'Islamic values', 'Role model'],
+      title: t('programs_page.items.character.title'),
+      description: t('programs_page.items.character.desc'),
+      categoryId: 'development',
+      features: t('programs_page.items.character.features', { returnObjects: true }) as string[],
       color: '#8B5CF6',
       bgGradient: 'from-purple-50 to-indigo-50'
     },
     {
       icon: Users,
-      title: 'Leadership Training',
-      description: 'Pelatihan kepemimpinan untuk membentuk karakter pemimpin yang amanah, bertanggung jawab, dan visioner.',
-      category: 'Pengembangan',
-      features: ['Outbound', 'Public speaking', 'Team building', 'Project management'],
+      title: t('programs_page.items.leadership.title'),
+      description: t('programs_page.items.leadership.desc'),
+      categoryId: 'development',
+      features: t('programs_page.items.leadership.features', { returnObjects: true }) as string[],
       color: '#14B8A6',
       bgGradient: 'from-teal-50 to-cyan-50'
     },
     {
       icon: Star,
-      title: 'Tahsin & Tajwid',
-      description: 'Program memperbaiki bacaan Al-Quran dengan tajwid yang benar dan tartil yang indah dengan metode talaqqi.',
-      category: 'Keagamaan',
-      features: ['One-on-one session', 'Progress tracking', 'Certificated', 'Talaqqi method'],
+      title: t('programs_page.items.tahsin.title'),
+      description: t('programs_page.items.tahsin.desc'),
+      categoryId: 'religious',
+      features: t('programs_page.items.tahsin.features', { returnObjects: true }) as string[],
       color: '#10B981',
       bgGradient: 'from-emerald-50 to-green-50'
     },
     {
       icon: Lightbulb,
-      title: 'Robotika & Coding',
-      description: 'Program pembelajaran robotika dan pemrograman untuk menghadapi era digital dengan peralatan modern.',
-      category: 'Ekstrakurikuler',
-      features: ['Modern equipment', 'Project based', 'Competition ready', 'AI & IoT'],
+      title: t('programs_page.items.robotics.title'),
+      description: t('programs_page.items.robotics.desc'),
+      categoryId: 'extracurricular',
+      features: t('programs_page.items.robotics.features', { returnObjects: true }) as string[],
       color: '#F59E0B',
       bgGradient: 'from-yellow-50 to-amber-50'
     },
     {
       icon: Target,
-      title: 'Bimbingan Konseling',
-      description: 'Layanan konseling profesional untuk membantu perkembangan psikologis, sosial, dan akademik siswa secara optimal.',
-      category: 'Pengembangan',
-      features: ['Professional counselor', 'Confidential', 'Parent consultation', 'Career guidance'],
+      title: t('programs_page.items.counseling.title'),
+      description: t('programs_page.items.counseling.desc'),
+      categoryId: 'development',
+      features: t('programs_page.items.counseling.features', { returnObjects: true }) as string[],
       color: '#6366F1',
       bgGradient: 'from-indigo-50 to-blue-50'
     },
     {
       icon: Zap,
-      title: 'Olahraga & Seni',
-      description: 'Ekstrakurikuler olahraga dan seni untuk mengembangkan bakat dan minat siswa dengan fasilitas lengkap.',
-      category: 'Ekstrakurikuler',
-      features: ['Futsal', 'Basket', 'Beladiri', 'Musik', 'Kaligrafi'],
+      title: t('programs_page.items.sports_arts.title'),
+      description: t('programs_page.items.sports_arts.desc'),
+      categoryId: 'extracurricular',
+      features: t('programs_page.items.sports_arts.features', { returnObjects: true }) as string[],
       color: '#EF4444',
       bgGradient: 'from-red-50 to-rose-50'
     },
     {
       icon: Shield,
-      title: 'Kajian Kitab Kuning',
-      description: 'Program pembelajaran kitab-kitab klasik Islam untuk memperdalam ilmu agama dengan sanad dan ijazah.',
-      category: 'Keagamaan',
-      features: ['Ulama berpengalaman', 'Sanad pembelajaran', 'Ijazah', 'Metode salaf'],
+      title: t('programs_page.items.kitab.title'),
+      description: t('programs_page.items.kitab.desc'),
+      categoryId: 'religious',
+      features: t('programs_page.items.kitab.features', { returnObjects: true }) as string[],
       color: '#10B981',
       bgGradient: 'from-green-50 to-emerald-50'
     },
     {
       icon: BookOpen,
-      title: 'Kelas Entrepreneur',
-      description: 'Program kewirausahaan untuk menumbuhkan jiwa bisnis Islami sejak dini dengan praktik langsung.',
-      category: 'Ekstrakurikuler',
-      features: ['Business plan', 'Market day', 'Mentor bisnis', 'Real project'],
+      title: t('programs_page.items.entrepreneur.title'),
+      description: t('programs_page.items.entrepreneur.desc'),
+      categoryId: 'extracurricular',
+      features: t('programs_page.items.entrepreneur.features', { returnObjects: true }) as string[],
       color: '#F97316',
       bgGradient: 'from-orange-50 to-yellow-50'
     },
     {
       icon: Globe,
-      title: 'Study Tour & Exchange',
-      description: 'Program kunjungan edukatif ke dalam dan luar negeri untuk memperluas wawasan dan pengalaman siswa.',
-      category: 'Pengembangan',
-      features: ['Domestic & international', 'Educational', 'Cultural exchange', 'Global exposure'],
+      title: t('programs_page.items.study_tour.title'),
+      description: t('programs_page.items.study_tour.desc'),
+      categoryId: 'development',
+      features: t('programs_page.items.study_tour.features', { returnObjects: true }) as string[],
       color: '#3B82F6',
       bgGradient: 'from-blue-50 to-indigo-50'
     }
   ];
 
-  const filteredPrograms = selectedCategory === 'Semua' 
+  const filteredPrograms = selectedCategory === 'all' 
     ? programs 
-    : programs.filter(program => program.category === selectedCategory);
+    : programs.filter(program => program.categoryId === selectedCategory);
 
   const highlights = [
-    {
-      number: '50+',
-      label: 'Program Tersedia',
-      icon: BookOpen,
-      color: 'from-blue-500 to-cyan-600'
-    },
-    {
-      number: '100%',
-      label: 'Siswa Aktif',
-      icon: Users,
-      color: 'from-green-500 to-emerald-600'
-    },
-    {
-      number: '200+',
-      label: 'Prestasi Diraih',
-      icon: Award,
-      color: 'from-orange-500 to-amber-600'
-    },
-    {
-      number: '15+',
-      label: 'Tahun Pengalaman',
-      icon: Star,
-      color: 'from-purple-500 to-indigo-600'
-    }
+    { number: '50+', label: t('programs_page.highlights.available_programs'), icon: BookOpen, color: 'from-blue-500 to-cyan-600' },
+    { number: '100%', label: t('programs_page.highlights.active_students'), icon: Users, color: 'from-green-500 to-emerald-600' },
+    { number: '200+', label: t('programs_page.highlights.achievements'), icon: Award, color: 'from-orange-500 to-amber-600' },
+    { number: '15+', label: t('programs_page.highlights.years_experience'), icon: Star, color: 'from-purple-500 to-indigo-600' }
   ];
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar 
-        siteName="Baitul Jannah Islamic School"
-        siteTagline="Sekolahnya Para Juara"
+        siteName={t('site.name')}
+        siteTagline={t('navbar.tagline')}
         menuItems={menuItems}
         accentColor="#1E4AB8"
       />
@@ -236,12 +236,10 @@ export const Programs: React.FC<ProgramsProps> = ({ onNavigate = () => {} }) => 
           <div className="mt-8">
             <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/20 backdrop-blur-sm rounded-full text-sm mb-6">
               <Sparkles className="w-4 h-4" />
-              <span>Excellence in Education</span>
+              <span>{t('programs.hero.badge')}</span>
             </div>
-            <h1 className="text-5xl lg:text-6xl mb-6">Program Unggulan</h1>
-            <p className="text-xl text-white/90 max-w-3xl leading-relaxed">
-              Berbagai program berkualitas untuk mengembangkan potensi akademik, karakter Islami, dan keterampilan siswa menghadapi masa depan
-            </p>
+            <h1 className="text-5xl lg:text-6xl mb-6">{t('programs.hero.title')}</h1>
+            <p className="text-xl text-white/90 max-w-3xl leading-relaxed">{t('programs.hero.subtitle')}</p>
           </div>
         </div>
       </div>
@@ -281,9 +279,9 @@ export const Programs: React.FC<ProgramsProps> = ({ onNavigate = () => {} }) => 
               return (
                 <button
                   key={index}
-                  onClick={() => setSelectedCategory(cat.name)}
+                  onClick={() => setSelectedCategory(cat.id)}
                   className={`px-6 py-3 rounded-xl whitespace-nowrap transition-all duration-300 flex items-center gap-2 ${
-                    selectedCategory === cat.name
+                    selectedCategory === cat.id
                       ? 'bg-gradient-to-r from-blue-500 to-cyan-600 text-white shadow-lg scale-105'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
@@ -370,7 +368,7 @@ export const Programs: React.FC<ProgramsProps> = ({ onNavigate = () => {} }) => 
                         className="text-sm flex items-center gap-2 group-hover:gap-3 transition-all"
                         style={{ color: program.color }}
                       >
-                        <span>Lihat Detail</span>
+                        <span>{t('programs_page.item.view_detail')}</span>
                         <ArrowRight className="w-4 h-4" />
                       </button>
                     </div>
@@ -388,11 +386,11 @@ export const Programs: React.FC<ProgramsProps> = ({ onNavigate = () => {} }) => 
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 rounded-full text-sm mb-6">
               <Star className="w-4 h-4" />
-              <span>Program Terbaru</span>
+              <span>{t('programs_page.featured.badge')}</span>
             </div>
-            <h2 className="text-4xl lg:text-5xl mb-4 text-gray-900">Program Unggulan Terbaru</h2>
+            <h2 className="text-4xl lg:text-5xl mb-4 text-gray-900">{t('programs_page.featured.title')}</h2>
             <p className="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
-              Program-program inovatif yang dirancang khusus untuk mempersiapkan siswa menghadapi tantangan masa depan
+              {t('programs_page.featured.subtitle')}
             </p>
           </div>
 
@@ -404,7 +402,7 @@ export const Programs: React.FC<ProgramsProps> = ({ onNavigate = () => {} }) => 
               
               <div className="relative">
                 <span className="inline-block px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm mb-6">
-                  ✨ NEW PROGRAM
+                  ✨ {t('programs_page.featured.new_badge')}
                 </span>
                 
                 <div className="flex items-start gap-4 mb-6">
@@ -412,89 +410,86 @@ export const Programs: React.FC<ProgramsProps> = ({ onNavigate = () => {} }) => 
                     <Globe className="w-8 h-8 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-3xl mb-2">International Class Program</h3>
+                    <h3 className="text-3xl mb-2">{t('programs_page.featured.international.title')}</h3>
                   </div>
                 </div>
 
                 <p className="text-white/90 mb-6 text-lg leading-relaxed">
-                  Program kelas internasional dengan kurikulum Cambridge dan pembelajaran bilingual untuk mempersiapkan siswa berkompetisi di tingkat global.
+                  {t('programs_page.featured.international.desc')}
                 </p>
 
-                <div className="space-y-3 mb-8">
+                <div className="space-y-4 mb-8">
                   <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center flex-shrink-0">
-                      <CheckCircle className="w-4 h-4 text-white" />
+                    <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                      <Users className="w-4 h-4" />
                     </div>
-                    <span>Cambridge Certified Teachers</span>
+                    <span>{t('programs_page.featured.international.features.teachers')}</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center flex-shrink-0">
-                      <CheckCircle className="w-4 h-4 text-white" />
+                    <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                      <BookOpen className="w-4 h-4" />
                     </div>
-                    <span>International Curriculum</span>
+                    <span>{t('programs_page.featured.international.features.curriculum')}</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center flex-shrink-0">
-                      <CheckCircle className="w-4 h-4 text-white" />
+                    <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                      <Globe className="w-4 h-4" />
                     </div>
-                    <span>Global Competence Development</span>
+                    <span>{t('programs_page.featured.international.features.global')}</span>
                   </div>
                 </div>
 
-                <button className="px-6 py-3 bg-white text-blue-600 rounded-xl hover:bg-blue-50 transition-colors flex items-center gap-2">
-                  <span>Daftar Sekarang</span>
-                  <ArrowRight className="w-5 h-5" />
+                <button className="w-full bg-white text-blue-600 py-4 rounded-xl font-bold hover:bg-blue-50 transition-colors">
+                  {t('programs_page.featured.register')}
                 </button>
               </div>
             </div>
 
-            {/* STEAM Innovation Lab */}
-            <div className="relative bg-gradient-to-br from-green-500 via-emerald-600 to-teal-600 rounded-3xl p-10 text-white shadow-strong overflow-hidden">
-              <div className="absolute inset-0 islamic-pattern opacity-10"></div>
-              <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+            {/* STEAM Lab */}
+            <div className="relative bg-white rounded-3xl p-10 shadow-strong border border-gray-100 overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-orange-50 rounded-full blur-3xl opacity-50"></div>
               
               <div className="relative">
-                <span className="inline-block px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm mb-6">
-                  ✨ NEW PROGRAM
+                <span className="inline-block px-4 py-2 bg-orange-100 text-orange-700 rounded-full text-sm mb-6">
+                  🚀 {t('programs_page.featured.new_badge')}
                 </span>
-                
+
                 <div className="flex items-start gap-4 mb-6">
-                  <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center flex-shrink-0">
-                    <Lightbulb className="w-8 h-8 text-white" />
+                  <div className="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+                    <Lightbulb className="w-8 h-8 text-orange-600" />
                   </div>
                   <div>
-                    <h3 className="text-3xl mb-2">STEAM Innovation Lab</h3>
+                    <h3 className="text-3xl mb-2 text-gray-900">{t('programs_page.featured.steam.title')}</h3>
                   </div>
                 </div>
 
-                <p className="text-white/90 mb-6 text-lg leading-relaxed">
-                  Laboratorium inovasi berbasis STEAM (Science, Technology, Engineering, Arts, Mathematics) untuk mengembangkan kreativitas dan problem solving.
+                <p className="text-gray-600 mb-6 text-lg leading-relaxed">
+                  {t('programs_page.featured.steam.desc')}
                 </p>
 
-                <div className="space-y-3 mb-8">
+                <div className="space-y-4 mb-8">
                   <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center flex-shrink-0">
-                      <CheckCircle className="w-4 h-4 text-white" />
+                    <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
+                      <Zap className="w-4 h-4 text-orange-600" />
                     </div>
-                    <span>3D Printing & Laser Cutting</span>
+                    <span className="text-gray-700">{t('programs_page.featured.steam.features.equipment')}</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center flex-shrink-0">
-                      <CheckCircle className="w-4 h-4 text-white" />
+                    <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
+                      <Target className="w-4 h-4 text-orange-600" />
                     </div>
-                    <span>AI & Machine Learning</span>
+                    <span className="text-gray-700">{t('programs_page.featured.steam.features.project')}</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center flex-shrink-0">
-                      <CheckCircle className="w-4 h-4 text-white" />
+                    <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
+                      <TrendingUp className="w-4 h-4 text-orange-600" />
                     </div>
-                    <span>Project-Based Learning</span>
+                    <span className="text-gray-700">{t('programs_page.featured.steam.features.skill')}</span>
                   </div>
                 </div>
 
-                <button className="px-6 py-3 bg-white text-green-600 rounded-xl hover:bg-green-50 transition-colors flex items-center gap-2">
-                  <span>Daftar Sekarang</span>
-                  <ArrowRight className="w-5 h-5" />
+                <button className="w-full bg-orange-600 text-white py-4 rounded-xl font-bold hover:bg-orange-700 transition-colors">
+                  {t('programs_page.featured.register')}
                 </button>
               </div>
             </div>
@@ -535,7 +530,7 @@ export const Programs: React.FC<ProgramsProps> = ({ onNavigate = () => {} }) => 
         </div>
       </section>
 
-      <Footer siteName="Baitul Jannah Islamic School" accentColor="#1E4AB8" onNavigate={onNavigate} />
+      <Footer siteName={t('site.name')} accentColor="#1E4AB8" onNavigate={onNavigate} logo="/images/logo/logo-yayasan.jpg" />
     </div>
   );
 };

@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { Breadcrumb } from '../components/Breadcrumb';
 import { Image as ImageIcon, X, Download, Share2, ZoomIn, Calendar, Tag, Eye, Grid, List, Sparkles, ArrowRight } from 'lucide-react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { api } from '../services/api';
+import { t, tf } from '../i18n';
 
 interface GalleryProps {
   onNavigate?: (page: string) => void;
@@ -13,187 +15,94 @@ export const Gallery: React.FC<GalleryProps> = ({ onNavigate = () => {} }) => {
   const [selectedCategory, setSelectedCategory] = useState('Semua');
   const [selectedImage, setSelectedImage] = useState<any | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'masonry'>('masonry');
+  const [galleryItems, setGalleryItems] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const menuItems = [
-    { label: 'Beranda', href: '#', onClick: () => onNavigate('main') },
+    { label: t('site.menu.home', 'Beranda'), href: '#', onClick: () => onNavigate('main') },
     {
-      label: 'Tentang',
+      label: t('site.menu.about', 'Tentang'),
       href: '#',
       submenu: [
-        { label: 'Visi & Misi', href: '#', onClick: () => onNavigate('vision-mission') },
-        { label: 'Kurikulum', href: '#', onClick: () => onNavigate('about') },
-        { label: 'Fasilitas', href: '#', onClick: () => onNavigate('about') },
-        { label: 'Kepengurusan', href: '#', onClick: () => onNavigate('about') }
+        { label: t('site.submenu.foundation_profile', 'Profile Yayasan'), href: '#', onClick: () => onNavigate('about') },
+        { label: t('site.submenu.vision_mission', 'Visi & Misi'), href: '#', onClick: () => onNavigate('vision-mission') },
+        { label: t('site.submenu.history', 'Sejarah'), href: '#', onClick: () => onNavigate('about') },
+        { label: t('site.submenu.organization', 'Struktur Organisasi'), href: '#', onClick: () => onNavigate('about') }
       ]
     },
     {
-      label: 'Profile',
+      label: t('navbar.units_menu', 'Unit Pendidikan'),
       href: '#',
       submenu: [
-        { label: 'Profil Yayasan', href: '#', onClick: () => onNavigate('about') },
-        { label: 'Sejarah', href: '#', onClick: () => onNavigate('about') },
-        { label: 'Struktur Organisasi', href: '#', onClick: () => onNavigate('about') }
+        { label: '🎨 ' + t('home.units.items.tkit', 'TKIT Baituljannah'), href: '#', onClick: () => onNavigate('tkit') },
+        { label: '📚 ' + t('home.units.items.sdit', 'SDIT Baituljannah'), href: '#', onClick: () => onNavigate('sdit') },
+        { label: '🎓 ' + t('home.units.items.smpit', 'SMPIT Baituljannah'), href: '#', onClick: () => onNavigate('smpit') },
+        { label: '🏆 ' + t('home.units.items.smait', 'SMAIT Baituljannah'), href: '#', onClick: () => onNavigate('smait') },
+        { label: '❤️ ' + t('home.units.items.slbit', 'SLBIT Baituljannah'), href: '#', onClick: () => onNavigate('slbit') }
       ]
     },
     {
-      label: 'Informasi',
+      label: t('site.menu.info', 'Informasi'),
       href: '#',
       submenu: [
-        { label: 'Berita', href: '#', onClick: () => onNavigate('news') },
-        { label: 'Galeri Foto', href: '#', onClick: () => onNavigate('gallery') },
-        { label: 'Prestasi', href: '#', onClick: () => onNavigate('achievement') },
-        { label: 'Program', href: '#', onClick: () => onNavigate('programs') }
+        { label: t('site.submenu.news', 'Berita'), href: '#', onClick: () => onNavigate('news') },
+        { label: t('site.submenu.gallery', 'Galeri'), href: '#', onClick: () => onNavigate('gallery') },
+        { label: t('site.submenu.programs', 'Kurikulum'), href: '#', onClick: () => onNavigate('curriculum') },
+        { label: t('site.submenu.achievement', 'Prestasi'), href: '#', onClick: () => onNavigate('achievement') }
       ]
     },
-    { label: 'Karir', href: '#', onClick: () => onNavigate('career') },
+    { label: t('site.menu.career', 'Karir'), href: '#', onClick: () => onNavigate('career') },
     {
-      label: 'SPMB',
+      label: t('site.menu.admission', 'PPDB'),
       href: '#',
       submenu: [
-        { label: 'Pendaftaran', href: '#', onClick: () => onNavigate('admission') },
-        { label: 'Jadwal & Alur', href: '#', onClick: () => onNavigate('admission') },
-        { label: 'Biaya Pendidikan', href: '#', onClick: () => onNavigate('admission') }
+        { label: t('site.submenu.admission_registration', 'Pendaftaran'), href: '#', onClick: () => onNavigate('admission') },
+        { label: t('site.submenu.admission_schedule', 'Jadwal & Alur'), href: '#', onClick: () => onNavigate('admission') },
+        { label: t('site.submenu.admission_fee', 'Biaya Pendidikan'), href: '#', onClick: () => onNavigate('admission') }
       ]
     },
-    { label: 'Kontak', href: '#', onClick: () => onNavigate('contact') },
-    { label: 'Login', href: '#', onClick: () => onNavigate('login') }
+    { label: t('site.menu.contact', 'Kontak'), href: '#', onClick: () => onNavigate('contact') }
+    ,
+    { label: t('common.login', 'Login'), href: '#', onClick: () => onNavigate('login') }
   ];
 
   const breadcrumbItems = [
-    { label: 'Beranda', onClick: () => onNavigate('main') },
-    { label: 'Galeri' }
+    { label: t('menu.home'), onClick: () => onNavigate('main') },
+    { label: t('menu.gallery') }
   ];
 
   const categories = [
-    { name: 'Semua', count: 18, color: 'from-gray-500 to-gray-600' },
-    { name: 'Kegiatan', count: 6, color: 'from-blue-500 to-cyan-600' },
-    { name: 'Fasilitas', count: 5, color: 'from-green-500 to-emerald-600' },
-    { name: 'Event', count: 4, color: 'from-orange-500 to-amber-600' },
-    { name: 'Pembelajaran', count: 3, color: 'from-pink-500 to-rose-600' }
+    { id: 'Semua', label: t('gallery_page.categories.all'), count: galleryItems.length, color: 'from-gray-500 to-gray-600' },
+    { id: 'Kegiatan', label: t('gallery_page.categories.activity'), count: galleryItems.filter(i => i.category === 'Kegiatan').length, color: 'from-blue-500 to-cyan-600' },
+    { id: 'Fasilitas', label: t('gallery_page.categories.facility'), count: galleryItems.filter(i => i.category === 'Fasilitas').length, color: 'from-green-500 to-emerald-600' },
+    { id: 'Event', label: t('gallery_page.categories.event'), count: galleryItems.filter(i => i.category === 'Event').length, color: 'from-orange-500 to-amber-600' },
+    { id: 'Pembelajaran', label: t('gallery_page.categories.learning'), count: galleryItems.filter(i => i.category === 'Pembelajaran').length, color: 'from-pink-500 to-rose-600' }
   ];
 
-  const galleryItems = [
-    {
-      id: 1,
-      image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b',
-      title: 'Upacara Hari Kemerdekaan RI ke-79',
-      category: 'Kegiatan',
-      date: '17 Agustus 2024',
-      views: 856,
-      description: 'Seluruh siswa dan guru mengikuti upacara peringatan hari kemerdekaan dengan khidmat',
-      color: '#3B82F6'
-    },
-    {
-      id: 2,
-      image: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655',
-      title: 'Laboratorium Komputer Modern',
-      category: 'Fasilitas',
-      date: '10 November 2024',
-      views: 642,
-      description: 'Fasilitas lab komputer dengan perangkat terkini untuk pembelajaran IT',
-      color: '#10B981'
-    },
-    {
-      id: 3,
-      image: 'https://images.unsplash.com/photo-1763639700458-38a0fd25335d',
-      title: 'Lomba Olahraga Antar Kelas',
-      category: 'Event',
-      date: '5 November 2024',
-      views: 789,
-      description: 'Kompetisi olahraga yang seru dan penuh sportivitas',
-      color: '#F97316'
-    },
-    {
-      id: 4,
-      image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7',
-      title: 'Pembelajaran Interaktif di Kelas',
-      category: 'Pembelajaran',
-      date: '28 Oktober 2024',
-      views: 567,
-      description: 'Metode pembelajaran aktif dan menyenangkan di kelas',
-      color: '#F472B6'
-    },
-    {
-      id: 5,
-      image: 'https://images.unsplash.com/photo-1761445777166-0d4b6f365f4c',
-      title: 'Science Fair 2024',
-      category: 'Event',
-      date: '25 Oktober 2024',
-      views: 923,
-      description: 'Pameran karya ilmiah siswa yang inovatif dan kreatif',
-      color: '#F97316'
-    },
-    {
-      id: 6,
-      image: 'https://images.unsplash.com/photo-1577896851231-70ef18881754',
-      title: 'Kunjungan Industri ke Perusahaan Teknologi',
-      category: 'Kegiatan',
-      date: '20 Oktober 2024',
-      views: 734,
-      description: 'Siswa SMAIT berkunjung ke perusahaan teknologi terkemuka',
-      color: '#3B82F6'
-    },
-    {
-      id: 7,
-      image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b',
-      title: 'Perpustakaan Digital',
-      category: 'Fasilitas',
-      date: '15 Oktober 2024',
-      views: 512,
-      description: 'Perpustakaan dengan koleksi buku digital dan ruang baca nyaman',
-      color: '#10B981'
-    },
-    {
-      id: 8,
-      image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1',
-      title: 'Workshop Robotika untuk Siswa',
-      category: 'Pembelajaran',
-      date: '12 Oktober 2024',
-      views: 845,
-      description: 'Pelatihan robotika untuk meningkatkan kreativitas siswa',
-      color: '#F472B6'
-    },
-    {
-      id: 9,
-      image: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655',
-      title: 'Gedung Serba Guna',
-      category: 'Fasilitas',
-      date: '5 Oktober 2024',
-      views: 456,
-      description: 'Aula besar untuk berbagai acara dan kegiatan sekolah',
-      color: '#10B981'
-    },
-    {
-      id: 10,
-      image: 'https://images.unsplash.com/photo-1588072432904-8cc8cb7e1256',
-      title: 'Mabit (Malam Bina Iman dan Taqwa)',
-      category: 'Kegiatan',
-      date: '1 Oktober 2024',
-      views: 923,
-      description: 'Kegiatan menginap siswa untuk penguatan spiritual',
-      color: '#3B82F6'
-    },
-    {
-      id: 11,
-      image: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b',
-      title: 'Lapangan Futsal Indoor',
-      category: 'Fasilitas',
-      date: '28 September 2024',
-      views: 678,
-      description: 'Fasilitas olahraga modern untuk aktivitas siswa',
-      color: '#10B981'
-    },
-    {
-      id: 12,
-      image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7',
-      title: 'Perayaan Hari Besar Islam',
-      category: 'Event',
-      date: '20 September 2024',
-      views: 1123,
-      description: 'Peringatan Maulid Nabi Muhammad SAW',
-      color: '#F97316'
-    }
-  ];
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
+        const res = await api.gallery.getAll();
+        const list = res && res.success && res.data ? res.data : [];
+        const mapped = list.map((g: any) => ({
+          id: g.id || Date.now(),
+          image: g.image_url,
+          title: g.title || '',
+          category: g.category || 'Kegiatan',
+          date: g.event_date || '',
+          views: g.views || 0,
+          description: g.description || '',
+          color: '#3B82F6'
+        }));
+        setGalleryItems(mapped);
+      } catch {
+        setGalleryItems([]);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
 
   const filteredGallery = galleryItems.filter(item => 
     selectedCategory === 'Semua' || item.category === selectedCategory
@@ -202,8 +111,8 @@ export const Gallery: React.FC<GalleryProps> = ({ onNavigate = () => {} }) => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar
-        siteName="Baitul Jannah Islamic School"
-        siteTagline="Sekolahnya Para Juara"
+        siteName={t('site.name')}
+        siteTagline={t('navbar.tagline')}
         accentColor="#1E4AB8"
         menuItems={menuItems}
       />
@@ -233,12 +142,10 @@ export const Gallery: React.FC<GalleryProps> = ({ onNavigate = () => {} }) => {
           <div className="mt-8">
             <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/20 backdrop-blur-sm rounded-full text-sm mb-6">
               <ImageIcon className="w-4 h-4" />
-              <span>Dokumentasi Kegiatan</span>
+              <span>{t('gallery_page.hero.badge')}</span>
             </div>
-            <h1 className="text-5xl lg:text-6xl mb-6">Galeri Foto</h1>
-            <p className="text-xl text-white/90 max-w-3xl leading-relaxed">
-              Dokumentasi momen berharga, prestasi gemilang, dan kegiatan inspiratif di Yayasan Baituljannah
-            </p>
+            <h1 className="text-5xl lg:text-6xl mb-6">{t('gallery_page.hero.title')}</h1>
+            <p className="text-xl text-white/90 max-w-3xl leading-relaxed">{t('gallery_page.hero.subtitle')}</p>
           </div>
         </div>
       </div>
@@ -252,17 +159,17 @@ export const Gallery: React.FC<GalleryProps> = ({ onNavigate = () => {} }) => {
               {categories.map((cat, index) => (
                 <button
                   key={index}
-                  onClick={() => setSelectedCategory(cat.name)}
+                  onClick={() => setSelectedCategory(cat.id)}
                   className={`px-4 py-2 rounded-xl whitespace-nowrap transition-all duration-300 flex items-center gap-2 ${
-                    selectedCategory === cat.name
+                    selectedCategory === cat.id
                       ? `bg-gradient-to-r ${cat.color} text-white shadow-lg scale-105`
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
                   <Tag className="w-4 h-4" />
-                  <span>{cat.name}</span>
+                  <span>{cat.label}</span>
                   <span className={`px-2 py-0.5 rounded-full text-xs ${
-                    selectedCategory === cat.name ? 'bg-white/30' : 'bg-gray-200'
+                    selectedCategory === cat.id ? 'bg-white/30' : 'bg-gray-200'
                   }`}>
                     {cat.count}
                   </span>
@@ -294,7 +201,7 @@ export const Gallery: React.FC<GalleryProps> = ({ onNavigate = () => {} }) => {
           </div>
 
           <div className="mt-4 text-gray-600">
-            Menampilkan <strong>{filteredGallery.length}</strong> foto
+            {tf('gallery_page.filter.showing', { count: filteredGallery.length })}
           </div>
         </div>
       </section>
@@ -364,13 +271,13 @@ export const Gallery: React.FC<GalleryProps> = ({ onNavigate = () => {} }) => {
               <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
                 <ImageIcon className="w-12 h-12 text-gray-400" />
               </div>
-              <h3 className="text-2xl text-gray-600 mb-2">Tidak ada foto ditemukan</h3>
-              <p className="text-gray-500 mb-6">Coba pilih kategori lain</p>
+              <h3 className="text-2xl text-gray-600 mb-2">{t('gallery_page.filter.empty_title')}</h3>
+              <p className="text-gray-500 mb-6">{t('gallery_page.filter.empty_desc')}</p>
               <button
                 onClick={() => setSelectedCategory('Semua')}
                 className="btn-outline"
               >
-                Lihat Semua Foto
+                {t('gallery_page.filter.view_all')}
               </button>
             </div>
           )}
@@ -414,7 +321,7 @@ export const Gallery: React.FC<GalleryProps> = ({ onNavigate = () => {} }) => {
                     </span>
                     <span className="flex items-center gap-1">
                       <Eye className="w-4 h-4" />
-                      {selectedImage.views} views
+                      {selectedImage.views} {t('gallery_page.item.views')}
                     </span>
                   </div>
                 </div>
@@ -432,7 +339,7 @@ export const Gallery: React.FC<GalleryProps> = ({ onNavigate = () => {} }) => {
         </div>
       )}
 
-      <Footer siteName="Baitul Jannah Islamic School" accentColor="#1E4AB8" onNavigate={onNavigate} />
+      <Footer siteName={t('site.name')} accentColor="#1E4AB8" onNavigate={onNavigate} logo="/images/logo/logo-yayasan.jpg" />
     </div>
   );
 };

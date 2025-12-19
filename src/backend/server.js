@@ -8,7 +8,10 @@ require('dotenv').config();
 
 const config = require('./config/config');
 const { testConnection } = require('./config/database');
+const { getDb } = require('./config/mongo');
 const errorHandler = require('./middleware/errorHandler');
+const path = require('path');
+const fs = require('fs');
 
 // Initialize express app
 const app = express();
@@ -21,10 +24,17 @@ const app = express();
 app.use(helmet());
 
 // Enable CORS
-app.use(cors({
-  origin: config.frontendUrl,
-  credentials: true
-}));
+if (config.nodeEnv === 'development') {
+  app.use(cors({
+    origin: (origin, callback) => callback(null, true),
+    credentials: true
+  }));
+} else {
+  app.use(cors({
+    origin: config.frontendUrl,
+    credentials: true
+  }));
+}
 
 // Body parser
 app.use(express.json({ limit: '10mb' }));
@@ -40,16 +50,33 @@ if (config.nodeEnv === 'development') {
   app.use(morgan('combined'));
 }
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: config.rateLimit.windowMs,
-  max: config.rateLimit.max,
-  message: {
-    success: false,
-    message: 'Terlalu banyak request dari IP ini, silakan coba lagi nanti'
-  }
-});
-app.use('/api/', limiter);
+// Static uploads
+try {
+  const uploadRoot = require('./config/config').upload.uploadPath;
+  fs.mkdirSync(uploadRoot, { recursive: true });
+  fs.mkdirSync(path.join(uploadRoot, 'hero'), { recursive: true });
+  fs.mkdirSync(path.join(uploadRoot, 'gallery'), { recursive: true });
+  fs.mkdirSync(path.join(uploadRoot, 'gallery', 'thumbs'), { recursive: true });
+  fs.mkdirSync(path.join(uploadRoot, 'news'), { recursive: true });
+  fs.mkdirSync(path.join(uploadRoot, 'achievements'), { recursive: true });
+  fs.mkdirSync(path.join(uploadRoot, 'units'), { recursive: true });
+  app.use('/uploads', express.static(uploadRoot));
+} catch (e) {
+  console.warn('⚠️ Unable to initialize uploads directory:', e.message);
+}
+
+// Rate limiting (enable in production only)
+if (config.nodeEnv === 'production') {
+  const limiter = rateLimit({
+    windowMs: config.rateLimit.windowMs,
+    max: config.rateLimit.max,
+    message: {
+      success: false,
+      message: 'Terlalu banyak request dari IP ini, silakan coba lagi nanti'
+    }
+  });
+  app.use('/api/', limiter);
+}
 
 // ======================
 // ROUTES
@@ -65,16 +92,34 @@ app.get('/health', (req, res) => {
   });
 });
 
+// API health under versioned path
+app.get(`/api/${config.apiVersion}/health`, (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'API is healthy',
+    environment: config.nodeEnv,
+    timestamp: new Date().toISOString()
+  });
+});
+
 // API Routes
 const authRoutes = require('./routes/auth');
 const newsRoutes = require('./routes/news');
 const ppdbRoutes = require('./routes/ppdb');
 const contactRoutes = require('./routes/contact');
+const unitsRoutes = require('./routes/units');
+const heroSlidesRoutes = require('./routes/heroSlides');
+const galleryRoutes = require('./routes/gallery');
+const achievementsRoutes = require('./routes/achievements');
 
 app.use(`/api/${config.apiVersion}/auth`, authRoutes);
 app.use(`/api/${config.apiVersion}/news`, newsRoutes);
 app.use(`/api/${config.apiVersion}/ppdb`, ppdbRoutes);
 app.use(`/api/${config.apiVersion}/contact`, contactRoutes);
+app.use(`/api/${config.apiVersion}/units`, unitsRoutes);
+app.use(`/api/${config.apiVersion}/hero-slides`, heroSlidesRoutes);
+app.use(`/api/${config.apiVersion}/gallery`, galleryRoutes);
+app.use(`/api/${config.apiVersion}/achievements`, achievementsRoutes);
 
 // Welcome route
 app.get('/', (req, res) => {
@@ -111,16 +156,68 @@ const PORT = config.port || 5000;
 
 const startServer = async () => {
   try {
-    // Test database connection
-    const dbConnected = await testConnection();
-    
-    if (!dbConnected) {
+    let ok = true;
+    if (process.env.USE_MONGO === 'true') {
+      try {
+        const db = await getDb();
+        await db.command({ ping: 1 });
+        console.log('✅ MongoDB Connected Successfully');
+
+        if (process.env.NODE_ENV !== 'production') {
+          const bcrypt = require('bcryptjs');
+          const saltRounds = require('./config/config').bcryptSaltRounds;
+          const pass123 = await bcrypt.hash('123', saltRounds);
+
+          const devUsers = [
+            { username: 'superadmin', email: 'admin@baituljannah.sch.id', full_name: 'Administrator Yayasan', role: 'super_admin', phone: '081234567890' },
+            { username: 'admin.sdit', email: 'admin.sdit@baituljannah.sch.id', full_name: 'Admin SDIT', role: 'admin_unit', phone: '081234567802' },
+            { username: 'ustadz.ahmad', email: 'ahmad@baituljannah.sch.id', full_name: 'Ustadz Ahmad Fauzi', role: 'guru', phone: '081234560001' },
+            { username: 'siswa.rizki', email: 'rizki@student.baituljannah.sch.id', full_name: 'Muhammad Rizki Pratama', role: 'siswa', phone: '081234561001' },
+            { username: 'ortu.ahmad', email: 'ahmad.fauzi@parent.baituljannah.sch.id', full_name: 'Bapak Ahmad Fauzi', role: 'orang_tua', phone: '081234562001' },
+          ];
+          for (const u of devUsers) {
+            await db.collection('users').updateOne(
+              { email: u.email.toLowerCase() },
+              {
+                $setOnInsert: { username: u.username, full_name: u.full_name, role: u.role, phone: u.phone, is_active: true, created_at: new Date(), last_login: null },
+                $set: { password: pass123 }
+              },
+              { upsert: true }
+            );
+          }
+          console.log('🌱 Ensured dev users exist and passwords set to 123');
+        }
+      } catch (e) {
+        console.error('❌ MongoDB Connection Failed:', e.message);
+        ok = false;
+      }
+    } else {
+      const dbConnected = await testConnection();
+      ok = dbConnected;
+      if (dbConnected) {
+        console.log('✅ MySQL Connected Successfully');
+        if (process.env.NODE_ENV !== 'production') {
+          const bcrypt = require('bcryptjs');
+          const saltRounds = require('./config/config').bcryptSaltRounds;
+          const hashAll = await bcrypt.hash('123', saltRounds);
+          const { executeQuery } = require('./config/database');
+          try {
+            await executeQuery('UPDATE users SET password = ? WHERE 1=1', [hashAll]);
+            console.log('🔒 All MySQL user passwords set to 123 (development)');
+          } catch (e) {
+            console.warn('⚠️ Could not update MySQL user passwords:', e.message);
+          }
+        }
+      }
+    }
+
+    if (!ok) {
       console.error('❌ Failed to connect to database. Server not started.');
       process.exit(1);
     }
 
     // Start server
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, '127.0.0.1', () => {
       console.log('');
       console.log('='.repeat(60));
       console.log('🚀 BAITULJANNAH SCHOOL MANAGEMENT SYSTEM API');
@@ -137,8 +234,13 @@ const startServer = async () => {
       console.log(`   📰 News:    /api/${config.apiVersion}/news`);
       console.log(`   📝 PPDB:    /api/${config.apiVersion}/ppdb`);
       console.log(`   📧 Contact: /api/${config.apiVersion}/contact`);
+      console.log(`   🏫 Units:   /api/${config.apiVersion}/units`);
+      console.log(`   🎞️ Hero:    /api/${config.apiVersion}/hero-slides`);
       console.log('='.repeat(60));
       console.log('');
+    });
+    server.on('error', (err) => {
+      console.error('❌ Server listen error:', err.message);
     });
   } catch (error) {
     console.error('❌ Error starting server:', error);

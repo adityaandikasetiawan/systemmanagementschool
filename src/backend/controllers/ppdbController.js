@@ -1,4 +1,6 @@
 const { executeQuery, getOne, insert, update } = require('../config/database');
+const { getDb } = require('../config/mongo');
+const { ObjectId } = require('mongodb');
 const { v4: uuidv4 } = require('uuid');
 
 // @desc    Submit PPDB registration
@@ -38,42 +40,70 @@ exports.submitRegistration = async (req, res) => {
     const randomNum = Math.floor(1000 + Math.random() * 9000);
     const no_pendaftaran = `PPDB${tahun}${jenjang}${randomNum}`;
 
-    // Insert registration
-    const registrationId = await insert(
-      `INSERT INTO ppdb_registrations 
-        (no_pendaftaran, nama_lengkap, jenjang, jenis_kelamin, tempat_lahir, tanggal_lahir, 
-         nik, alamat, kota, provinsi, kode_pos, nama_ayah, pekerjaan_ayah, nama_ibu, 
-         pekerjaan_ibu, no_telp, email, asal_sekolah, prestasi, informasi_dari, 
-         status, created_at, updated_at) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', NOW(), NOW())`,
-      [
+    let registration
+    if (process.env.USE_MONGO === 'true') {
+      const db = await getDb();
+      const doc = {
         no_pendaftaran,
         nama_lengkap,
         jenjang,
         jenis_kelamin,
         tempat_lahir,
         tanggal_lahir,
-        nik || null,
+        nik: nik || null,
         alamat,
-        kota || null,
-        provinsi || null,
-        kode_pos || null,
+        kota: kota || null,
+        provinsi: provinsi || null,
+        kode_pos: kode_pos || null,
         nama_ayah,
-        pekerjaan_ayah || null,
+        pekerjaan_ayah: pekerjaan_ayah || null,
         nama_ibu,
-        pekerjaan_ibu || null,
+        pekerjaan_ibu: pekerjaan_ibu || null,
         no_telp,
         email,
-        asal_sekolah || null,
-        prestasi || null,
-        informasi_dari || null
-      ]
-    );
-
-    const registration = await getOne(
-      'SELECT * FROM ppdb_registrations WHERE id = ?',
-      [registrationId]
-    );
+        asal_sekolah: asal_sekolah || null,
+        prestasi: prestasi || null,
+        informasi_dari: informasi_dari || null,
+        status: 'pending',
+        created_at: new Date(),
+        updated_at: new Date()
+      };
+      const result = await db.collection('ppdb_registrations').insertOne(doc);
+      doc.id = result.insertedId.toString();
+      registration = doc;
+    } else {
+      const registrationId = await insert(
+        `INSERT INTO ppdb_registrations 
+          (no_pendaftaran, nama_lengkap, jenjang, jenis_kelamin, tempat_lahir, tanggal_lahir, 
+           nik, alamat, kota, provinsi, kode_pos, nama_ayah, pekerjaan_ayah, nama_ibu, 
+           pekerjaan_ibu, no_telp, email, asal_sekolah, prestasi, informasi_dari, 
+           status, created_at, updated_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', NOW(), NOW())`,
+        [
+          no_pendaftaran,
+          nama_lengkap,
+          jenjang,
+          jenis_kelamin,
+          tempat_lahir,
+          tanggal_lahir,
+          nik || null,
+          alamat,
+          kota || null,
+          provinsi || null,
+          kode_pos || null,
+          nama_ayah,
+          pekerjaan_ayah || null,
+          nama_ibu,
+          pekerjaan_ibu || null,
+          no_telp,
+          email,
+          asal_sekolah || null,
+          prestasi || null,
+          informasi_dari || null
+        ]
+      );
+      registration = await getOne('SELECT * FROM ppdb_registrations WHERE id = ?', [registrationId]);
+    }
 
     // TODO: Send confirmation email
 
@@ -101,11 +131,14 @@ exports.submitRegistration = async (req, res) => {
 exports.checkRegistration = async (req, res) => {
   try {
     const { no_pendaftaran } = req.params;
-
-    const registration = await getOne(
-      'SELECT * FROM ppdb_registrations WHERE no_pendaftaran = ?',
-      [no_pendaftaran]
-    );
+    let registration
+    if (process.env.USE_MONGO === 'true') {
+      const db = await getDb();
+      registration = await db.collection('ppdb_registrations').findOne({ no_pendaftaran });
+      if (registration) { registration.id = registration._id.toString(); delete registration._id; }
+    } else {
+      registration = await getOne('SELECT * FROM ppdb_registrations WHERE no_pendaftaran = ?', [no_pendaftaran]);
+    }
 
     if (!registration) {
       return res.status(404).json({
@@ -144,47 +177,52 @@ exports.getAllRegistrations = async (req, res) => {
     } = req.query;
 
     const offset = (page - 1) * limit;
-    let whereConditions = [];
-    let params = [];
+    const useMongo = process.env.USE_MONGO === 'true';
 
-    // Filter by jenjang
-    if (jenjang) {
-      whereConditions.push('jenjang = ?');
-      params.push(jenjang);
+    if (useMongo) {
+      const db = await getDb();
+      const q = {};
+      if (jenjang) q.jenjang = jenjang;
+      if (status) q.status = status;
+      if (search) q.$or = [
+        { nama_lengkap: { $regex: search, $options: 'i' } },
+        { no_pendaftaran: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+      ];
+      const allowedSortFields = ['created_at', 'nama_lengkap', 'jenjang', 'status'];
+      const sortField = allowedSortFields.includes(sort) ? sort : 'created_at';
+      const sortOrder = order.toUpperCase() === 'ASC' ? 1 : -1;
+      const total = await db.collection('ppdb_registrations').countDocuments(q);
+      const registrations = await db.collection('ppdb_registrations')
+        .find(q)
+        .sort({ [sortField]: sortOrder })
+        .skip(offset)
+        .limit(parseInt(limit))
+        .toArray();
+      registrations.forEach(r => { r.id = r._id.toString(); delete r._id; });
+      return res.status(200).json({ success: true, count: registrations.length, total, totalPages: Math.ceil(total / limit), currentPage: parseInt(page), data: registrations });
+    } else {
+      let whereConditions = [];
+      let params = [];
+      if (jenjang) { whereConditions.push('jenjang = ?'); params.push(jenjang); }
+      if (status) { whereConditions.push('status = ?'); params.push(status); }
+      if (search) { whereConditions.push('(nama_lengkap LIKE ? OR no_pendaftaran LIKE ? OR email LIKE ?)'); params.push(`%${search}%`, `%${search}%`, `%${search}%`); }
+      const whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
+      const countQuery = `SELECT COUNT(*) as total FROM ppdb_registrations ${whereClause}`;
+      const countResult = await getOne(countQuery, params);
+      const total = countResult.total;
+      const allowedSortFields = ['created_at', 'nama_lengkap', 'jenjang', 'status'];
+      const sortField = allowedSortFields.includes(sort) ? sort : 'created_at';
+      const sortOrder = order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
+      const query = `
+        SELECT * FROM ppdb_registrations
+        ${whereClause}
+        ORDER BY ${sortField} ${sortOrder}
+        LIMIT ? OFFSET ?
+      `;
+      const registrations = await executeQuery(query, [...params, parseInt(limit), offset]);
+      return res.status(200).json({ success: true, count: registrations.length, total, totalPages: Math.ceil(total / limit), currentPage: parseInt(page), data: registrations });
     }
-
-    // Filter by status
-    if (status) {
-      whereConditions.push('status = ?');
-      params.push(status);
-    }
-
-    // Search
-    if (search) {
-      whereConditions.push('(nama_lengkap LIKE ? OR no_pendaftaran LIKE ? OR email LIKE ?)');
-      params.push(`%${search}%`, `%${search}%`, `%${search}%`);
-    }
-
-    const whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
-
-    // Get total count
-    const countQuery = `SELECT COUNT(*) as total FROM ppdb_registrations ${whereClause}`;
-    const countResult = await getOne(countQuery, params);
-    const total = countResult.total;
-
-    // Get registrations
-    const allowedSortFields = ['created_at', 'nama_lengkap', 'jenjang', 'status'];
-    const sortField = allowedSortFields.includes(sort) ? sort : 'created_at';
-    const sortOrder = order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
-
-    const query = `
-      SELECT * FROM ppdb_registrations
-      ${whereClause}
-      ORDER BY ${sortField} ${sortOrder}
-      LIMIT ? OFFSET ?
-    `;
-
-    const registrations = await executeQuery(query, [...params, parseInt(limit), offset]);
 
     res.status(200).json({
       success: true,

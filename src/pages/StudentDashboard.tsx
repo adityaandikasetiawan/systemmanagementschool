@@ -28,7 +28,8 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({ onNavigate =
     { label: 'Akademik', href: '#', onClick: () => onNavigate('student-academic') },
     { label: 'Keuangan', href: '#', onClick: () => onNavigate('student-finance') },
     { label: 'Tugas', href: '#', onClick: () => setSelectedTab('assignments') },
-    { label: 'Profile', href: '#', onClick: () => onNavigate('student-profile') }
+    { label: 'Profile', href: '#', onClick: () => onNavigate('student-profile') },
+    { label: 'Login', href: '#', onClick: () => onNavigate('login') }
   ];
 
   const stats = [

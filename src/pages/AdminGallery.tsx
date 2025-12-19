@@ -6,10 +6,11 @@ import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 
 interface AdminGalleryProps {
   onNavigate?: (page: string) => void;
+  embedded?: boolean;
 }
 
 interface GalleryItem {
-  id: number;
+  id: string | number;
   title: string;
   category: string;
   unit: string;
@@ -20,15 +21,39 @@ interface GalleryItem {
   downloads: number;
 }
 
-export const AdminGallery: React.FC<AdminGalleryProps> = ({ onNavigate = () => {} }) => {
+export const AdminGallery: React.FC<AdminGalleryProps> = ({ onNavigate = () => {}, embedded = false }) => {
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState<'create' | 'edit' | 'view'>('create');
   const [selectedImage, setSelectedImage] = useState<GalleryItem | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState('Semua');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState<number | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | number | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+
+  React.useEffect(() => {
+    try {
+      const sq = localStorage.getItem('bj_admin_gallery_search');
+      const fc = localStorage.getItem('bj_admin_gallery_filter');
+      const vm = localStorage.getItem('bj_admin_gallery_view') as 'grid' | 'list' | null;
+      if (sq !== null) setSearchQuery(sq);
+      if (fc !== null) setFilterCategory(fc);
+      if (vm === 'grid' || vm === 'list') setViewMode(vm);
+    } catch {}
+  }, []);
+
+  React.useEffect(() => {
+    try { localStorage.setItem('bj_admin_gallery_search', searchQuery); } catch {}
+  }, [searchQuery]);
+
+  React.useEffect(() => {
+    try { localStorage.setItem('bj_admin_gallery_filter', filterCategory); } catch {}
+  }, [filterCategory]);
+
+  React.useEffect(() => {
+    try { localStorage.setItem('bj_admin_gallery_view', viewMode); } catch {}
+  }, [viewMode]);
 
   const menuItems = [
     { label: t('admin_gallery.menu.dashboard'), href: '#', onClick: () => onNavigate('admin-super') },
@@ -38,74 +63,7 @@ export const AdminGallery: React.FC<AdminGalleryProps> = ({ onNavigate = () => {
     { label: t('admin_gallery.menu.programs'), href: '#', onClick: () => onNavigate('admin-programs') }
   ];
 
-  const [galleryList, setGalleryList] = useState<GalleryItem[]>([
-    {
-      id: 1,
-      title: 'Upacara Bendera Senin Pagi',
-      category: 'Kegiatan',
-      unit: 'Semua Unit',
-      date: '2024-12-02',
-      photographer: 'Admin Yayasan',
-      description: 'Upacara bendera rutin setiap hari Senin pagi di lapangan utama',
-      image: 'https://images.unsplash.com/photo-1740493430383-a0bfff9550a5',
-      downloads: 45
-    },
-    {
-      id: 2,
-      title: 'Pembelajaran di Kelas',
-      category: 'Akademik',
-      unit: 'SDIT',
-      date: '2024-11-28',
-      photographer: 'Admin SDIT',
-      description: 'Suasana pembelajaran aktif di kelas 3 SDIT',
-      image: 'https://images.unsplash.com/photo-1758270705799-12efda48d4f4',
-      downloads: 32
-    },
-    {
-      id: 3,
-      title: 'Pertandingan Futsal Antar Kelas',
-      category: 'Olahraga',
-      unit: 'SMPIT',
-      date: '2024-11-25',
-      photographer: 'Admin SMPIT',
-      description: 'Final pertandingan futsal antar kelas SMPIT',
-      image: 'https://images.unsplash.com/photo-1759200135568-566eb9ecaa81',
-      downloads: 67
-    },
-    {
-      id: 4,
-      title: 'Praktek Lab Sains',
-      category: 'Akademik',
-      unit: 'SMAIT',
-      date: '2024-11-20',
-      photographer: 'Admin SMAIT',
-      description: 'Siswa sedang melakukan eksperimen di laboratorium sains',
-      image: 'https://images.unsplash.com/photo-1605781645799-c9c7d820b4ac',
-      downloads: 28
-    },
-    {
-      id: 5,
-      title: 'Kegiatan Tahfidz',
-      category: 'Keagamaan',
-      unit: 'SDIT',
-      date: '2024-11-15',
-      photographer: 'Admin SDIT',
-      description: 'Siswa sedang muroja\'ah hafalan bersama ustadz',
-      image: 'https://images.unsplash.com/photo-1643429096345-9de0d2ab7e7c',
-      downloads: 89
-    },
-    {
-      id: 6,
-      title: 'Perpustakaan Sekolah',
-      category: 'Fasilitas',
-      unit: 'Yayasan',
-      date: '2024-11-10',
-      photographer: 'Admin Yayasan',
-      description: 'Perpustakaan modern dengan koleksi lengkap',
-      image: 'https://images.unsplash.com/photo-1595315343110-9b445a960442',
-      downloads: 51
-    }
-  ]);
+  const [galleryList, setGalleryList] = useState<GalleryItem[]>([]);
 
   const [formData, setFormData] = useState<Partial<GalleryItem>>({
     title: '',
@@ -127,6 +85,27 @@ export const AdminGallery: React.FC<AdminGalleryProps> = ({ onNavigate = () => {
     return matchesSearch && matchesCategory;
   });
 
+  React.useEffect(() => {
+    (async () => {
+      try {
+        const res = await (await import('../services/api')).api.gallery.getAll();
+        const list = res && res.success && res.data ? res.data : [];
+        const mapped: GalleryItem[] = list.map((g: any) => ({
+          id: String(g.id || Date.now()),
+          title: g.title || '',
+          category: g.category || 'Kegiatan',
+          unit: 'Semua Unit',
+          date: g.event_date || new Date().toISOString().split('T')[0],
+          photographer: 'Admin Yayasan',
+          description: g.description || '',
+          image: g.image_url,
+          downloads: g.views || 0,
+        }));
+        setGalleryList(mapped);
+      } catch {}
+    })();
+  }, []);
+
   const handleCreate = () => {
     setModalMode('create');
     setFormData({
@@ -136,8 +115,9 @@ export const AdminGallery: React.FC<AdminGalleryProps> = ({ onNavigate = () => {
       date: new Date().toISOString().split('T')[0],
       photographer: 'Admin Yayasan',
       description: '',
-      image: 'https://images.unsplash.com/photo-1740493430383-a0bfff9550a5'
+      image: ''
     });
+    setUploadedFile(null);
     setShowModal(true);
   };
 
@@ -155,24 +135,78 @@ export const AdminGallery: React.FC<AdminGalleryProps> = ({ onNavigate = () => {
     setShowModal(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (modalMode === 'create') {
-      const newItem: GalleryItem = {
-        ...formData as GalleryItem,
-        id: Math.max(...galleryList.map(i => i.id), 0) + 1,
-        downloads: 0
-      };
-      setGalleryList([newItem, ...galleryList]);
+      if (!uploadedFile) return;
+      try {
+        const fd = new FormData();
+        fd.append('image', uploadedFile);
+        if (formData.title) fd.append('title', formData.title);
+        if (formData.description) fd.append('description', formData.description);
+        if (formData.category) fd.append('category', formData.category);
+        if (formData.date) fd.append('event_date', formData.date!);
+        const res = await (await import('../services/api')).api.gallery.upload(fd);
+        const item = res && res.success && res.data ? res.data : null;
+        if (item) {
+          const mapped: GalleryItem = {
+            id: String(item.id || Date.now()),
+            title: item.title || '',
+            category: item.category || 'Kegiatan',
+            unit: 'Semua Unit',
+            date: item.event_date || new Date().toISOString().split('T')[0],
+            photographer: 'Admin Yayasan',
+            description: item.description || '',
+            image: item.image_url,
+            downloads: 0,
+          };
+          setGalleryList([mapped, ...galleryList]);
+        }
+      } catch {}
     } else if (modalMode === 'edit' && selectedImage) {
-      setGalleryList(galleryList.map(item => 
-        item.id === selectedImage.id ? { ...formData as GalleryItem, id: selectedImage.id, downloads: selectedImage.downloads } : item
-      ));
+      try {
+        let payload: any = null;
+        if (uploadedFile) {
+          const fd = new FormData();
+          fd.append('image', uploadedFile);
+          if (formData.title) fd.append('title', formData.title);
+          if (formData.description) fd.append('description', formData.description);
+          if (formData.category) fd.append('category', formData.category);
+          if (formData.date) fd.append('event_date', formData.date!);
+          payload = fd;
+        } else {
+          payload = {
+            title: formData.title,
+            description: formData.description,
+            category: formData.category,
+            event_date: formData.date,
+          };
+        }
+        const res = await (await import('../services/api')).api.gallery.update(selectedImage.id, payload);
+        const item = res && res.success && res.data ? res.data : null;
+        if (item) {
+          const mapped: GalleryItem = {
+            id: String(item.id || selectedImage.id),
+            title: item.title || formData.title || '',
+            category: item.category || formData.category || 'Kegiatan',
+            unit: selectedImage.unit,
+            date: item.event_date || formData.date || new Date().toISOString().split('T')[0],
+            photographer: selectedImage.photographer,
+            description: item.description || formData.description || '',
+            image: item.image_url || selectedImage.image,
+            downloads: selectedImage.downloads,
+          };
+          setGalleryList(galleryList.map(g => g.id === selectedImage.id ? mapped : g));
+        }
+      } catch {}
     }
     setShowModal(false);
     setSelectedImage(null);
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: string | number) => {
+    try {
+      await (await import('../services/api')).api.gallery.delete(id);
+    } catch {}
     setGalleryList(galleryList.filter(item => item.id !== id));
     setShowDeleteConfirm(null);
   };
@@ -187,7 +221,6 @@ export const AdminGallery: React.FC<AdminGalleryProps> = ({ onNavigate = () => {
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Simulate upload progress
       let progress = 0;
       const interval = setInterval(() => {
         progress += 10;
@@ -197,16 +230,12 @@ export const AdminGallery: React.FC<AdminGalleryProps> = ({ onNavigate = () => {
           setTimeout(() => setUploadProgress(0), 500);
         }
       }, 200);
-      
-      // In real app, upload to server here
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setFormData({
-          ...formData,
-          image: event.target?.result as string
-        });
-      };
-      reader.readAsDataURL(file);
+      setUploadedFile(file);
+      const url = URL.createObjectURL(file);
+      setFormData({
+        ...formData,
+        image: url
+      });
     }
   };
 
@@ -218,12 +247,14 @@ export const AdminGallery: React.FC<AdminGalleryProps> = ({ onNavigate = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar 
-        siteName={t('admin_gallery.site_title')}
-        accentColor="#1E4AB8"
-        menuItems={menuItems}
-      />
+    <div className={embedded ? '' : 'min-h-screen bg-gray-50'}>
+      {!embedded && (
+        <Navbar 
+          siteName={t('admin_gallery.site_title')}
+          accentColor="#1E4AB8"
+          menuItems={menuItems}
+        />
+      )}
 
       <div className="container-custom py-8">
         {/* Header */}

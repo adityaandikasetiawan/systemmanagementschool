@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { executeQuery, getOne, insert } = require('../config/database');
+const { getDb } = require('../config/mongo');
+const { ObjectId } = require('mongodb');
 const config = require('../config/config');
 
 // Generate JWT Token
@@ -16,45 +18,56 @@ const generateToken = (id) => {
 exports.register = async (req, res) => {
   try {
     const { username, email, password, full_name, role = 'siswa', phone } = req.body;
+    const useMongo = process.env.USE_MONGO === 'true';
 
-    // Check if user already exists
-    const existingUser = await getOne(
-      'SELECT id FROM users WHERE email = ? OR username = ?',
-      [email, username]
-    );
-
-    if (existingUser) {
-      return res.status(400).json({
-        success: false,
-        message: 'Email atau username sudah terdaftar'
-      });
-    }
-
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, config.bcryptSaltRounds);
 
-    // Insert user
-    const userId = await insert(
-      `INSERT INTO users (username, email, password, full_name, role, phone, is_active, created_at) 
-       VALUES (?, ?, ?, ?, ?, ?, 1, NOW())`,
-      [username, email, hashedPassword, full_name, role, phone || null]
-    );
-
-    // Generate token
-    const token = generateToken(userId);
-
-    res.status(201).json({
-      success: true,
-      message: 'Registrasi berhasil',
-      data: {
-        id: userId,
+    if (useMongo) {
+      const db = await getDb();
+      const existingUser = await db.collection('users').findOne({
+        $or: [ { email: email.toLowerCase() }, { username: username.toLowerCase() } ]
+      });
+      if (existingUser) {
+        return res.status(400).json({ success: false, message: 'Email atau username sudah terdaftar' });
+      }
+      const doc = {
         username,
-        email,
+        email: email.toLowerCase(),
+        password: hashedPassword,
         full_name,
         role,
-        token
+        phone: phone || null,
+        is_active: true,
+        created_at: new Date(),
+        last_login: null
+      };
+      const result = await db.collection('users').insertOne(doc);
+      const token = generateToken(result.insertedId.toString());
+      return res.status(201).json({
+        success: true,
+        message: 'Registrasi berhasil',
+        data: { id: result.insertedId.toString(), username, email, full_name, role, token }
+      });
+    } else {
+      const existingUser = await getOne(
+        'SELECT id FROM users WHERE email = ? OR username = ?',
+        [email, username]
+      );
+      if (existingUser) {
+        return res.status(400).json({ success: false, message: 'Email atau username sudah terdaftar' });
       }
-    });
+      const userId = await insert(
+        `INSERT INTO users (username, email, password, full_name, role, phone, is_active, created_at) 
+         VALUES (?, ?, ?, ?, ?, ?, 1, NOW())`,
+        [username, email, hashedPassword, full_name, role, phone || null]
+      );
+      const token = generateToken(userId);
+      return res.status(201).json({
+        success: true,
+        message: 'Registrasi berhasil',
+        data: { id: userId, username, email, full_name, role, token }
+      });
+    }
   } catch (error) {
     console.error('Register Error:', error);
     res.status(500).json({
@@ -70,13 +83,39 @@ exports.register = async (req, res) => {
 // @access  Public
 exports.login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, username, identifier, password } = req.body;
+    const useMongo = process.env.USE_MONGO === 'true';
 
-    // Get user with password
-    const user = await getOne(
-      'SELECT id, username, email, password, full_name, role, is_active FROM users WHERE email = ?',
-      [email]
-    );
+    let user;
+    if (useMongo) {
+      const db = await getDb();
+      const crit = identifier?.trim() || email?.trim() || username?.trim();
+      if (crit) {
+        user = await db.collection('users').findOne({
+          $or: [
+            { email: crit.toLowerCase() },
+            { username: crit.toLowerCase() },
+          ]
+        });
+      }
+    } else {
+      if (identifier && typeof identifier === 'string' && identifier.trim().length > 0) {
+        user = await getOne(
+          'SELECT id, username, email, password, full_name, role, is_active FROM users WHERE LOWER(email) = LOWER(?) OR LOWER(username) = LOWER(?)',
+          [identifier.trim(), identifier.trim()]
+        );
+      } else if (email && typeof email === 'string' && email.trim().length > 0) {
+        user = await getOne(
+          'SELECT id, username, email, password, full_name, role, is_active FROM users WHERE LOWER(email) = LOWER(?)',
+          [email.trim()]
+        );
+      } else if (username && typeof username === 'string' && username.trim().length > 0) {
+        user = await getOne(
+          'SELECT id, username, email, password, full_name, role, is_active FROM users WHERE LOWER(username) = LOWER(?)',
+          [username.trim()]
+        );
+      }
+    }
 
     if (!user) {
       return res.status(401).json({
@@ -93,7 +132,6 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Check password
     const isPasswordMatch = await bcrypt.compare(password, user.password);
 
     if (!isPasswordMatch) {
@@ -103,17 +141,22 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Update last login
-    await executeQuery(
-      'UPDATE users SET last_login = NOW() WHERE id = ?',
-      [user.id]
-    );
+    if (useMongo) {
+      const db = await getDb();
+      await db.collection('users').updateOne({ _id: user._id }, { $set: { last_login: new Date() } });
+    } else {
+      await executeQuery('UPDATE users SET last_login = NOW() WHERE id = ?', [user.id]);
+    }
 
-    // Generate token
-    const token = generateToken(user.id);
+    const token = generateToken(useMongo ? user._id.toString() : user.id);
 
-    // Remove password from response
-    delete user.password;
+    if (useMongo) {
+      user.id = user._id.toString();
+      delete user._id;
+      delete user.password;
+    } else {
+      delete user.password;
+    }
 
     res.status(200).json({
       success: true,
@@ -138,10 +181,22 @@ exports.login = async (req, res) => {
 // @access  Private
 exports.getMe = async (req, res) => {
   try {
-    const user = await getOne(
-      'SELECT id, username, email, full_name, role, phone, avatar, created_at, last_login FROM users WHERE id = ?',
-      [req.user.id]
-    );
+    let user
+    if (process.env.USE_MONGO === 'true') {
+      const db = await getDb();
+      const oid = new ObjectId(req.user.id)
+      const doc = await db.collection('users').findOne({ _id: oid }, { projection: { password: 0 } })
+      if (doc) {
+        doc.id = doc._id.toString()
+        delete doc._id
+        user = doc
+      }
+    } else {
+      user = await getOne(
+        'SELECT id, username, email, full_name, role, phone, avatar, created_at, last_login FROM users WHERE id = ?',
+        [req.user.id]
+      );
+    }
 
     res.status(200).json({
       success: true,
@@ -181,16 +236,27 @@ exports.updateDetails = async (req, res) => {
       .join(', ');
     const values = [...Object.values(fieldsToUpdate), req.user.id];
 
-    await executeQuery(
-      `UPDATE users SET ${updateFields}, updated_at = NOW() WHERE id = ?`,
-      values
-    );
-
-    // Get updated user
-    const user = await getOne(
-      'SELECT id, username, email, full_name, role, phone FROM users WHERE id = ?',
-      [req.user.id]
-    );
+    let user
+    if (process.env.USE_MONGO === 'true') {
+      const db = await getDb();
+      await db.collection('users').updateOne(
+        { _id: new ObjectId(req.user.id) },
+        { $set: { ...fieldsToUpdate, updated_at: new Date() } }
+      )
+      const doc = await db.collection('users').findOne({ _id: new ObjectId(req.user.id) }, { projection: { password: 0 } })
+      doc.id = doc._id.toString()
+      delete doc._id
+      user = doc
+    } else {
+      await executeQuery(
+        `UPDATE users SET ${updateFields}, updated_at = NOW() WHERE id = ?`,
+        values
+      );
+      user = await getOne(
+        'SELECT id, username, email, full_name, role, phone FROM users WHERE id = ?',
+        [req.user.id]
+      );
+    }
 
     res.status(200).json({
       success: true,
@@ -221,11 +287,16 @@ exports.updatePassword = async (req, res) => {
       });
     }
 
-    // Get user with password
-    const user = await getOne(
-      'SELECT id, password FROM users WHERE id = ?',
-      [req.user.id]
-    );
+    let user
+    if (process.env.USE_MONGO === 'true') {
+      const db = await getDb();
+      user = await db.collection('users').findOne({ _id: new ObjectId(req.user.id) }, { projection: { password: 1 } })
+    } else {
+      user = await getOne(
+        'SELECT id, password FROM users WHERE id = ?',
+        [req.user.id]
+      );
+    }
 
     // Check current password
     const isPasswordMatch = await bcrypt.compare(currentPassword, user.password);
@@ -241,12 +312,19 @@ exports.updatePassword = async (req, res) => {
     const hashedPassword = await bcrypt.hash(newPassword, config.bcryptSaltRounds);
 
     // Update password
-    await executeQuery(
-      'UPDATE users SET password = ?, updated_at = NOW() WHERE id = ?',
-      [hashedPassword, req.user.id]
-    );
+    if (process.env.USE_MONGO === 'true') {
+      const db = await getDb();
+      await db.collection('users').updateOne(
+        { _id: new ObjectId(req.user.id) },
+        { $set: { password: hashedPassword, updated_at: new Date() } }
+      )
+    } else {
+      await executeQuery(
+        'UPDATE users SET password = ?, updated_at = NOW() WHERE id = ?',
+        [hashedPassword, req.user.id]
+      );
+    }
 
-    // Generate new token
     const token = generateToken(req.user.id);
 
     res.status(200).json({

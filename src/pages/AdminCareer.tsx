@@ -30,9 +30,10 @@ interface JobPosting {
 
 interface AdminCareerProps {
   onNavigate?: (page: string) => void;
+  embedded?: boolean;
 }
 
-export const AdminCareer: React.FC<AdminCareerProps> = ({ onNavigate = () => {} }) => {
+export const AdminCareer: React.FC<AdminCareerProps> = ({ onNavigate = () => {}, embedded = false }) => {
   const [activeTab, setActiveTab] = useState<'jobs' | 'applications'>('jobs');
   const [showJobForm, setShowJobForm] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
@@ -251,8 +252,8 @@ export const AdminCareer: React.FC<AdminCareerProps> = ({ onNavigate = () => {} 
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar menuItems={menuItems} />
+    <div className={embedded ? "" : "min-h-screen bg-gray-50"}>
+      {!embedded && <Navbar menuItems={menuItems} />}
 
       <div className="container-custom py-8">
         {/* Header */}

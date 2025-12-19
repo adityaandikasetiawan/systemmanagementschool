@@ -16,18 +16,40 @@ exports.validate = (req, res, next) => {
   next();
 };
 
-// Login validation rules
 exports.loginRules = [
+  body().custom((_, { req }) => {
+    const { email, username, identifier } = req.body;
+    if (!email && !username && !identifier) {
+      throw new Error('Email, username, atau identifier wajib diisi');
+    }
+    return true;
+  }),
   body('email')
+    .optional()
     .trim()
     .isEmail()
     .withMessage('Email tidak valid')
     .normalizeEmail(),
+  body('username')
+    .optional()
+    .trim()
+    .isLength({ min: 3 })
+    .withMessage('Username minimal 3 karakter')
+    .matches(/^[a-zA-Z0-9_]+$/)
+    .withMessage('Username hanya boleh huruf, angka, dan underscore'),
+  body('identifier')
+    .optional()
+    .trim()
+    .isLength({ min: 3 })
+    .withMessage('Identifier minimal 3 karakter'),
   body('password')
-    .notEmpty()
-    .withMessage('Password wajib diisi')
-    .isLength({ min: 6 })
-    .withMessage('Password minimal 6 karakter')
+    .custom((value) => {
+      const min = process.env.NODE_ENV === 'production' ? 6 : 3;
+      if (!value || String(value).length < min) {
+        throw new Error(`Password minimal ${min} karakter`);
+      }
+      return true;
+    })
 ];
 
 // Register validation rules

@@ -10,6 +10,10 @@ import { testConnection } from './config/database';
 import authRoutes from './routes/auth.routes';
 import paymentsRoutes from './routes/payments.routes';
 import financeRoutes from './routes/finance.routes';
+import usersRoutes from './routes/users.routes';
+import unitsRoutes from './routes/units.routes';
+import newsRoutes from './routes/news.routes';
+import heroRoutes from './routes/hero.routes';
 
 // Load environment variables
 dotenv.config();
@@ -70,6 +74,10 @@ app.get('/api/health', (_req: Request, res: Response) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/payments', paymentsRoutes);
 app.use('/api/finance', financeRoutes);
+app.use('/api/users', usersRoutes);
+app.use('/api/units', unitsRoutes);
+app.use('/api/news', newsRoutes);
+app.use('/api/hero-slides', heroRoutes);
 
 // TODO: Add more routes here
 // app.use('/api/users', usersRoutes);

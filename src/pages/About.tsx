@@ -4,6 +4,7 @@ import { Breadcrumb } from '../components/Breadcrumb';
 import { Users, Award, BookOpen, Heart, Target, Eye, Building2, GraduationCap, Shield, Sparkles, CheckCircle, Star, TrendingUp, Zap } from 'lucide-react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { SponsorshipBanner } from '../components/SponsorshipBanner';
+import { t } from '../i18n';
 
 interface AboutProps {
   onNavigate?: (page: string) => void;
@@ -11,127 +12,129 @@ interface AboutProps {
 
 export const About: React.FC<AboutProps> = ({ onNavigate = () => {} }) => {
   const menuItems = [
-    { label: 'Beranda', href: '#', onClick: () => onNavigate('main') },
+    { label: t('site.menu.home', 'Beranda'), href: '#', onClick: () => onNavigate('main') },
     {
-      label: 'Tentang',
+      label: t('site.menu.about', 'Tentang'),
       href: '#',
       submenu: [
-        { label: 'Visi & Misi', href: '#', onClick: () => onNavigate('vision-mission') },
-        { label: 'Kurikulum', href: '#', onClick: () => onNavigate('about') },
-        { label: 'Fasilitas', href: '#', onClick: () => onNavigate('about') },
-        { label: 'Kepengurusan', href: '#', onClick: () => onNavigate('about') }
+        { label: t('site.submenu.foundation_profile', 'Profile Yayasan'), href: '#', onClick: () => onNavigate('about') },
+        { label: t('site.submenu.vision_mission', 'Visi & Misi'), href: '#', onClick: () => onNavigate('vision-mission') },
+        { label: t('site.submenu.history', 'Sejarah'), href: '#', onClick: () => onNavigate('about') },
+        { label: t('site.submenu.organization', 'Struktur Organisasi'), href: '#', onClick: () => onNavigate('about') }
       ]
     },
     {
-      label: 'Profile',
+      label: t('navbar.units_menu', 'Unit Pendidikan'),
       href: '#',
       submenu: [
-        { label: 'Profil Yayasan', href: '#', onClick: () => onNavigate('about') },
-        { label: 'Sejarah', href: '#', onClick: () => onNavigate('about') },
-        { label: 'Struktur Organisasi', href: '#', onClick: () => onNavigate('about') }
+        { label: '🎨 ' + t('home.units.items.tkit', 'TKIT Baituljannah'), href: '#', onClick: () => onNavigate('tkit') },
+        { label: '📚 ' + t('home.units.items.sdit', 'SDIT Baituljannah'), href: '#', onClick: () => onNavigate('sdit') },
+        { label: '🎓 ' + t('home.units.items.smpit', 'SMPIT Baituljannah'), href: '#', onClick: () => onNavigate('smpit') },
+        { label: t('home.units.items.smait', 'SMAIT Baituljannah'), href: '#', onClick: () => onNavigate('smait') },
+        { label: t('home.units.items.slbit', 'SLBIT Baituljannah'), href: '#', onClick: () => onNavigate('slbit') }
       ]
     },
     {
-      label: 'Informasi',
+      label: t('site.menu.info', 'Informasi'),
       href: '#',
       submenu: [
-        { label: 'Berita', href: '#', onClick: () => onNavigate('news') },
-        { label: 'Galeri Foto', href: '#', onClick: () => onNavigate('gallery') },
-        { label: 'Prestasi', href: '#', onClick: () => onNavigate('achievement') },
-        { label: 'Program', href: '#', onClick: () => onNavigate('programs') }
+        { label: t('site.submenu.news', 'Berita'), href: '#', onClick: () => onNavigate('news') },
+        { label: t('site.submenu.gallery', 'Galeri'), href: '#', onClick: () => onNavigate('gallery') },
+        { label: t('site.submenu.programs', 'Kurikulum'), href: '#', onClick: () => onNavigate('curriculum') },
+        { label: t('site.submenu.achievement', 'Prestasi'), href: '#', onClick: () => onNavigate('achievement') }
       ]
     },
-    { label: 'Karir', href: '#', onClick: () => onNavigate('career') },
+    { label: t('site.menu.career', 'Karir'), href: '#', onClick: () => onNavigate('career') },
     {
-      label: 'SPMB',
+      label: t('site.menu.admission', 'PPDB'),
       href: '#',
       submenu: [
-        { label: 'Pendaftaran', href: '#', onClick: () => onNavigate('admission') },
-        { label: 'Jadwal & Alur', href: '#', onClick: () => onNavigate('admission') },
-        { label: 'Biaya Pendidikan', href: '#', onClick: () => onNavigate('admission') }
+        { label: t('site.submenu.admission_registration', 'Pendaftaran'), href: '#', onClick: () => onNavigate('admission') },
+        { label: t('site.submenu.admission_schedule', 'Jadwal & Alur'), href: '#', onClick: () => onNavigate('admission') },
+        { label: t('site.submenu.admission_fee', 'Biaya Pendidikan'), href: '#', onClick: () => onNavigate('admission') }
       ]
     },
-    { label: 'Kontak', href: '#', onClick: () => onNavigate('contact') },
-    { label: 'Login', href: '#', onClick: () => onNavigate('login') }
+    { label: t('site.menu.contact', 'Kontak'), href: '#', onClick: () => onNavigate('contact') },
+    { label: t('common.login', 'Login'), href: '#', onClick: () => onNavigate('login') }
   ];
 
   const breadcrumbItems = [
-    { label: 'Beranda', onClick: () => onNavigate('main') },
-    { label: 'Tentang Kami' }
+    { label: t('site.menu.home', 'Beranda'), onClick: () => onNavigate('main') },
+    { label: t('site.menu.about', 'Tentang Kami') }
   ];
 
   const values = [
     {
       icon: BookOpen,
-      title: 'Pendidikan Berkualitas',
-      description: 'Memberikan pendidikan Islam terpadu dengan standar nasional dan internasional yang unggul',
+      title: t('about.values.quality.title', 'Pendidikan Berkualitas'),
+      description: t('about.values.quality.desc', 'Memberikan pendidikan Islam terpadu dengan standar nasional dan internasional yang unggul'),
       color: '#3B82F6',
       gradient: 'from-blue-500 to-cyan-600'
     },
     {
       icon: Heart,
-      title: 'Kasih Sayang',
-      description: 'Mendidik dengan penuh kasih sayang dan perhatian terhadap setiap individu siswa',
+      title: t('about.values.compassion.title', 'Kasih Sayang'),
+      description: t('about.values.compassion.desc', 'Mendidik dengan penuh kasih sayang dan perhatian terhadap setiap individu siswa'),
       color: '#EF4444',
       gradient: 'from-red-500 to-rose-600'
     },
     {
       icon: Award,
-      title: 'Prestasi Gemilang',
-      description: 'Menghasilkan lulusan yang berprestasi dalam bidang akademik dan non-akademik',
+      title: t('about.values.achievement.title', 'Prestasi Gemilang'),
+      description: t('about.values.achievement.desc', 'Menghasilkan lulusan yang berprestasi dalam bidang akademik dan non-akademik'),
       color: '#F59E0B',
       gradient: 'from-orange-500 to-amber-600'
     },
     {
       icon: Shield,
-      title: 'Karakter Islami',
-      description: 'Membentuk karakter yang berakhlakul karimah berdasarkan Al-Quran dan As-Sunnah',
+      title: t('about.values.character.title', 'Karakter Islami'),
+      description: t('about.values.character.desc', 'Membentuk karakter yang berakhlakul karimah berdasarkan Al-Quran dan As-Sunnah'),
       color: '#10B981',
       gradient: 'from-green-500 to-emerald-600'
     }
   ];
 
   const statistics = [
-    { number: '2000+', label: 'Siswa Aktif', icon: Users, gradient: 'from-blue-500 to-cyan-600' },
-    { number: '200+', label: 'Tenaga Pendidik', icon: GraduationCap, gradient: 'from-green-500 to-emerald-600' },
-    { number: '15+', label: 'Tahun Pengalaman', icon: Award, gradient: 'from-orange-500 to-amber-600' },
-    { number: '5', label: 'Unit Sekolah', icon: Building2, gradient: 'from-purple-500 to-indigo-600' }
+    { number: '2000+', label: t('about.stats.students_active'), icon: Users, gradient: 'from-blue-500 to-cyan-600' },
+    { number: '200+', label: t('about.stats.educators'), icon: GraduationCap, gradient: 'from-green-500 to-emerald-600' },
+    { number: '15+', label: t('about.stats.years_experience'), icon: Award, gradient: 'from-orange-500 to-amber-600' },
+    { number: '5', label: t('about.stats.units'), icon: Building2, gradient: 'from-purple-500 to-indigo-600' }
   ];
 
   const facilities = [
     {
-      title: 'Ruang Kelas Modern',
-      description: 'Ruang kelas ber-AC dengan fasilitas multimedia dan kapasitas optimal untuk pembelajaran efektif',
+      title: t('about.facilities.classrooms.title', 'Ruang Kelas Modern'),
+      description: t('about.facilities.classrooms.desc', 'Ruang kelas ber-AC dengan fasilitas multimedia dan kapasitas optimal untuk pembelajaran efektif'),
       icon: Building2,
       color: '#3B82F6'
     },
     {
-      title: 'Laboratorium Lengkap',
-      description: 'Lab komputer, sains, dan bahasa dengan peralatan modern untuk praktikum siswa',
+      title: t('about.facilities.labs.title', 'Laboratorium Lengkap'),
+      description: t('about.facilities.labs.desc', 'Lab komputer, sains, dan bahasa dengan peralatan modern untuk praktikum siswa'),
       icon: Zap,
       color: '#10B981'
     },
     {
-      title: 'Perpustakaan Digital',
-      description: 'Perpustakaan dengan koleksi buku lengkap dan akses e-library untuk pembelajaran mandiri',
+      title: t('about.facilities.library.title', 'Perpustakaan Digital'),
+      description: t('about.facilities.library.desc', 'Perpustakaan dengan koleksi buku lengkap dan akses e-library untuk pembelajaran mandiri'),
       icon: BookOpen,
       color: '#8B5CF6'
     },
     {
-      title: 'Masjid Megah',
-      description: 'Masjid dengan kapasitas besar untuk ibadah berjamaah dan kegiatan keagamaan',
+      title: t('about.facilities.mosque.title', 'Masjid Megah'),
+      description: t('about.facilities.mosque.desc', 'Masjid dengan kapasitas besar untuk ibadah berjamaah dan kegiatan keagamaan'),
       icon: Heart,
       color: '#10B981'
     },
     {
-      title: 'Lapangan Olahraga',
-      description: 'Area olahraga lengkap termasuk lapangan futsal, basket, dan fasilitas olahraga lainnya',
+      title: t('about.facilities.sports.title', 'Lapangan Olahraga'),
+      description: t('about.facilities.sports.desc', 'Area olahraga lengkap termasuk lapangan futsal, basket, dan fasilitas olahraga lainnya'),
       icon: Target,
       color: '#F97316'
     },
     {
-      title: 'Kantin Sehat',
-      description: 'Kantin dengan menu halal, bergizi, dan higienis untuk kebutuhan nutrisi siswa',
+      title: t('about.facilities.canteen.title', 'Kantin Sehat'),
+      description: t('about.facilities.canteen.desc', 'Kantin dengan menu halal, bergizi, dan higienis untuk kebutuhan nutrisi siswa'),
       icon: Star,
       color: '#F59E0B'
     }
@@ -140,35 +143,35 @@ export const About: React.FC<AboutProps> = ({ onNavigate = () => {} }) => {
   const leadership = [
     {
       name: 'Prof. Dr. H. Ahmad Syaikhu, M.Pd.I',
-      position: 'Ketua Yayasan',
+      position: t('about.leadership.roles.chairman.title', 'Ketua Yayasan'),
       image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d',
-      description: 'Memimpin yayasan dengan visi pendidikan Islam modern'
+      description: t('about.leadership.roles.chairman.desc', 'Memimpin yayasan dengan visi pendidikan Islam modern')
     },
     {
       name: 'Dr. Hj. Siti Aisyah, M.Pd',
-      position: 'Direktur Akademik',
+      position: t('about.leadership.roles.academic_director.title', 'Direktur Akademik'),
       image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2',
-      description: 'Mengembangkan kurikulum terpadu dan berkualitas'
+      description: t('about.leadership.roles.academic_director.desc', 'Mengembangkan kurikulum terpadu dan berkualitas')
     },
     {
       name: 'Drs. H. Muhammad Ridwan, M.M',
-      position: 'Direktur Keuangan',
+      position: t('about.leadership.roles.finance_director.title', 'Direktur Keuangan'),
       image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e',
-      description: 'Mengelola keuangan yayasan secara profesional'
+      description: t('about.leadership.roles.finance_director.desc', 'Mengelola keuangan yayasan secara profesional')
     },
     {
       name: 'Ustadz Ahmad Fauzi, Lc., M.A',
-      position: 'Direktur Keislaman',
+      position: t('about.leadership.roles.islamic_director.title', 'Direktur Keislaman'),
       image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e',
-      description: 'Membina program keagamaan dan tahfidz'
+      description: t('about.leadership.roles.islamic_director.desc', 'Membina program keagamaan dan tahfidz')
     }
   ];
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar 
-        siteName="Baitul Jannah Islamic School"
-        siteTagline="Sekolahnya Para Juara"
+        siteName={t('site.name')}
+        siteTagline={t('navbar.tagline')}
         menuItems={menuItems}
         accentColor="#1E4AB8"
       />
@@ -189,12 +192,10 @@ export const About: React.FC<AboutProps> = ({ onNavigate = () => {} }) => {
           <div className="mt-8">
             <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/20 backdrop-blur-sm rounded-full text-sm mb-6">
               <Building2 className="w-4 h-4" />
-              <span>Profil Yayasan</span>
+              <span>{t('about.hero.badge')}</span>
             </div>
-            <h1 className="text-5xl lg:text-6xl mb-6">Tentang Baituljannah</h1>
-            <p className="text-xl text-white/90 max-w-3xl leading-relaxed">
-              Yayasan pendidikan Islam terpadu yang berkomitmen mencetak generasi Qur'ani yang berakhlak mulia, cerdas, dan berprestasi
-            </p>
+            <h1 className="text-5xl lg:text-6xl mb-6">{t('about.hero.title')}</h1>
+            <p className="text-xl text-white/90 max-w-3xl leading-relaxed">{t('about.hero.subtitle')}</p>
           </div>
         </div>
       </div>
@@ -232,39 +233,33 @@ export const About: React.FC<AboutProps> = ({ onNavigate = () => {} }) => {
             <div>
               <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 rounded-full text-sm mb-6">
                 <Sparkles className="w-4 h-4" />
-                <span>Sejarah Kami</span>
+                <span>{t('about.history.badge')}</span>
               </div>
-              <h2 className="text-4xl mb-6 text-gray-900">Perjalanan Yayasan Baituljannah</h2>
+              <h2 className="text-4xl mb-6 text-gray-900">{t('about.history.title')}</h2>
               <div className="space-y-4 text-gray-700 leading-relaxed">
-                <p>
-                  <strong className="text-[#1E4AB8]">Yayasan Baituljannah</strong> didirikan pada tahun 2010 dengan visi menjadi lembaga pendidikan Islam terpadu yang unggul dan berkarakter. Berawal dari TKIT dengan 50 siswa, kini telah berkembang menjadi 5 unit pendidikan dengan lebih dari 2000 siswa.
-                </p>
-                <p>
-                  Dalam perjalanannya, Baituljannah terus berinovasi mengembangkan metode pembelajaran yang mengintegrasikan kurikulum nasional dengan nilai-nilai Islam. Prestasi demi prestasi berhasil diraih oleh siswa-siswa kami di berbagai kompetisi tingkat lokal, nasional, hingga internasional.
-                </p>
-                <p>
-                  Dengan dukungan tenaga pendidik profesional dan fasilitas modern, Baituljannah berkomitmen untuk terus memberikan pendidikan berkualitas yang melahirkan generasi Qur'ani yang siap menghadapi tantangan masa depan.
-                </p>
+                <p>{t('about.history.p1')}</p>
+                <p>{t('about.history.p2')}</p>
+                <p>{t('about.history.p3')}</p>
               </div>
 
               <div className="mt-8 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl">
-                <h3 className="text-xl mb-4 text-gray-900">Komitmen Kami</h3>
+                <h3 className="text-xl mb-4 text-gray-900">{t('about.commitment.title')}</h3>
                 <div className="space-y-3">
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700">Pendidikan berkualitas dengan standar nasional dan internasional</span>
+                    <span className="text-gray-700">{t('about.commitment.items.quality')}</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700">Pembentukan karakter Islami yang kuat dan berakhlak mulia</span>
+                    <span className="text-gray-700">{t('about.commitment.items.character')}</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700">Fasilitas modern dan lingkungan belajar yang kondusif</span>
+                    <span className="text-gray-700">{t('about.commitment.items.facilities')}</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700">Prestasi akademik dan non-akademik yang membanggakan</span>
+                    <span className="text-gray-700">{t('about.commitment.items.achievement')}</span>
                   </div>
                 </div>
               </div>
@@ -279,8 +274,8 @@ export const About: React.FC<AboutProps> = ({ onNavigate = () => {} }) => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                 <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-                  <h3 className="text-2xl mb-2">Kampus Modern & Islami</h3>
-                  <p className="text-white/90">Lingkungan belajar yang nyaman dan kondusif</p>
+                  <h3 className="text-2xl mb-2">{t('about.campus.title')}</h3>
+                  <p className="text-white/90">{t('about.campus.subtitle')}</p>
                 </div>
               </div>
               
@@ -292,10 +287,10 @@ export const About: React.FC<AboutProps> = ({ onNavigate = () => {} }) => {
                   </div>
                   <div>
                     <p className="text-2xl text-gray-900">200+</p>
-                    <p className="text-sm text-gray-600">Prestasi Diraih</p>
+                    <p className="text-sm text-gray-600">{t('about.card.achievements_label')}</p>
                   </div>
                 </div>
-                <p className="text-sm text-gray-600">Berbagai kompetisi tingkat nasional & internasional</p>
+                <p className="text-sm text-gray-600">{t('about.card.achievements_desc')}</p>
               </div>
             </div>
           </div>
@@ -308,11 +303,11 @@ export const About: React.FC<AboutProps> = ({ onNavigate = () => {} }) => {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-100 to-indigo-100 text-purple-700 rounded-full text-sm mb-6">
               <Heart className="w-4 h-4" />
-              <span>Nilai-Nilai Kami</span>
+              <span>{t('about.values.badge', 'Nilai-Nilai Kami')}</span>
             </div>
-            <h2 className="text-4xl lg:text-5xl mb-4 text-gray-900">Pilar Pendidikan Kami</h2>
+            <h2 className="text-4xl lg:text-5xl mb-4 text-gray-900">{t('about.values.title', 'Pilar Pendidikan Kami')}</h2>
             <p className="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
-              Empat pilar utama yang menjadi fondasi dalam setiap aspek pendidikan di Baituljannah
+              {t('about.values.subtitle', 'Empat pilar utama yang menjadi fondasi dalam setiap aspek pendidikan di Baituljannah')}
             </p>
           </div>
 
@@ -353,11 +348,11 @@ export const About: React.FC<AboutProps> = ({ onNavigate = () => {} }) => {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 rounded-full text-sm mb-6">
               <Building2 className="w-4 h-4" />
-              <span>Fasilitas Lengkap</span>
+              <span>{t('about.facilities.badge', 'Fasilitas Lengkap')}</span>
             </div>
-            <h2 className="text-4xl lg:text-5xl mb-4 text-gray-900">Fasilitas Modern</h2>
+            <h2 className="text-4xl lg:text-5xl mb-4 text-gray-900">{t('about.facilities.title', 'Fasilitas Modern')}</h2>
             <p className="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
-              Berbagai fasilitas penunjang pembelajaran yang modern dan lengkap untuk kenyamanan siswa
+              {t('about.facilities.subtitle', 'Berbagai fasilitas penunjang pembelajaran yang modern dan lengkap untuk kenyamanan siswa')}
             </p>
           </div>
 
@@ -408,11 +403,11 @@ export const About: React.FC<AboutProps> = ({ onNavigate = () => {} }) => {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 rounded-full text-sm mb-6">
               <Users className="w-4 h-4" />
-              <span>Tim Kepemimpinan</span>
+              <span>{t('about.leadership.badge', 'Tim Kepemimpinan')}</span>
             </div>
-            <h2 className="text-4xl lg:text-5xl mb-4 text-gray-900">Kepengurusan Yayasan</h2>
+            <h2 className="text-4xl lg:text-5xl mb-4 text-gray-900">{t('about.leadership.title', 'Kepengurusan Yayasan')}</h2>
             <p className="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
-              Dipimpin oleh profesional berpengalaman yang berdedikasi untuk pendidikan berkualitas
+              {t('about.leadership.subtitle', 'Dipimpin oleh profesional berpengalaman yang berdedikasi untuk pendidikan berkualitas')}
             </p>
           </div>
 
@@ -450,25 +445,25 @@ export const About: React.FC<AboutProps> = ({ onNavigate = () => {} }) => {
         <div className="container-custom text-center text-white relative z-10">
           <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/20 backdrop-blur-sm rounded-full text-sm mb-6">
             <Sparkles className="w-4 h-4" />
-            <span>Bergabunglah Bersama Kami</span>
+            <span>{t('about.cta.badge', 'Bergabunglah Bersama Kami')}</span>
           </div>
-          <h2 className="mb-6 text-4xl lg:text-5xl">Jadilah Bagian dari Keluarga Baituljannah</h2>
+          <h2 className="mb-6 text-4xl lg:text-5xl">{t('about.cta.title', 'Jadilah Bagian dari Keluarga Baituljannah')}</h2>
           <p className="text-xl mb-10 max-w-3xl mx-auto opacity-90 leading-relaxed">
-            Wujudkan impian pendidikan terbaik untuk putra-putri Anda bersama kami
+            {t('about.cta.subtitle', 'Wujudkan impian pendidikan terbaik untuk putra-putri Anda bersama kami')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
               onClick={() => onNavigate('admission')} 
               className="btn-secondary flex items-center justify-center gap-2 group"
             >
-              <span>Daftar PPDB 2025</span>
+              <span>{t('about.cta.button_ppdb', 'Daftar PPDB 2025')}</span>
               <GraduationCap className="w-5 h-5 group-hover:scale-110 transition-transform" />
             </button>
             <button 
               onClick={() => onNavigate('contact')} 
               className="px-8 py-4 border-2 border-white text-white rounded-xl hover:bg-white hover:text-[#1E4AB8] transition-all text-lg flex items-center justify-center gap-2"
             >
-              <span>Hubungi Kami</span>
+              <span>{t('about.cta.button_contact', 'Hubungi Kami')}</span>
             </button>
           </div>
         </div>
@@ -476,7 +471,7 @@ export const About: React.FC<AboutProps> = ({ onNavigate = () => {} }) => {
 
       <SponsorshipBanner onNavigate={onNavigate} />
 
-      <Footer siteName="Baitul Jannah Islamic School" accentColor="#1E4AB8" onNavigate={onNavigate} />
+      <Footer siteName={t('site.name')} accentColor="#1E4AB8" onNavigate={onNavigate} logo="/images/logo/logo-yayasan.jpg" />
     </div>
   );
 };
