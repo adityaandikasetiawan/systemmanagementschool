@@ -19,7 +19,7 @@ import { Footer } from '../components/Footer';
 import { Breadcrumb } from '../components/Breadcrumb';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { t, tf } from '../i18n';
+import { t, tf, tObject } from '../i18n';
 
 interface ProgramsProps {
   onNavigate?: (page: string) => void;
@@ -95,7 +95,7 @@ export const Programs: React.FC<ProgramsProps> = ({ onNavigate = () => {} }) => 
       title: t('programs_page.items.tahfidz.title'),
       description: t('programs_page.items.tahfidz.desc'),
       categoryId: 'religious',
-      features: t('programs_page.items.tahfidz.features', { returnObjects: true }) as string[],
+      features: tObject<string[]>('programs_page.items.tahfidz.features'),
       color: '#10B981',
       bgGradient: 'from-green-50 to-emerald-50'
     },
@@ -104,7 +104,7 @@ export const Programs: React.FC<ProgramsProps> = ({ onNavigate = () => {} }) => 
       title: t('programs_page.items.language.title'),
       description: t('programs_page.items.language.desc'),
       categoryId: 'academic',
-      features: t('programs_page.items.language.features', { returnObjects: true }) as string[],
+      features: tObject<string[]>('programs_page.items.language.features'),
       color: '#3B82F6',
       bgGradient: 'from-blue-50 to-cyan-50'
     },
@@ -113,7 +113,7 @@ export const Programs: React.FC<ProgramsProps> = ({ onNavigate = () => {} }) => 
       title: t('programs_page.items.olympiad.title'),
       description: t('programs_page.items.olympiad.desc'),
       categoryId: 'academic',
-      features: t('programs_page.items.olympiad.features', { returnObjects: true }) as string[],
+      features: tObject<string[]>('programs_page.items.olympiad.features'),
       color: '#F97316',
       bgGradient: 'from-orange-50 to-amber-50'
     },
@@ -122,7 +122,7 @@ export const Programs: React.FC<ProgramsProps> = ({ onNavigate = () => {} }) => 
       title: t('programs_page.items.character.title'),
       description: t('programs_page.items.character.desc'),
       categoryId: 'development',
-      features: t('programs_page.items.character.features', { returnObjects: true }) as string[],
+      features: tObject<string[]>('programs_page.items.character.features'),
       color: '#8B5CF6',
       bgGradient: 'from-purple-50 to-indigo-50'
     },
@@ -131,7 +131,7 @@ export const Programs: React.FC<ProgramsProps> = ({ onNavigate = () => {} }) => 
       title: t('programs_page.items.leadership.title'),
       description: t('programs_page.items.leadership.desc'),
       categoryId: 'development',
-      features: t('programs_page.items.leadership.features', { returnObjects: true }) as string[],
+      features: tObject<string[]>('programs_page.items.leadership.features'),
       color: '#14B8A6',
       bgGradient: 'from-teal-50 to-cyan-50'
     },
@@ -140,7 +140,7 @@ export const Programs: React.FC<ProgramsProps> = ({ onNavigate = () => {} }) => 
       title: t('programs_page.items.tahsin.title'),
       description: t('programs_page.items.tahsin.desc'),
       categoryId: 'religious',
-      features: t('programs_page.items.tahsin.features', { returnObjects: true }) as string[],
+      features: tObject<string[]>('programs_page.items.tahsin.features'),
       color: '#10B981',
       bgGradient: 'from-emerald-50 to-green-50'
     },
@@ -149,7 +149,7 @@ export const Programs: React.FC<ProgramsProps> = ({ onNavigate = () => {} }) => 
       title: t('programs_page.items.robotics.title'),
       description: t('programs_page.items.robotics.desc'),
       categoryId: 'extracurricular',
-      features: t('programs_page.items.robotics.features', { returnObjects: true }) as string[],
+      features: tObject<string[]>('programs_page.items.robotics.features'),
       color: '#F59E0B',
       bgGradient: 'from-yellow-50 to-amber-50'
     },
@@ -158,7 +158,7 @@ export const Programs: React.FC<ProgramsProps> = ({ onNavigate = () => {} }) => 
       title: t('programs_page.items.counseling.title'),
       description: t('programs_page.items.counseling.desc'),
       categoryId: 'development',
-      features: t('programs_page.items.counseling.features', { returnObjects: true }) as string[],
+      features: tObject<string[]>('programs_page.items.counseling.features'),
       color: '#6366F1',
       bgGradient: 'from-indigo-50 to-blue-50'
     },
@@ -167,7 +167,7 @@ export const Programs: React.FC<ProgramsProps> = ({ onNavigate = () => {} }) => 
       title: t('programs_page.items.sports_arts.title'),
       description: t('programs_page.items.sports_arts.desc'),
       categoryId: 'extracurricular',
-      features: t('programs_page.items.sports_arts.features', { returnObjects: true }) as string[],
+      features: tObject<string[]>('programs_page.items.sports_arts.features'),
       color: '#EF4444',
       bgGradient: 'from-red-50 to-rose-50'
     },
@@ -176,7 +176,7 @@ export const Programs: React.FC<ProgramsProps> = ({ onNavigate = () => {} }) => 
       title: t('programs_page.items.kitab.title'),
       description: t('programs_page.items.kitab.desc'),
       categoryId: 'religious',
-      features: t('programs_page.items.kitab.features', { returnObjects: true }) as string[],
+      features: tObject<string[]>('programs_page.items.kitab.features'),
       color: '#10B981',
       bgGradient: 'from-green-50 to-emerald-50'
     },
@@ -185,7 +185,7 @@ export const Programs: React.FC<ProgramsProps> = ({ onNavigate = () => {} }) => 
       title: t('programs_page.items.entrepreneur.title'),
       description: t('programs_page.items.entrepreneur.desc'),
       categoryId: 'extracurricular',
-      features: t('programs_page.items.entrepreneur.features', { returnObjects: true }) as string[],
+      features: tObject<string[]>('programs_page.items.entrepreneur.features'),
       color: '#F97316',
       bgGradient: 'from-orange-50 to-yellow-50'
     },
@@ -194,7 +194,7 @@ export const Programs: React.FC<ProgramsProps> = ({ onNavigate = () => {} }) => 
       title: t('programs_page.items.study_tour.title'),
       description: t('programs_page.items.study_tour.desc'),
       categoryId: 'development',
-      features: t('programs_page.items.study_tour.features', { returnObjects: true }) as string[],
+      features: tObject<string[]>('programs_page.items.study_tour.features'),
       color: '#3B82F6',
       bgGradient: 'from-blue-50 to-indigo-50'
     }
@@ -338,7 +338,7 @@ export const Programs: React.FC<ProgramsProps> = ({ onNavigate = () => {} }) => 
                       className="inline-block text-xs px-4 py-1.5 rounded-full mb-4 text-white"
                       style={{ backgroundColor: program.color }}
                     >
-                      {program.category}
+                      {categories.find(c => c.id === program.categoryId)?.name}
                     </span>
 
                     {/* Title */}

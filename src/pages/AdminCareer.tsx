@@ -253,7 +253,7 @@ export const AdminCareer: React.FC<AdminCareerProps> = ({ onNavigate = () => {},
 
   return (
     <div className={embedded ? "" : "min-h-screen bg-gray-50"}>
-      {!embedded && <Navbar menuItems={menuItems} />}
+      {!embedded && <Navbar menuItems={menuItems} siteName="Yayasan Baituljannah" />}
 
       <div className="container-custom py-8">
         {/* Header */}

@@ -4,7 +4,7 @@ import { Footer } from '../components/Footer';
 import { UnitHeroCarousel } from '../components/UnitHeroCarousel';
 import { ProgramCard } from '../components/ProgramCard';
 import { NewsCard } from '../components/NewsCard';
-import { BookOpen, Users, Award, Calendar, MapPin, Phone, Mail, GraduationCap, Clock, DollarSign, Target, TrendingUp, Star, Trophy, CheckCircle, Building, Microscope, Library } from 'lucide-react';
+import { BookOpen, Users, Award, Calendar, MapPin, Phone, Mail, GraduationCap, Clock, DollarSign, Target, TrendingUp, Star, Trophy, CheckCircle, Building, Microscope, Library, ArrowRight } from 'lucide-react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { AchievementCard } from '../components/AchievementCard';
 import { t, tf } from '../i18n';
@@ -114,6 +114,39 @@ export const UnitSchool: React.FC<UnitSchoolProps> = ({
       name: 'Ustadzah Fatimah Az-Zahra, S.S',
       role: t('unit_school.teachers.roles.arabic', 'Guru Bahasa Arab'),
       image: 'https://images.unsplash.com/photo-1649920442906-3c8ef428fb6e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWFjaGVyJTIwdGVhY2hpbmclMjBzdHVkZW50c3xlbnwxfHx8fDE3NjQyMjMxNjV8MA&ixlib=rb-4.1.0&q=80&w=1080'
+    }
+  ];
+
+  const latestNews = [
+    {
+      title: 'Penerimaan Peserta Didik Baru TA 2025/2026',
+      date: '15 Januari 2025',
+      imageUrl: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjbGFzc3Jvb218ZW58MHx8fHwxNjk1OTk4NTYyfDA&ixlib=rb-4.0.3&q=80&w=1080',
+      category: 'Info Sekolah',
+      slug: 'ppdb-2025',
+      excerpt: 'Baituljannah membuka pendaftaran siswa baru untuk tahun ajaran 2025/2026.',
+      author: 'Admin',
+      categoryColor: accentColor
+    },
+    {
+      title: 'Prestasi Gemilang di Olimpiade Sains Nasional',
+      date: '10 Januari 2025',
+      imageUrl: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzY2hvb2x8ZW58MHx8fHwxNjk1OTk4NTYyfDA&ixlib=rb-4.0.3&q=80&w=1080',
+      category: 'Prestasi',
+      slug: 'prestasi-osn',
+      excerpt: 'Selamat kepada siswa-siswi yang telah meraih medali emas pada OSN 2024.',
+      author: 'Admin',
+      categoryColor: accentColor
+    },
+    {
+      title: 'Kunjungan Edukatif ke Museum Nasional',
+      date: '5 Januari 2025',
+      imageUrl: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlZHVjYXRpb258ZW58MHx8fHwxNjk1OTk4NTYyfDA&ixlib=rb-4.0.3&q=80&w=1080',
+      category: 'Kegiatan',
+      slug: 'kunjungan-museum',
+      excerpt: 'Siswa-siswi Baituljannah mengadakan kegiatan bakti sosial untuk membantu sesama.',
+      author: 'Admin',
+      categoryColor: accentColor
     }
   ];
 
@@ -794,7 +827,7 @@ export const UnitSchool: React.FC<UnitSchoolProps> = ({
               <div>
                 <h2 className="mb-4">{t('unit_school.ppdb.title', 'Pendaftaran Peserta Didik Baru (PPDB)')}</h2>
                 <p className="text-gray-600 mb-6">
-                  {tf('unit_school.ppdb.subtitle', 'Bergabunglah dengan keluarga besar {fullName}. Kami membuka pendaftaran untuk tahun ajaran 2025/2026.', { fullName })}
+                  {tf('unit_school.ppdb.subtitle', { fullName }, 'Bergabunglah dengan keluarga besar {fullName}. Kami membuka pendaftaran untuk tahun ajaran 2025/2026.')}
                 </p>
 
                 <div className="space-y-3 mb-8">

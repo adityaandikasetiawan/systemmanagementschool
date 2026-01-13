@@ -40,6 +40,7 @@ import { AdminLibrary } from './pages/AdminLibrary';
 import { AdminAttendance } from './pages/AdminAttendance';
 import { Login } from './pages/Login';
 import { StudentProfile } from './pages/StudentProfile';
+import { Settings } from './pages/Settings';
 import { Layout, School, GraduationCap, Building2, Package, Palette, FileText, Image, Mail, UserPlus, Award, Trophy, LogIn } from 'lucide-react';
 import { apiHelpers } from './services/api';
 
@@ -71,6 +72,7 @@ type PageType =
   | 'parent-dashboard'
   | 'parent-finance'
   | 'teacher-dashboard'
+  | 'settings'
   | 'components'
   | 'design-system'
   | 'about'
@@ -88,12 +90,21 @@ type PageType =
   | 'alumni'
   | 'asrama';
 
+const unitConfigs = {
+  tkit: { unitName: 'TKIT', accentColor: '#10B981' },
+  sdit: { unitName: 'SDIT', accentColor: '#3B82F6' },
+  smpit: { unitName: 'SMPIT', accentColor: '#003399' },
+  smait: { unitName: 'SMAIT', accentColor: '#586c7d' },
+  slbit: { unitName: 'SLBIT', accentColor: '#14B8A6' },
+  asrama: { unitName: 'Asrama', accentColor: '#D4AF37' }
+};
+
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<PageType>('main');
   const [currentUser, setCurrentUser] = useState<any | null>(null);
   const showQuickNav = false;
 
-  const navigate = (page: PageType) => setCurrentPage(page);
+  const navigate = (page: string) => setCurrentPage(page as PageType);
 
   useEffect(() => {
     try {
@@ -262,6 +273,11 @@ const App: React.FC = () => {
       case 'teacher-dashboard':
         return (
           <TeacherDashboard onNavigate={navigate} />
+        );
+      
+      case 'settings':
+        return (
+          <Settings onNavigate={navigate} />
         );
       
       case 'components':

@@ -16,5 +16,8 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "vite-env.d.ts"
+  ],
+  "exclude": [
+    "src/backend-starter"
   ]
 }

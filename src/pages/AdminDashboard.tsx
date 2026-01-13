@@ -38,7 +38,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         ]},
         { label: 'PPDB', icon: Calendar, onClick: () => onNavigate('admission') },
         { label: 'Rekrutmen', icon: Briefcase, onClick: () => onNavigate('admin-career') },
-        { label: 'Pengaturan', icon: Settings, href: '#' },
+        { label: 'Pengaturan', icon: Settings, onClick: () => onNavigate('settings') },
         { label: 'Logout', icon: LogOut, onClick: () => onNavigate('login') }
       ];
     } else if (userRole === 'Admin Unit') {
@@ -54,7 +54,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         { label: 'PPDB', icon: Calendar, href: '#' },
         { label: 'Rekrutmen', icon: Briefcase, onClick: () => onNavigate('admin-career') },
         { label: 'Konten Website', icon: FileText, href: '#' },
-        { label: 'Pengaturan', icon: Settings, href: '#' },
+        { label: 'Pengaturan', icon: Settings, onClick: () => onNavigate('settings') },
         { label: 'Logout', icon: LogOut, href: '#' }
       ];
     } else if (userRole === 'Guru') {
@@ -65,7 +65,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         { label: 'Tugas', icon: FileText, href: '#' },
         { label: 'Nilai', icon: Award, href: '#' },
         { label: 'Jadwal', icon: Calendar, href: '#' },
-        { label: 'Profil', icon: Settings, href: '#' },
+        { label: 'Profil', icon: Settings, onClick: () => onNavigate('settings') },
         { label: 'Logout', icon: LogOut, href: '#' }
       ];
     } else {
@@ -75,7 +75,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         { label: 'Tugas', icon: FileText, href: '#', badge: '3' },
         { label: 'Nilai', icon: Award, href: '#' },
         { label: 'Jadwal', icon: Calendar, href: '#' },
-        { label: 'Profil', icon: Settings, href: '#' },
+        { label: 'Profil', icon: Settings, onClick: () => onNavigate('settings') },
         { label: 'Logout', icon: LogOut, href: '#' }
       ];
     }

@@ -221,10 +221,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar
-        menuItems={getMenuItems().map(item => ({
+        menuItems={getMenuItems().map((item: any) => ({
           ...item,
           href: item.href || '#',
-          onClick: () => handleMenuClick(item)
+          onClick: () => handleMenuClick(item),
+          submenu: item.submenu?.map((sub: any) => ({
+            ...sub,
+            href: sub.href || '#'
+          }))
         }))}
         accentColor={accentColor}
         userRole={userRole}
@@ -1518,7 +1522,7 @@ const PPDBManagement: React.FC<{ accentColor: string }> = ({ accentColor }) => {
                 </div>
                 <div>
                   <label className="text-sm block mb-2">Status</label>
-                  <select value={activityForm.status} onChange={(e) => setActivityForm({ ...activityForm, status: e.target.value })} className="input-field">
+                  <select value={activityForm.status} onChange={(e) => setActivityForm({ ...activityForm, status: e.target.value as "Pending" | "Success" })} className="input-field">
                     <option value="Success">Success</option>
                     <option value="Pending">Pending</option>
                   </select>

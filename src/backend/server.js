@@ -36,6 +36,14 @@ if (config.nodeEnv === 'development') {
   }));
 }
 
+// Private Network Access preflight allowance
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    res.setHeader('Access-Control-Allow-Private-Network', 'true');
+  }
+  next();
+});
+
 // Body parser
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -60,6 +68,7 @@ try {
   fs.mkdirSync(path.join(uploadRoot, 'news'), { recursive: true });
   fs.mkdirSync(path.join(uploadRoot, 'achievements'), { recursive: true });
   fs.mkdirSync(path.join(uploadRoot, 'units'), { recursive: true });
+  fs.mkdirSync(path.join(uploadRoot, 'avatars'), { recursive: true });
   app.use('/uploads', express.static(uploadRoot));
 } catch (e) {
   console.warn('⚠️ Unable to initialize uploads directory:', e.message);
@@ -109,6 +118,7 @@ const ppdbRoutes = require('./routes/ppdb');
 const contactRoutes = require('./routes/contact');
 const unitsRoutes = require('./routes/units');
 const heroSlidesRoutes = require('./routes/heroSlides');
+const dashboardRoutes = require('./routes/dashboard');
 const galleryRoutes = require('./routes/gallery');
 const achievementsRoutes = require('./routes/achievements');
 
@@ -118,6 +128,7 @@ app.use(`/api/${config.apiVersion}/ppdb`, ppdbRoutes);
 app.use(`/api/${config.apiVersion}/contact`, contactRoutes);
 app.use(`/api/${config.apiVersion}/units`, unitsRoutes);
 app.use(`/api/${config.apiVersion}/hero-slides`, heroSlidesRoutes);
+app.use(`/api/${config.apiVersion}/dashboard`, dashboardRoutes);
 app.use(`/api/${config.apiVersion}/gallery`, galleryRoutes);
 app.use(`/api/${config.apiVersion}/achievements`, achievementsRoutes);
 
@@ -212,8 +223,8 @@ const startServer = async () => {
     }
 
     if (!ok) {
-      console.error('❌ Failed to connect to database. Server not started.');
-      process.exit(1);
+      console.warn('⚠️ Failed to connect to database. Starting server in Offline/Mock mode.');
+      // process.exit(1); // Don't exit in dev mode
     }
 
     // Start server

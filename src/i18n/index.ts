@@ -24,7 +24,7 @@ try {
   if (stored === 'en' || stored === 'id') currentLocale = stored as any;
 } catch {}
 
-const get = (key: string): string | undefined => {
+const get = (key: string): any => {
   const dict: Dict = dicts[currentLocale] ?? dicts['id'] ?? {};
   const parts = key.split('.');
   let cur: any = dict;
@@ -32,21 +32,26 @@ const get = (key: string): string | undefined => {
     if (cur == null) return undefined;
     cur = cur[p];
   }
-  if (typeof cur === 'string') return cur as string;
+  if (cur !== undefined) return cur;
   if (dicts['id']) {
     let curId: any = dicts['id'];
     for (const p of parts) {
       if (curId == null) return undefined;
       curId = curId[p];
     }
-    if (typeof curId === 'string') return curId as string;
+    return curId;
   }
   return undefined;
 };
 
 export const t = (key: string, fallback?: string): string => {
   const v = get(key);
-  return v != null ? v : (fallback ?? key);
+  return (typeof v === 'string') ? v : (fallback ?? key);
+};
+
+export const tObject = <T = any>(key: string, fallback?: T): T => {
+  const v = get(key);
+  return (v !== undefined) ? (v as T) : (fallback as T);
 };
 
 export const tf = (key: string, params: Record<string, string | number>, fallback?: string): string => {
@@ -54,4 +59,4 @@ export const tf = (key: string, params: Record<string, string | number>, fallbac
   return Object.keys(params).reduce((s, k) => s.replace(new RegExp(`\\{${k}\\}`, 'g'), String(params[k])), base);
 };
 
-export default { t, tf, getLocale, setLocale, onLocaleChange, availableLocales };
+export default { t, tObject, tf, getLocale, setLocale, onLocaleChange, availableLocales };

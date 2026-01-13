@@ -5,7 +5,7 @@
 
 // API Configuration
 const API_BASE_URL = (import.meta.env.DEV ? (import.meta.env.VITE_API_URL || '/api') : (import.meta.env.VITE_API_URL || ''));
-const USE_BACKEND_IN_DEV = !!import.meta.env.VITE_API_URL;
+const USE_BACKEND_IN_DEV = false;
 
 // Storage keys
 const TOKEN_KEY = 'baituljannah_token';
@@ -256,16 +256,30 @@ export const api = {
     },
 
     updateProfile: async (userData: any) => {
-      return request('/auth/profile', {
+      return request('/auth/updatedetails', {
         method: 'PUT',
         body: userData,
       });
     },
 
-    changePassword: async (oldPassword: string, newPassword: string) => {
-      return request('/auth/change-password', {
+    changePassword: async (currentPassword: string, newPassword: string) => {
+      const resp = await request('/auth/updatepassword', {
         method: 'PUT',
-        body: { old_password: oldPassword, new_password: newPassword },
+        body: { currentPassword, newPassword },
+      });
+      if (resp.success && resp.data?.token) {
+        setTokens(resp.data.token);
+      }
+      return resp;
+    },
+
+    uploadAvatar: async (file: File) => {
+      const fd = new FormData();
+      fd.append('avatar', file);
+      return request('/auth/updateavatar', {
+        method: 'PUT',
+        body: fd,
+        isFormData: true,
       });
     },
   },
@@ -781,6 +795,25 @@ export const api = {
   // ============================================
   ppdb: {
     register: async (registrationData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_ppdb_registrations');
+        const list = raw ? JSON.parse(raw) : [];
+        const id = list.length ? Math.max(...list.map((r: any) => Number(r.id) || 0)) + 1 : 1;
+        const now = new Date().toISOString();
+        const registration_number = `REG-${new Date().getFullYear()}-${String(id).padStart(4, '0')}`;
+        
+        const newItem = { 
+          id, 
+          registration_number,
+          created_at: now, 
+          status: 'pending', 
+          ...registrationData 
+        };
+        
+        list.push(newItem);
+        localStorage.setItem('dev_ppdb_registrations', JSON.stringify(list));
+        return { success: true, data: newItem } as ApiResponse;
+      }
       return request('/ppdb/register', {
         method: 'POST',
         body: registrationData,
@@ -788,15 +821,38 @@ export const api = {
     },
 
     checkByNumber: async (registrationNumber: string) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_ppdb_registrations');
+        const list = raw ? JSON.parse(raw) : [];
+        const item = list.find((r: any) => r.registration_number === registrationNumber);
+        if (item) return { success: true, data: item } as ApiResponse;
+        return { success: false, message: 'Registration not found' } as ApiResponse;
+      }
       return request(`/ppdb/check/${registrationNumber}`);
     },
 
     getRegistrations: async (params?: any) => {
       const query = new URLSearchParams(params).toString();
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_ppdb_registrations');
+        const list = raw ? JSON.parse(raw) : [];
+        return { success: true, data: list } as ApiResponse;
+      }
       return request(`/ppdb/registrations${query ? `?${query}` : ''}`);
     },
 
     updateStatus: async (id: number, statusData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_ppdb_registrations');
+        const list = raw ? JSON.parse(raw) : [];
+        const idx = list.findIndex((r: any) => String(r.id) === String(id));
+        if (idx >= 0) {
+          list[idx] = { ...list[idx], ...statusData };
+          localStorage.setItem('dev_ppdb_registrations', JSON.stringify(list));
+          return { success: true, data: list[idx] } as ApiResponse;
+        }
+        return { success: false, message: 'Registration not found' } as ApiResponse;
+      }
       return request(`/ppdb/registrations/${id}/status`, {
         method: 'PUT',
         body: statusData,
@@ -804,11 +860,35 @@ export const api = {
     },
 
     getStatistics: async () => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_ppdb_registrations');
+        const list = raw ? JSON.parse(raw) : [];
+        return { 
+          success: true, 
+          data: {
+            total: list.length,
+            pending: list.filter((r: any) => r.status === 'pending').length,
+            verified: list.filter((r: any) => r.status === 'verified').length,
+            rejected: list.filter((r: any) => r.status === 'rejected').length,
+          } 
+        } as ApiResponse;
+      }
       return request('/ppdb/statistics');
     },
 
     // Legacy endpoints (keep for backward compatibility)
     verify: async (id: number, verifyData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_ppdb_registrations');
+        const list = raw ? JSON.parse(raw) : [];
+        const idx = list.findIndex((r: any) => String(r.id) === String(id));
+        if (idx >= 0) {
+          list[idx] = { ...list[idx], ...verifyData, status: 'verified' };
+          localStorage.setItem('dev_ppdb_registrations', JSON.stringify(list));
+          return { success: true, data: list[idx] } as ApiResponse;
+        }
+        return { success: false, message: 'Registration not found' } as ApiResponse;
+      }
       return request(`/ppdb/${id}/verify`, {
         method: 'PUT',
         body: verifyData,
@@ -816,6 +896,13 @@ export const api = {
     },
 
     getByNumber: async (registrationNumber: string) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_ppdb_registrations');
+        const list = raw ? JSON.parse(raw) : [];
+        const item = list.find((r: any) => r.registration_number === registrationNumber);
+        if (item) return { success: true, data: item } as ApiResponse;
+        return { success: false, message: 'Registration not found' } as ApiResponse;
+      }
       return request(`/ppdb/registration/${registrationNumber}`);
     },
   },
@@ -826,14 +913,50 @@ export const api = {
   career: {
     getJobs: async (params?: any) => {
       const query = new URLSearchParams(params).toString();
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_jobs');
+        const list = raw ? JSON.parse(raw) : [];
+        return { success: true, data: list } as ApiResponse;
+      }
       return request(`/career/jobs${query ? `?${query}` : ''}`);
     },
 
     getJobById: async (id: number) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_jobs');
+        const list = raw ? JSON.parse(raw) : [];
+        const item = list.find((j: any) => String(j.id) === String(id));
+        if (item) return { success: true, data: item } as ApiResponse;
+        return { success: false, message: 'Job not found' } as ApiResponse;
+      }
       return request(`/career/jobs/${id}`);
     },
 
     apply: async (applicationData: FormData) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_applications');
+        const list = raw ? JSON.parse(raw) : [];
+        const id = list.length ? Math.max(...list.map((a: any) => Number(a.id) || 0)) + 1 : 1;
+        const now = new Date().toISOString();
+        
+        let newItem: any = { 
+          id, 
+          created_at: now, 
+          status: 'pending',
+        };
+
+        for (const [key, value] of applicationData.entries()) {
+          if (value instanceof File) {
+             newItem[`${key}_url`] = URL.createObjectURL(value);
+          } else {
+             newItem[key] = value;
+          }
+        }
+        
+        list.push(newItem);
+        localStorage.setItem('dev_applications', JSON.stringify(list));
+        return { success: true, data: newItem } as ApiResponse;
+      }
       return request('/career/apply', {
         method: 'POST',
         body: applicationData,
@@ -843,10 +966,26 @@ export const api = {
 
     getApplications: async (params?: any) => {
       const query = new URLSearchParams(params).toString();
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_applications');
+        const list = raw ? JSON.parse(raw) : [];
+        return { success: true, data: list } as ApiResponse;
+      }
       return request(`/career/applications${query ? `?${query}` : ''}`);
     },
 
     updateApplicationStatus: async (id: number, statusData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_applications');
+        const list = raw ? JSON.parse(raw) : [];
+        const idx = list.findIndex((a: any) => String(a.id) === String(id));
+        if (idx >= 0) {
+          list[idx] = { ...list[idx], ...statusData };
+          localStorage.setItem('dev_applications', JSON.stringify(list));
+          return { success: true, data: list[idx] } as ApiResponse;
+        }
+        return { success: false, message: 'Application not found' } as ApiResponse;
+      }
       return request(`/career/applications/${id}`, {
         method: 'PUT',
         body: statusData,
@@ -860,23 +999,101 @@ export const api = {
   news: {
     getAll: async (params?: any) => {
       const query = new URLSearchParams(params).toString();
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_news');
+        const list = raw ? JSON.parse(raw) : [];
+        // Simple pagination mock
+        const page = Number(params?.page) || 1;
+        const limit = Number(params?.limit) || 10;
+        const start = (page - 1) * limit;
+        const end = start + limit;
+        const data = list.slice(start, end);
+        return { 
+          success: true, 
+          data,
+          pagination: {
+            page,
+            limit,
+            total: list.length,
+            total_pages: Math.ceil(list.length / limit),
+            has_next: end < list.length,
+            has_prev: start > 0
+          }
+        } as ApiResponse;
+      }
       return request(`/news${query ? `?${query}` : ''}`);
     },
 
     getLatest: async (params?: any) => {
       const query = new URLSearchParams(params).toString();
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_news');
+        const list = raw ? JSON.parse(raw) : [];
+        const limit = Number(params?.limit) || 5;
+        const published = list.filter((n: any) => n.status === 'published');
+        const sorted = published.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        return { success: true, data: sorted.slice(0, limit) } as ApiResponse;
+      }
       return request(`/news/latest${query ? `?${query}` : ''}`, { allowUnauthorized: true });
     },
 
     getById: async (id: number) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_news');
+        const list = raw ? JSON.parse(raw) : [];
+        const item = list.find((n: any) => String(n.id) === String(id));
+        if (item) return { success: true, data: item } as ApiResponse;
+        return { success: false, message: 'News not found' } as ApiResponse;
+      }
       return request(`/news/${id}`);
     },
 
     getBySlug: async (slug: string) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_news');
+        const list = raw ? JSON.parse(raw) : [];
+        const item = list.find((n: any) => n.slug === slug);
+        if (item) return { success: true, data: item } as ApiResponse;
+        return { success: false, message: 'News not found' } as ApiResponse;
+      }
       return request(`/news/slug/${slug}`);
     },
 
     create: async (newsData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_news');
+        const list = raw ? JSON.parse(raw) : [];
+        const id = list.length ? Math.max(...list.map((n: any) => Number(n.id) || 0)) + 1 : 1;
+        const now = new Date().toISOString();
+        
+        let newItem: any = { 
+          id, 
+          created_at: now, 
+          updated_at: now,
+          slug: `news-${id}` 
+        };
+
+        // Handle FormData
+        if (newsData instanceof FormData) {
+          for (const [key, value] of newsData.entries()) {
+            if (key !== 'image') {
+              newItem[key] = value;
+            } else if (value instanceof File) {
+              // Mock image upload
+              newItem.image_url = URL.createObjectURL(value);
+            }
+          }
+        } else {
+          newItem = { ...newItem, ...newsData };
+        }
+        
+        if (!newItem.slug) newItem.slug = `news-${id}`;
+        
+        list.push(newItem);
+        localStorage.setItem('dev_news', JSON.stringify(list));
+        return { success: true, data: newItem } as ApiResponse;
+      }
+
       const isFD = typeof FormData !== 'undefined' && newsData instanceof FormData;
       return request('/news', {
         method: 'POST',
@@ -886,6 +1103,33 @@ export const api = {
     },
 
     update: async (id: number, newsData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_news');
+        const list = raw ? JSON.parse(raw) : [];
+        const idx = list.findIndex((n: any) => String(n.id) === String(id));
+        if (idx >= 0) {
+          const now = new Date().toISOString();
+          let updatedItem = { ...list[idx], updated_at: now };
+
+          if (newsData instanceof FormData) {
+            for (const [key, value] of newsData.entries()) {
+              if (key !== 'image') {
+                updatedItem[key] = value;
+              } else if (value instanceof File) {
+                updatedItem.image_url = URL.createObjectURL(value);
+              }
+            }
+          } else {
+            updatedItem = { ...updatedItem, ...newsData };
+          }
+
+          list[idx] = updatedItem;
+          localStorage.setItem('dev_news', JSON.stringify(list));
+          return { success: true, data: updatedItem } as ApiResponse;
+        }
+        return { success: false, message: 'News not found' } as ApiResponse;
+      }
+
       const isFD = typeof FormData !== 'undefined' && newsData instanceof FormData;
       return request(`/news/${id}`, {
         method: 'PUT',
@@ -895,6 +1139,13 @@ export const api = {
     },
 
     delete: async (id: number) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_news');
+        const list = raw ? JSON.parse(raw) : [];
+        const filtered = list.filter((n: any) => String(n.id) !== String(id));
+        localStorage.setItem('dev_news', JSON.stringify(filtered));
+        return { success: true, data: {} } as ApiResponse;
+      }
       return request(`/news/${id}`, {
         method: 'DELETE',
       });
@@ -904,10 +1155,41 @@ export const api = {
   gallery: {
     getAll: async (params?: any) => {
       const query = new URLSearchParams(params).toString();
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_gallery');
+        const list = raw ? JSON.parse(raw) : [];
+        return { success: true, data: list } as ApiResponse;
+      }
       return request(`/gallery${query ? `?${query}` : ''}`);
     },
 
     upload: async (imageData: FormData) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_gallery');
+        const list = raw ? JSON.parse(raw) : [];
+        const id = list.length ? Math.max(...list.map((g: any) => Number(g.id) || 0)) + 1 : 1;
+        const now = new Date().toISOString();
+        
+        let newItem: any = { 
+          id, 
+          created_at: now, 
+          updated_at: now,
+        };
+
+        // Handle FormData
+        for (const [key, value] of imageData.entries()) {
+          if (key !== 'image') {
+            newItem[key] = value;
+          } else if (value instanceof File) {
+            // Mock image upload
+            newItem.image_url = URL.createObjectURL(value);
+          }
+        }
+        
+        list.push(newItem);
+        localStorage.setItem('dev_gallery', JSON.stringify(list));
+        return { success: true, data: newItem } as ApiResponse;
+      }
       return request('/gallery', {
         method: 'POST',
         body: imageData,
@@ -916,6 +1198,33 @@ export const api = {
     },
 
     update: async (id: number | string, data: FormData | any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_gallery');
+        const list = raw ? JSON.parse(raw) : [];
+        const idx = list.findIndex((g: any) => String(g.id) === String(id));
+        if (idx >= 0) {
+          const now = new Date().toISOString();
+          let updatedItem = { ...list[idx], updated_at: now };
+
+          if (data instanceof FormData) {
+            for (const [key, value] of data.entries()) {
+              if (key !== 'image') {
+                updatedItem[key] = value;
+              } else if (value instanceof File) {
+                updatedItem.image_url = URL.createObjectURL(value);
+              }
+            }
+          } else {
+            updatedItem = { ...updatedItem, ...data };
+          }
+
+          list[idx] = updatedItem;
+          localStorage.setItem('dev_gallery', JSON.stringify(list));
+          return { success: true, data: updatedItem } as ApiResponse;
+        }
+        return { success: false, message: 'Gallery item not found' } as ApiResponse;
+      }
+
       const isFD = typeof FormData !== 'undefined' && data instanceof FormData;
       return request(`/gallery/${id}`, {
         method: 'PUT',
@@ -925,6 +1234,13 @@ export const api = {
     },
 
     delete: async (id: number | string) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_gallery');
+        const list = raw ? JSON.parse(raw) : [];
+        const filtered = list.filter((g: any) => String(g.id) !== String(id));
+        localStorage.setItem('dev_gallery', JSON.stringify(filtered));
+        return { success: true, data: {} } as ApiResponse;
+      }
       return request(`/gallery/${id}`, {
         method: 'DELETE',
       });
@@ -934,10 +1250,45 @@ export const api = {
   achievements: {
     getAll: async (params?: any) => {
       const query = new URLSearchParams(params).toString();
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_achievements');
+        const list = raw ? JSON.parse(raw) : [];
+        return { success: true, data: list } as ApiResponse;
+      }
       return request(`/achievements${query ? `?${query}` : ''}`);
     },
 
     create: async (achievementData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_achievements');
+        const list = raw ? JSON.parse(raw) : [];
+        const id = list.length ? Math.max(...list.map((a: any) => Number(a.id) || 0)) + 1 : 1;
+        const now = new Date().toISOString();
+        
+        let newItem: any = { 
+          id, 
+          created_at: now, 
+          updated_at: now,
+        };
+
+        // Handle FormData
+        if (achievementData instanceof FormData) {
+          for (const [key, value] of achievementData.entries()) {
+            if (key !== 'studentImage') {
+              newItem[key] = value;
+            } else if (value instanceof File) {
+              newItem.studentImage = URL.createObjectURL(value);
+            }
+          }
+        } else {
+          newItem = { ...newItem, ...achievementData };
+        }
+        
+        list.push(newItem);
+        localStorage.setItem('dev_achievements', JSON.stringify(list));
+        return { success: true, data: newItem } as ApiResponse;
+      }
+
       const isFD = typeof FormData !== 'undefined' && achievementData instanceof FormData;
       return request('/achievements', {
         method: 'POST',
@@ -947,6 +1298,33 @@ export const api = {
     },
 
     update: async (id: number, achievementData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_achievements');
+        const list = raw ? JSON.parse(raw) : [];
+        const idx = list.findIndex((a: any) => String(a.id) === String(id));
+        if (idx >= 0) {
+          const now = new Date().toISOString();
+          let updatedItem = { ...list[idx], updated_at: now };
+
+          if (achievementData instanceof FormData) {
+            for (const [key, value] of achievementData.entries()) {
+              if (key !== 'studentImage') {
+                updatedItem[key] = value;
+              } else if (value instanceof File) {
+                updatedItem.studentImage = URL.createObjectURL(value);
+              }
+            }
+          } else {
+            updatedItem = { ...updatedItem, ...achievementData };
+          }
+
+          list[idx] = updatedItem;
+          localStorage.setItem('dev_achievements', JSON.stringify(list));
+          return { success: true, data: updatedItem } as ApiResponse;
+        }
+        return { success: false, message: 'Achievement not found' } as ApiResponse;
+      }
+
       const isFD = typeof FormData !== 'undefined' && achievementData instanceof FormData;
       return request(`/achievements/${id}`, {
         method: 'PUT',
@@ -956,6 +1334,13 @@ export const api = {
     },
 
     delete: async (id: number) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_achievements');
+        const list = raw ? JSON.parse(raw) : [];
+        const filtered = list.filter((a: any) => String(a.id) !== String(id));
+        localStorage.setItem('dev_achievements', JSON.stringify(filtered));
+        return { success: true, data: {} } as ApiResponse;
+      }
       return request(`/achievements/${id}`, {
         method: 'DELETE',
       });
@@ -965,10 +1350,25 @@ export const api = {
   programs: {
     getAll: async (params?: any) => {
       const query = new URLSearchParams(params).toString();
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_programs');
+        const list = raw ? JSON.parse(raw) : [];
+        return { success: true, data: list } as ApiResponse;
+      }
       return request(`/programs${query ? `?${query}` : ''}`);
     },
 
     create: async (programData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_programs');
+        const list = raw ? JSON.parse(raw) : [];
+        const id = list.length ? Math.max(...list.map((p: any) => Number(p.id) || 0)) + 1 : 1;
+        const now = new Date().toISOString();
+        const newItem = { id, created_at: now, updated_at: now, ...programData };
+        list.push(newItem);
+        localStorage.setItem('dev_programs', JSON.stringify(list));
+        return { success: true, data: newItem } as ApiResponse;
+      }
       return request('/programs', {
         method: 'POST',
         body: programData,
@@ -976,6 +1376,18 @@ export const api = {
     },
 
     update: async (id: number, programData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_programs');
+        const list = raw ? JSON.parse(raw) : [];
+        const idx = list.findIndex((p: any) => String(p.id) === String(id));
+        if (idx >= 0) {
+          const now = new Date().toISOString();
+          list[idx] = { ...list[idx], ...programData, id: list[idx].id, updated_at: now };
+          localStorage.setItem('dev_programs', JSON.stringify(list));
+          return { success: true, data: list[idx] } as ApiResponse;
+        }
+        return { success: false, message: 'Program not found' } as ApiResponse;
+      }
       return request(`/programs/${id}`, {
         method: 'PUT',
         body: programData,
@@ -983,6 +1395,13 @@ export const api = {
     },
 
     delete: async (id: number) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_programs');
+        const list = raw ? JSON.parse(raw) : [];
+        const filtered = list.filter((p: any) => String(p.id) !== String(id));
+        localStorage.setItem('dev_programs', JSON.stringify(filtered));
+        return { success: true, data: {} } as ApiResponse;
+      }
       return request(`/programs/${id}`, {
         method: 'DELETE',
       });

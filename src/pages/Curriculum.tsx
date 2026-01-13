@@ -90,7 +90,7 @@ export const Curriculum: React.FC<CurriculumProps> = ({ onNavigate = () => {} })
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar menuItems={menuItems} onNavigate={onNavigate} />
+      <Navbar menuItems={menuItems} siteName="Yayasan Baituljannah" />
 
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-4">
@@ -256,7 +256,7 @@ export const Curriculum: React.FC<CurriculumProps> = ({ onNavigate = () => {} })
         </div>
       </main>
 
-      <Footer onNavigate={onNavigate} />
+      <Footer onNavigate={onNavigate} siteName="Yayasan Baituljannah" />
     </div>
   );
 };

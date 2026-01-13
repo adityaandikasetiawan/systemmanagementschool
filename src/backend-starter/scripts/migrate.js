@@ -91,6 +91,23 @@ const createTables = async (conn) => {
       CONSTRAINT fk_students_class FOREIGN KEY (class_id) REFERENCES classes(id) ON DELETE SET NULL
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   `);
+
+  await conn.query(`
+    CREATE TABLE IF NOT EXISTS news (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      title VARCHAR(255) NOT NULL,
+      slug VARCHAR(255) NOT NULL UNIQUE,
+      category VARCHAR(50) NOT NULL,
+      unit_sekolah VARCHAR(50) NOT NULL,
+      content TEXT NULL,
+      excerpt TEXT NULL,
+      image_url VARCHAR(255) NULL,
+      status ENUM('published', 'draft') NOT NULL DEFAULT 'draft',
+      publish_date DATETIME NULL,
+      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
 };
 
 const seedData = async (conn) => {
