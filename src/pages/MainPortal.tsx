@@ -224,7 +224,7 @@ export const MainPortal: React.FC<MainPortalProps> = ({ onNavigate }) => {
 
   const news = [
     {
-      image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+      image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=1200&h=800&fit=crop',
       title: 'SMAIT Juara Olimpiade Matematika Nasional 2024',
       date: '15 November 2024',
       category: 'Prestasi',
@@ -327,7 +327,7 @@ export const MainPortal: React.FC<MainPortalProps> = ({ onNavigate }) => {
       {/* Unit Schools - Enhanced */}
       <section className="py-20 px-4 md:px-8 lg:px-16 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #5B4DB5 0%, #7C6FCC 100%)' }}>
         <div className="absolute inset-0 islamic-pattern opacity-10"></div>
-        
+
         <div className="container-custom relative z-10">
           <div className="text-center mb-20">
             <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm mb-6">
@@ -346,13 +346,13 @@ export const MainPortal: React.FC<MainPortalProps> = ({ onNavigate }) => {
               unitsData.map((u: any, idx: number) => {
                 const key = String((u.level || u.name || '')).toLowerCase();
                 let displayName = u.name || u.level || 'Unit';
-                
+
                 if (key.includes('tkit')) displayName = t('home.units.items.tkit', 'TKIT');
                 else if (key.includes('sdit')) displayName = t('home.units.items.sdit', 'SDIT');
                 else if (key.includes('smpit')) displayName = t('home.units.items.smpit', 'SMPIT');
                 else if (key.includes('smait')) displayName = t('home.units.items.smait', 'SMAIT');
                 else if (key.includes('slbit')) displayName = t('home.units.items.slbit', 'SLBIT');
-                
+
                 return (
                   <UnitCardCircular
                     key={idx}
@@ -418,7 +418,7 @@ export const MainPortal: React.FC<MainPortalProps> = ({ onNavigate }) => {
       <section className="py-20 bg-gray-900 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1604134967494-8a9ed3adea0d?q=80&w=2574&auto=format&fit=crop')] bg-cover bg-center opacity-20 blur-sm"></div>
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-900/90 to-gray-900"></div>
-        
+
         <div className="container-custom relative z-10">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-sm rounded-full text-white text-sm mb-6">
@@ -428,16 +428,16 @@ export const MainPortal: React.FC<MainPortalProps> = ({ onNavigate }) => {
             <h2 className="text-3xl lg:text-4xl mb-6">{t('home.video.title', 'Mengenal Lebih Dekat Baitul Jannah')}</h2>
             <div className="w-24 h-1 bg-gradient-to-r from-transparent via-white/50 to-transparent mx-auto"></div>
           </div>
-          
+
           <div className="max-w-5xl mx-auto">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-gray-800">
               <div className="aspect-video relative">
-                <iframe 
+                <iframe
                   className="absolute top-0 left-0 w-full h-full"
-                  src="https://www.youtube.com/embed/EMSGkb_-ATI?autoplay=1&mute=1&controls=1&loop=1&playlist=EMSGkb_-ATI&playsinline=1&rel=0" 
+                  src="https://www.youtube.com/embed/aqz-KE-bpKQ"
                   title="Profil Baitul Jannah Islamic School"
-                  frameBorder="0" 
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
                 ></iframe>
               </div>
@@ -497,15 +497,15 @@ export const MainPortal: React.FC<MainPortalProps> = ({ onNavigate }) => {
             {programs.map((program, index) => {
               const Icon = program.icon;
               return (
-                <div 
+                <div
                   key={index}
                   className="group relative bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 shadow-soft hover:shadow-strong transition-all duration-300 transform hover:-translate-y-2 overflow-hidden"
                 >
                   {/* Background gradient on hover */}
-                  <div 
+                  <div
                     className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${program.gradient} rounded-full blur-3xl opacity-0 group-hover:opacity-20 transition-opacity duration-500`}
                   ></div>
-                  
+
                   <div className="relative z-10">
                     <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${program.gradient} flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg`}>
                       <Icon className="w-8 h-8 text-white" />
@@ -519,7 +519,7 @@ export const MainPortal: React.FC<MainPortalProps> = ({ onNavigate }) => {
           </div>
 
           <div className="text-center mt-12">
-            <button 
+            <button
               onClick={() => onNavigate('programs')}
               className="btn-primary inline-flex items-center gap-2 group"
             >
@@ -571,7 +571,7 @@ export const MainPortal: React.FC<MainPortalProps> = ({ onNavigate }) => {
                   onClick={() => {
                     const id = (displayNews[0]?.id as any) || null;
                     if (id) {
-                      try { localStorage.setItem('bj_news_selected_id', String(id)); } catch {}
+                      try { localStorage.setItem('bj_news_selected_id', String(id)); } catch { }
                     }
                     onNavigate('news');
                   }}
@@ -622,7 +622,7 @@ export const MainPortal: React.FC<MainPortalProps> = ({ onNavigate }) => {
                       onClick={() => {
                         const id = (item as any)?.id || null;
                         if (id) {
-                          try { localStorage.setItem('bj_news_selected_id', String(id)); } catch {}
+                          try { localStorage.setItem('bj_news_selected_id', String(id)); } catch { }
                         }
                         onNavigate('news');
                       }}
@@ -678,7 +678,7 @@ export const MainPortal: React.FC<MainPortalProps> = ({ onNavigate }) => {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               <AchievementCard
                 studentName="M. Husein Haekal"
-                studentImage="https://images.unsplash.com/photo-1712671556764-583ea336d9a0"
+                studentImage="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=800&fit=crop"
                 achievement={t('home.achievement.cards.card1.achievement')}
                 competition='"SAHABAYA CUP 2025" Tingkat Perwakilan Lampung'
                 rank={t('home.achievement.cards.card1.rank')}
@@ -687,7 +687,7 @@ export const MainPortal: React.FC<MainPortalProps> = ({ onNavigate }) => {
               />
               <AchievementCard
                 studentName="Zalika Tsabita Az - Zahra"
-                studentImage="https://images.unsplash.com/photo-1634451784126-b9f7282edb1b"
+                studentImage="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&h=800&fit=crop"
                 achievement={t('home.achievement.cards.card2.achievement')}
                 competition='"SAHABAYA CUP 2025" Tingkat Perwakilan Lampung'
                 rank={t('home.achievement.cards.card2.rank')}
@@ -696,7 +696,7 @@ export const MainPortal: React.FC<MainPortalProps> = ({ onNavigate }) => {
               />
               <AchievementCard
                 studentName="Dhoffa Adzellia Khaerani"
-                studentImage="https://images.unsplash.com/photo-1760348082270-3a46a3512850"
+                studentImage="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=800&h=800&fit=crop"
                 achievement={t('home.achievement.cards.card3.achievement')}
                 competition='"SAHABAYA CUP 2025" Tingkat Perwakilan Lampung'
                 rank={t('home.achievement.cards.card3.rank')}
@@ -715,7 +715,7 @@ export const MainPortal: React.FC<MainPortalProps> = ({ onNavigate }) => {
 
           {/* Button to Achievement */}
           <div className="text-center mt-12">
-            <button 
+            <button
               onClick={() => onNavigate('achievement')}
               className="btn-primary inline-flex items-center gap-2 group"
             >
@@ -747,7 +747,7 @@ export const MainPortal: React.FC<MainPortalProps> = ({ onNavigate }) => {
           {/* Universities Grid - Enhanced */}
           <div className="bg-white rounded-3xl shadow-strong p-8 md:p-12 mb-12">
             <h3 className="text-2xl text-center mb-8 text-gray-900">{t('home.alumni.title', 'Universitas Tujuan Alumni Kami')}</h3>
-            
+
             {/* Top Tier Universities */}
             <div className="mb-8 pb-8 border-b border-gray-200">
               <div className="flex items-center gap-2 mb-6">
@@ -904,7 +904,7 @@ export const MainPortal: React.FC<MainPortalProps> = ({ onNavigate }) => {
         </div>
       </section>
 
-      
+
 
       {/* CTA Section - Enhanced */}
       <section className="section-padding bg-gradient-to-br from-[#1E4AB8] via-[#2563eb] to-[#8B5CF6] relative overflow-hidden">
@@ -922,15 +922,15 @@ export const MainPortal: React.FC<MainPortalProps> = ({ onNavigate }) => {
             {t('home.cta.subtitle', 'Daftarkan putra-putri Anda sekarang dan berikan mereka pendidikan terbaik yang mengintegrasikan ilmu dan iman')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button 
-              onClick={() => onNavigate('admission')} 
+            <button
+              onClick={() => onNavigate('admission')}
               className="btn-secondary flex items-center justify-center gap-2 group"
             >
               <span>{t('home.cta.button_admission', 'Daftar PPDB 2025')}</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
-            <button 
-              onClick={() => onNavigate('contact')} 
+            <button
+              onClick={() => onNavigate('contact')}
               className="px-8 py-4 border-2 border-white text-white rounded-xl hover:bg-white hover:text-[#1E4AB8] transition-all text-lg flex items-center justify-center gap-2"
             >
               <span>{t('home.cta.button_contact', 'Hubungi Kami')}</span>
