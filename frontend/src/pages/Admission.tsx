@@ -30,11 +30,11 @@ export const Admission: React.FC<AdmissionProps> = ({ onNavigate = () => {} }) =
       label: t('navbar.units_menu', 'Unit Pendidikan'),
       href: '#',
       submenu: [
-        { label: '🎨 ' + t('home.units.items.tkit', 'TKIT Baituljannah'), href: '#', onClick: () => onNavigate('tkit') },
-        { label: '📚 ' + t('home.units.items.sdit', 'SDIT Baituljannah'), href: '#', onClick: () => onNavigate('sdit') },
-        { label: '🎓 ' + t('home.units.items.smpit', 'SMPIT Baituljannah'), href: '#', onClick: () => onNavigate('smpit') },
-        { label: t('home.units.items.smait', 'SMAIT Baituljannah'), href: '#', onClick: () => onNavigate('smait') },
-        { label: t('home.units.items.slbit', 'SLBIT Baituljannah'), href: '#', onClick: () => onNavigate('slbit') }
+        { label: t('home.units.items.tkit', 'TKIT Baituljannah'), href: '#', onClick: () => onNavigate('tkit'), image: '/images/logo/logo-tkit.png' },
+        { label: t('home.units.items.sdit', 'SDIT Baituljannah'), href: '#', onClick: () => onNavigate('sdit'), image: '/images/logo/logo-sdit.png' },
+        { label: t('home.units.items.smpit', 'SMPIT Baituljannah'), href: '#', onClick: () => onNavigate('smpit'), image: '/images/logo/logo-smpit.png' },
+        { label: t('home.units.items.smait', 'SMAIT Baituljannah'), href: '#', onClick: () => onNavigate('smait'), image: '/images/logo/logo-smait.png' },
+        { label: t('home.units.items.slbit', 'SLBIT Baituljannah'), href: '#', onClick: () => onNavigate('slbit'), image: '/images/logo/logo-slb.png' }
       ]
     },
     {
