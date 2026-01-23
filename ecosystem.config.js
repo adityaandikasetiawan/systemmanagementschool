@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'baituljannah-backend',
-      script: './src/backend/server.js',
+      script: './backend/server.js',
       instances: 1,
       autorestart: true,
       watch: false,
@@ -19,7 +19,7 @@ module.exports = {
     },
     {
       name: 'baituljannah-frontend',
-      script: './server.js', // This serves the static files from dist
+      script: './frontend/server.js', // This serves the static files from dist
       instances: 1,
       autorestart: true,
       watch: false,
