@@ -51,7 +51,7 @@ export const AdminEvents: React.FC<AdminEventsProps> = ({ onNavigate = () => { }
 
     const [agendaInput, setAgendaInput] = useState('');
 
-    const categories = ['Semua', 'Akademik', 'Keagamaan', 'Libur', 'Kegiatan', 'Olahraga'];
+    const categories = ['Semua', 'Akademik', 'Keagamaan', 'Libur', 'Kegiatan', 'Olahraga', 'Kompetisi', 'Rapat'];
     const units = ['Semua Unit', 'TKIT', 'SDIT', 'SMPIT', 'SMAIT', 'SLBIT', 'Yayasan'];
     const statuses = ['Semua', 'Mendatang', 'Berlangsung', 'Selesai'];
     const colors = [

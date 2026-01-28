@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { t, tf } from '../../i18n';
 import { Award, Plus, Edit, Trash2, Search, Filter, X, Check, Users, Clock, DollarSign, Target } from 'lucide-react';
+import { api } from '../../services/api';
 
 interface AdminProgramsProps {
   onNavigate?: (page: string) => void;
@@ -29,8 +30,25 @@ export const AdminPrograms: React.FC<AdminProgramsProps> = ({ onNavigate = () =>
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState('Semua');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [programList, setProgramList] = useState<ProgramItem[]>([]);
+
+  const fetchPrograms = async () => {
+    try {
+      setLoading(true);
+      const res = await api.programs.getAll();
+      if (res.success && res.data) {
+        setProgramList(res.data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch programs', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   React.useEffect(() => {
+    fetchPrograms();
     try {
       const sq = localStorage.getItem('bj_admin_programs_search');
       const fc = localStorage.getItem('bj_admin_programs_filter');
@@ -38,101 +56,6 @@ export const AdminPrograms: React.FC<AdminProgramsProps> = ({ onNavigate = () =>
       if (fc !== null) setFilterCategory(fc);
     } catch {}
   }, []);
-
-  React.useEffect(() => {
-    try { localStorage.setItem('bj_admin_programs_search', searchQuery); } catch {}
-  }, [searchQuery]);
-
-  React.useEffect(() => {
-    try { localStorage.setItem('bj_admin_programs_filter', filterCategory); } catch {}
-  }, [filterCategory]);
-
-  const [programList, setProgramList] = useState<ProgramItem[]>([
-    {
-      id: 1,
-      title: 'Program Tahfidz 30 Juz',
-      category: 'Keagamaan',
-      unit: 'SMAIT',
-      description: 'Program intensif menghafal Al-Quran 30 juz dengan bimbingan ustadz berpengalaman',
-      duration: '3 Tahun',
-      capacity: 30,
-      enrolled: 25,
-      fee: 'Gratis (Termasuk SPP)',
-      instructor: 'Ustadz Ahmad',
-      status: 'Active',
-      benefits: ['Hafal 30 Juz Al-Quran', 'Sanad resmi', 'Sertifikat wisuda', 'Ijazah tahfidz']
-    },
-    {
-      id: 2,
-      title: 'Klub Olimpiade Sains',
-      category: 'Akademik',
-      unit: 'SMPIT',
-      description: 'Pembinaan siswa berprestasi untuk mengikuti olimpiade sains tingkat nasional dan internasional',
-      duration: '1 Tahun',
-      capacity: 20,
-      enrolled: 18,
-      fee: 'Rp 500.000/bulan',
-      instructor: 'Tim Olimpiade',
-      status: 'Active',
-      benefits: ['Pembinaan intensif', 'Try out rutin', 'Pelatihan dari ahli', 'Kesempatan ikut OSN']
-    },
-    {
-      id: 3,
-      title: 'English Club',
-      category: 'Bahasa',
-      unit: 'Semua Unit',
-      description: 'Program pengembangan kemampuan bahasa Inggris melalui conversation dan activities',
-      duration: '6 Bulan',
-      capacity: 25,
-      enrolled: 22,
-      fee: 'Rp 300.000/bulan',
-      instructor: 'Native Speaker',
-      status: 'Active',
-      benefits: ['Speaking practice', 'Grammar workshop', 'TOEFL preparation', 'Certificate']
-    },
-    {
-      id: 4,
-      title: 'Futsal Academy',
-      category: 'Olahraga',
-      unit: 'SMPIT',
-      description: 'Pelatihan futsal profesional untuk siswa yang berminat mengembangkan bakat olahraga',
-      duration: '1 Tahun',
-      capacity: 16,
-      enrolled: 16,
-      fee: 'Rp 400.000/bulan',
-      instructor: 'Coach Budi',
-      status: 'Active',
-      benefits: ['Latihan 2x seminggu', 'Turnamen rutin', 'Jersey & equipment', 'Pelatih berlisensi']
-    },
-    {
-      id: 5,
-      title: 'Robotika & Programming',
-      category: 'Teknologi',
-      unit: 'SMAIT',
-      description: 'Program belajar robotika dan programming untuk siswa SMA',
-      duration: '1 Tahun',
-      capacity: 15,
-      enrolled: 12,
-      fee: 'Rp 600.000/bulan',
-      instructor: 'Mr. Rizki',
-      status: 'Active',
-      benefits: ['Belajar coding', 'Project robotika', 'Kompetisi', 'Sertifikat']
-    },
-    {
-      id: 6,
-      title: 'Public Speaking & Leadership',
-      category: 'Keterampilan',
-      unit: 'SMAIT',
-      description: 'Program pengembangan kemampuan berbicara di depan umum dan kepemimpinan',
-      duration: '3 Bulan',
-      capacity: 20,
-      enrolled: 15,
-      fee: 'Rp 350.000/bulan',
-      instructor: 'Ustadzah Fatimah',
-      status: 'Inactive',
-      benefits: ['Public speaking skills', 'Leadership training', 'Presentation skills', 'Networking']
-    }
-  ]);
 
   const [formData, setFormData] = useState<Partial<ProgramItem>>({
     title: '',
@@ -183,25 +106,50 @@ export const AdminPrograms: React.FC<AdminProgramsProps> = ({ onNavigate = () =>
     setShowModal(true);
   };
 
-  const handleSave = () => {
-    if (modalMode === 'create') {
-      const newProgram: ProgramItem = {
-        ...formData as ProgramItem,
-        id: Math.max(...programList.map(p => p.id), 0) + 1
-      };
-      setProgramList([...programList, newProgram]);
-    } else if (modalMode === 'edit' && selectedProgram) {
-      setProgramList(programList.map(program => 
-        program.id === selectedProgram.id ? { ...formData as ProgramItem, id: selectedProgram.id } : program
-      ));
+  const handleSave = async () => {
+    try {
+      if (modalMode === 'create') {
+        const res = await api.programs.create(formData);
+        if (res.success) {
+          fetchPrograms();
+          setShowModal(false);
+          setFormData({
+            title: '',
+            category: 'Akademik',
+            unit: 'Semua Unit',
+            description: '',
+            duration: '',
+            capacity: 0,
+            enrolled: 0,
+            fee: '',
+            instructor: '',
+            status: 'Active',
+            benefits: ['']
+          });
+        }
+      } else if (modalMode === 'edit' && selectedProgram) {
+        const res = await api.programs.update(selectedProgram.id, formData);
+        if (res.success) {
+          fetchPrograms();
+          setShowModal(false);
+          setSelectedProgram(null);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to save program', error);
     }
-    setShowModal(false);
-    setSelectedProgram(null);
   };
 
-  const handleDelete = (id: number) => {
-    setProgramList(programList.filter(program => program.id !== id));
-    setShowDeleteConfirm(null);
+  const handleDelete = async (id: number) => {
+    try {
+      const res = await api.programs.delete(id);
+      if (res.success) {
+        fetchPrograms();
+        setShowDeleteConfirm(null);
+      }
+    } catch (error) {
+      console.error('Failed to delete program', error);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {

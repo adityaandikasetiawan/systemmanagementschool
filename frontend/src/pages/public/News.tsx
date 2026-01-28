@@ -223,9 +223,12 @@ export const News: React.FC<NewsProps> = ({ onNavigate = () => {} }) => {
     })();
   }, []);
 
-  const baseNews = apiNews.length ? apiNews.map(transformNews) : allNews;
+  const baseNews = loadingApi ? [] : (errorApi ? allNews : apiNews);
 
-  const filteredNews = baseNews.filter(news => {
+  const activeFeaturedNews = apiNews.length > 0 ? transformNews(apiNews[0]) : featuredNews;
+  const listNews = apiNews.length > 0 ? baseNews.slice(1) : baseNews; // If using API, exclude first one (featured). If fallback, use all.
+
+  const filteredNews = (apiNews.length > 0 ? listNews : baseNews).filter(news => {
     const matchesSearch = news.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          news.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === 'Semua' || news.category === selectedCategory;
@@ -362,21 +365,21 @@ export const News: React.FC<NewsProps> = ({ onNavigate = () => {} }) => {
 
           <div 
             className="group grid md:grid-cols-2 gap-8 bg-gradient-to-br from-white to-gray-50 rounded-3xl overflow-hidden shadow-strong hover:shadow-2xl transition-all duration-500 cursor-pointer"
-            onClick={() => setSelectedNews(featuredNews)}
+            onClick={() => setSelectedNews(activeFeaturedNews)}
           >
             <div className="relative h-96 md:h-auto overflow-hidden">
               <ImageWithFallback
-                src={featuredNews.image}
-                alt={featuredNews.title}
+                src={activeFeaturedNews.image}
+                alt={activeFeaturedNews.title}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
               <div className="absolute top-6 left-6">
                 <span 
                   className="px-4 py-2 rounded-full text-white backdrop-blur-md shadow-lg"
-                  style={{ backgroundColor: featuredNews.categoryColor }}
+                  style={{ backgroundColor: activeFeaturedNews.categoryColor }}
                 >
-                  {featuredNews.category}
+                  {activeFeaturedNews.category}
                 </span>
               </div>
             </div>
@@ -385,18 +388,18 @@ export const News: React.FC<NewsProps> = ({ onNavigate = () => {} }) => {
               <div className="flex items-center gap-4 mb-4 text-sm text-gray-500">
                 <span className="flex items-center gap-1">
                   <Calendar className="w-4 h-4" />
-                  {featuredNews.date}
+                  {activeFeaturedNews.date}
                 </span>
                 <span className="flex items-center gap-1">
                   <Eye className="w-4 h-4" />
-                  {featuredNews.views}
+                  {activeFeaturedNews.views}
                 </span>
               </div>
               <h2 className="text-3xl lg:text-4xl mb-4 group-hover:text-[#1E4AB8] transition-colors">
-                {featuredNews.title}
+                {activeFeaturedNews.title}
               </h2>
               <p className="text-gray-600 mb-6 leading-relaxed text-lg">
-                {featuredNews.excerpt}
+                {activeFeaturedNews.excerpt}
               </p>
               <div className="flex items-center gap-4">
                 <button className="btn-primary flex items-center gap-2 group/btn">

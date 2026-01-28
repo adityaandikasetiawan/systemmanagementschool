@@ -932,6 +932,61 @@ export const api = {
       return request(`/career/jobs/${id}`);
     },
 
+    createJob: async (jobData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_jobs');
+        const list = raw ? JSON.parse(raw) : [];
+        const id = list.length ? Math.max(...list.map((j: any) => Number(j.id) || 0)) + 1 : 1;
+        const now = new Date().toISOString();
+        const newItem = {
+          id,
+          created_at: now,
+          updated_at: now,
+          applicants: 0,
+          ...jobData
+        };
+        list.push(newItem);
+        localStorage.setItem('dev_jobs', JSON.stringify(list));
+        return { success: true, data: newItem } as ApiResponse;
+      }
+      return request('/career/jobs', {
+        method: 'POST',
+        body: jobData,
+      });
+    },
+
+    updateJob: async (id: number, jobData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_jobs');
+        const list = raw ? JSON.parse(raw) : [];
+        const idx = list.findIndex((j: any) => String(j.id) === String(id));
+        if (idx >= 0) {
+          const now = new Date().toISOString();
+          list[idx] = { ...list[idx], ...jobData, updated_at: now };
+          localStorage.setItem('dev_jobs', JSON.stringify(list));
+          return { success: true, data: list[idx] } as ApiResponse;
+        }
+        return { success: false, message: 'Job not found' } as ApiResponse;
+      }
+      return request(`/career/jobs/${id}`, {
+        method: 'PUT',
+        body: jobData,
+      });
+    },
+
+    deleteJob: async (id: number) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        const raw = localStorage.getItem('dev_jobs');
+        const list = raw ? JSON.parse(raw) : [];
+        const filtered = list.filter((j: any) => String(j.id) !== String(id));
+        localStorage.setItem('dev_jobs', JSON.stringify(filtered));
+        return { success: true, data: {} } as ApiResponse;
+      }
+      return request(`/career/jobs/${id}`, {
+        method: 'DELETE',
+      });
+    },
+
     apply: async (applicationData: FormData) => {
       if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
         const raw = localStorage.getItem('dev_applications');

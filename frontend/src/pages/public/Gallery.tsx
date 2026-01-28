@@ -71,11 +71,13 @@ export const Gallery: React.FC<GalleryProps> = ({ onNavigate = () => {} }) => {
   ];
 
   const categories = [
-    { id: 'Semua', label: t('gallery_page.categories.all'), count: galleryItems.length, color: 'from-gray-500 to-gray-600' },
-    { id: 'Kegiatan', label: t('gallery_page.categories.activity'), count: galleryItems.filter(i => i.category === 'Kegiatan').length, color: 'from-blue-500 to-cyan-600' },
-    { id: 'Fasilitas', label: t('gallery_page.categories.facility'), count: galleryItems.filter(i => i.category === 'Fasilitas').length, color: 'from-green-500 to-emerald-600' },
-    { id: 'Event', label: t('gallery_page.categories.event'), count: galleryItems.filter(i => i.category === 'Event').length, color: 'from-orange-500 to-amber-600' },
-    { id: 'Pembelajaran', label: t('gallery_page.categories.learning'), count: galleryItems.filter(i => i.category === 'Pembelajaran').length, color: 'from-pink-500 to-rose-600' }
+    { id: 'Semua', label: t('gallery_page.categories.all', 'Semua'), count: galleryItems.length, color: 'from-gray-500 to-gray-600' },
+    { id: 'Kegiatan', label: t('gallery_page.categories.activity', 'Kegiatan'), count: galleryItems.filter(i => i.category === 'Kegiatan').length, color: 'from-blue-500 to-cyan-600' },
+    { id: 'Fasilitas', label: t('gallery_page.categories.facility', 'Fasilitas'), count: galleryItems.filter(i => i.category === 'Fasilitas').length, color: 'from-green-500 to-emerald-600' },
+    { id: 'Akademik', label: 'Akademik', count: galleryItems.filter(i => i.category === 'Akademik').length, color: 'from-purple-500 to-indigo-600' },
+    { id: 'Keagamaan', label: 'Keagamaan', count: galleryItems.filter(i => i.category === 'Keagamaan').length, color: 'from-amber-500 to-orange-600' },
+    { id: 'Olahraga', label: 'Olahraga', count: galleryItems.filter(i => i.category === 'Olahraga').length, color: 'from-red-500 to-rose-600' },
+    { id: 'Prestasi', label: 'Prestasi', count: galleryItems.filter(i => i.category === 'Prestasi').length, color: 'from-yellow-500 to-amber-600' }
   ];
 
   useEffect(() => {

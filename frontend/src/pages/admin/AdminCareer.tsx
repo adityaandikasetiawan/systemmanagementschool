@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { EmailService } from '../../components/EmailService';
 import { exportApplicationsToCSV, exportJobsToCSV } from '../../utils/exportUtils';
 import { Briefcase, Plus, Edit, Trash2, Eye, Users, TrendingUp, CheckCircle, XCircle, Search, Filter, Download, Mail, FileDown } from 'lucide-react';
+import { api } from '../../services/api';
 
 interface Application {
   id: number;
@@ -14,17 +15,22 @@ interface Application {
   experience: string;
   appliedDate: string;
   status: 'Pending' | 'Reviewed' | 'Interview' | 'Accepted' | 'Rejected';
+  cv_url?: string;
+  message?: string;
 }
 
 interface JobPosting {
   id: number;
-  position: string;
+  title: string;
   unit: string;
   type: string;
   location: string;
   status: 'Active' | 'Closed';
   applicants: number;
   postedDate: string;
+  salary?: string;
+  description?: string;
+  requirements?: string[];
 }
 
 interface AdminCareerProps {
@@ -40,114 +46,124 @@ export const AdminCareer: React.FC<AdminCareerProps> = ({ onNavigate = () => {},
   const [filterStatus, setFilterStatus] = useState<string>('Semua');
   const [emailRecipient, setEmailRecipient] = useState<{email: string; name: string; position: string} | null>(null);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock data - Job Postings
-  const [jobPostings, setJobPostings] = useState<JobPosting[]>([
-    {
-      id: 1,
-      position: 'Guru Bahasa Arab',
-      unit: 'SDIT Baituljannah',
-      type: 'Full Time',
-      location: 'Bekasi',
-      status: 'Active',
-      applicants: 12,
-      postedDate: '2024-01-15'
-    },
-    {
-      id: 2,
-      position: 'Guru Tahfidz',
-      unit: 'SMPIT Baituljannah',
-      type: 'Full Time',
-      location: 'Bekasi',
-      status: 'Active',
-      applicants: 8,
-      postedDate: '2024-01-10'
-    },
-    {
-      id: 3,
-      position: 'Guru Matematika',
-      unit: 'SMAIT Baituljannah',
-      type: 'Full Time',
-      location: 'Bekasi',
-      status: 'Active',
-      applicants: 15,
-      postedDate: '2024-01-20'
-    },
-    {
-      id: 4,
-      position: 'Staff Administrasi',
-      unit: 'Yayasan Baituljannah',
-      type: 'Full Time',
-      location: 'Bekasi',
-      status: 'Closed',
-      applicants: 25,
-      postedDate: '2023-12-01'
-    }
-  ]);
+  const [jobPostings, setJobPostings] = useState<JobPosting[]>([]);
+  const [applications, setApplications] = useState<Application[]>([]);
 
-  // Mock data - Applications
-  const [applications, setApplications] = useState<Application[]>([
-    {
-      id: 1,
-      name: 'Ahmad Fauzi',
-      email: 'ahmad.fauzi@email.com',
-      phone: '081234567890',
-      position: 'Guru Bahasa Arab',
-      unit: 'SDIT Baituljannah',
-      education: 'S1',
-      experience: '2-5 tahun',
-      appliedDate: '2024-01-25',
-      status: 'Pending'
-    },
-    {
-      id: 2,
-      name: 'Siti Nurhaliza',
-      email: 'siti.nur@email.com',
-      phone: '081234567891',
-      position: 'Guru Tahfidz',
-      unit: 'SMPIT Baituljannah',
-      education: 'S1',
-      experience: '1-2 tahun',
-      appliedDate: '2024-01-24',
-      status: 'Reviewed'
-    },
-    {
-      id: 3,
-      name: 'Muhammad Rizki',
-      email: 'm.rizki@email.com',
-      phone: '081234567892',
-      position: 'Guru Matematika',
-      unit: 'SMAIT Baituljannah',
-      education: 'S1',
-      experience: '2-5 tahun',
-      appliedDate: '2024-01-23',
-      status: 'Interview'
-    },
-    {
-      id: 4,
-      name: 'Fatimah Az-Zahra',
-      email: 'fatimah.az@email.com',
-      phone: '081234567893',
-      position: 'Guru Bahasa Arab',
-      unit: 'SDIT Baituljannah',
-      education: 'S1',
-      experience: '> 5 tahun',
-      appliedDate: '2024-01-22',
-      status: 'Accepted'
-    },
-    {
-      id: 5,
-      name: 'Abdullah Yusuf',
-      email: 'abdullah.y@email.com',
-      phone: '081234567894',
-      position: 'Staff Administrasi',
-      unit: 'Yayasan Baituljannah',
-      education: 'D3',
-      experience: '< 1 tahun',
-      appliedDate: '2024-01-21',
-      status: 'Rejected'
+  // Form State
+  const [formData, setFormData] = useState({
+    title: '',
+    unit: 'TKIT Baituljannah',
+    type: 'Full Time',
+    location: '',
+    description: '',
+    salary: '',
+    requirements: '' // textarea content, split by newline
+  });
+  const [editingJobId, setEditingJobId] = useState<number | null>(null);
+
+  const fetchJobs = async () => {
+    try {
+      const res = await api.career.getJobs();
+      if (res.success && res.data) {
+        // Map API response to component state if needed, or ensure backend matches
+        // Assuming backend returns fields matching JobPosting interface roughly
+        const mappedJobs = res.data.map((job: any) => ({
+          ...job,
+          title: job.title || job.position, // Fallback for legacy data
+          postedDate: job.created_at || job.postedDate || new Date().toISOString(),
+          status: job.status || 'Active'
+        }));
+        setJobPostings(mappedJobs);
+      }
+    } catch (err) {
+      console.error("Failed to fetch jobs", err);
     }
-  ]);
+  };
+
+  const fetchApplications = async () => {
+    try {
+      const res = await api.career.getApplications();
+      if (res.success && res.data) {
+        const mappedApps = res.data.map((app: any) => ({
+          ...app,
+          appliedDate: app.created_at || app.appliedDate || new Date().toISOString(),
+          status: app.status || 'Pending'
+        }));
+        setApplications(mappedApps);
+      }
+    } catch (err) {
+      console.error("Failed to fetch applications", err);
+    }
+  };
+
+  useEffect(() => {
+    const init = async () => {
+      setLoading(true);
+      await Promise.all([fetchJobs(), fetchApplications()]);
+      setLoading(false);
+    };
+    init();
+  }, []);
+
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const resetForm = () => {
+    setFormData({
+      title: '',
+      unit: 'TKIT Baituljannah',
+      type: 'Full Time',
+      location: '',
+      description: '',
+      salary: '',
+      requirements: ''
+    });
+    setEditingJobId(null);
+    setShowJobForm(false);
+  };
+
+  const handleEditJob = (job: JobPosting) => {
+    setFormData({
+      title: job.title,
+      unit: job.unit,
+      type: job.type,
+      location: job.location,
+      description: job.description || '',
+      salary: job.salary || '',
+      requirements: job.requirements ? job.requirements.join('\n') : ''
+    });
+    setEditingJobId(job.id);
+    setShowJobForm(true);
+  };
+
+  const handleJobSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const payload = {
+        ...formData,
+        requirements: formData.requirements.split('\n').filter(r => r.trim() !== '')
+      };
+
+      if (editingJobId) {
+        await api.career.updateJob(editingJobId, payload);
+      } else {
+        await api.career.createJob(payload);
+      }
+      await fetchJobs();
+      resetForm();
+    } catch (err) {
+      console.error("Failed to save job", err);
+      alert("Gagal menyimpan lowongan");
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -162,21 +178,31 @@ export const AdminCareer: React.FC<AdminCareerProps> = ({ onNavigate = () => {},
     }
   };
 
-  const updateApplicationStatus = (id: number, newStatus: Application['status']) => {
-    setApplications(applications.map(app => 
-      app.id === id ? { ...app, status: newStatus } : app
-    ));
+  const updateApplicationStatus = async (id: number, newStatus: Application['status']) => {
+    try {
+      await api.career.updateApplicationStatus(id, { status: newStatus });
+      setApplications(applications.map(app => 
+        app.id === id ? { ...app, status: newStatus } : app
+      ));
+    } catch (err) {
+      console.error("Failed to update status", err);
+    }
   };
 
-  const bulkUpdateStatus = (newStatus: Application['status']) => {
+  const bulkUpdateStatus = async (newStatus: Application['status']) => {
     if (selectedIds.length === 0) {
       alert('Pilih lamaran terlebih dahulu');
       return;
     }
-    setApplications(applications.map(app => 
-      selectedIds.includes(app.id) ? { ...app, status: newStatus } : app
-    ));
-    setSelectedIds([]);
+    try {
+      await Promise.all(selectedIds.map(id => api.career.updateApplicationStatus(id, { status: newStatus })));
+      setApplications(applications.map(app => 
+        selectedIds.includes(app.id) ? { ...app, status: newStatus } : app
+      ));
+      setSelectedIds([]);
+    } catch (err) {
+      console.error("Failed to bulk update status", err);
+    }
   };
 
   const toggleSelectAll = () => {
@@ -195,16 +221,29 @@ export const AdminCareer: React.FC<AdminCareerProps> = ({ onNavigate = () => {},
     }
   };
 
-  const deleteJob = (id: number) => {
+  const deleteJob = async (id: number) => {
     if (confirm('Yakin ingin menghapus lowongan ini?')) {
-      setJobPostings(jobPostings.filter(job => job.id !== id));
+      try {
+        await api.career.deleteJob(id);
+        setJobPostings(jobPostings.filter(job => job.id !== id));
+      } catch (err) {
+        console.error("Failed to delete job", err);
+      }
     }
   };
 
-  const toggleJobStatus = (id: number) => {
-    setJobPostings(jobPostings.map(job => 
-      job.id === id ? { ...job, status: job.status === 'Active' ? 'Closed' : 'Active' } : job
-    ));
+  const toggleJobStatus = async (id: number) => {
+    const job = jobPostings.find(j => j.id === id);
+    if (!job) return;
+    const newStatus = job.status === 'Active' ? 'Closed' : 'Active';
+    try {
+      await api.career.updateJob(id, { status: newStatus });
+      setJobPostings(jobPostings.map(j => 
+        j.id === id ? { ...j, status: newStatus } : j
+      ));
+    } catch (err) {
+      console.error("Failed to toggle job status", err);
+    }
   };
 
   const filteredApplications = applications.filter(app => {
@@ -351,7 +390,7 @@ export const AdminCareer: React.FC<AdminCareerProps> = ({ onNavigate = () => {},
                       Export CSV
                     </button>
                     <button
-                      onClick={() => setShowJobForm(!showJobForm)}
+                      onClick={() => { resetForm(); setShowJobForm(!showJobForm); }}
                       className="btn-primary flex items-center gap-2"
                     >
                       <Plus className="w-5 h-5" />
@@ -362,19 +401,32 @@ export const AdminCareer: React.FC<AdminCareerProps> = ({ onNavigate = () => {},
 
                 {showJobForm && (
                   <div className="bg-gray-50 rounded-2xl p-6 mb-6">
-                    <h3 className="text-xl mb-4">Form Lowongan Baru</h3>
-                    <form className="grid md:grid-cols-2 gap-4">
+                    <h3 className="text-xl mb-4">{editingJobId ? 'Edit Lowongan' : 'Form Lowongan Baru'}</h3>
+                    <form className="grid md:grid-cols-2 gap-4" onSubmit={handleJobSubmit}>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           Posisi
                         </label>
-                        <input type="text" className="input-field" placeholder="Contoh: Guru Bahasa Inggris" />
+                        <input 
+                          type="text" 
+                          name="title"
+                          value={formData.title}
+                          onChange={handleFormChange}
+                          className="input-field" 
+                          placeholder="Contoh: Guru Bahasa Inggris"
+                          required
+                        />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           Unit
                         </label>
-                        <select className="input-field">
+                        <select 
+                          name="unit"
+                          value={formData.unit}
+                          onChange={handleFormChange}
+                          className="input-field"
+                        >
                           <option>TKIT Baituljannah</option>
                           <option>SDIT Baituljannah</option>
                           <option>SMPIT Baituljannah</option>
@@ -387,7 +439,12 @@ export const AdminCareer: React.FC<AdminCareerProps> = ({ onNavigate = () => {},
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           Tipe
                         </label>
-                        <select className="input-field">
+                        <select 
+                          name="type"
+                          value={formData.type}
+                          onChange={handleFormChange}
+                          className="input-field"
+                        >
                           <option>Full Time</option>
                           <option>Part Time</option>
                           <option>Contract</option>
@@ -397,17 +454,59 @@ export const AdminCareer: React.FC<AdminCareerProps> = ({ onNavigate = () => {},
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           Lokasi
                         </label>
-                        <input type="text" className="input-field" placeholder="Bekasi" />
+                        <input 
+                          type="text" 
+                          name="location"
+                          value={formData.location}
+                          onChange={handleFormChange}
+                          className="input-field" 
+                          placeholder="Bekasi" 
+                        />
+                      </div>
+                      <div>
+                         <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Gaji (Opsional)
+                        </label>
+                        <input 
+                          type="text" 
+                          name="salary"
+                          value={formData.salary}
+                          onChange={handleFormChange}
+                          className="input-field" 
+                          placeholder="Rp 5.000.000 - Rp 7.000.000" 
+                        />
                       </div>
                       <div className="md:col-span-2">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           Deskripsi
                         </label>
-                        <textarea className="input-field" rows={4} placeholder="Deskripsi pekerjaan..."></textarea>
+                        <textarea 
+                          name="description"
+                          value={formData.description}
+                          onChange={handleFormChange}
+                          className="input-field" 
+                          rows={4} 
+                          placeholder="Deskripsi pekerjaan..."
+                        ></textarea>
+                      </div>
+                       <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Persyaratan (Satu per baris)
+                        </label>
+                        <textarea 
+                          name="requirements"
+                          value={formData.requirements}
+                          onChange={handleFormChange}
+                          className="input-field" 
+                          rows={4} 
+                          placeholder="- S1 Pendidikan...&#10;- Pengalaman 2 tahun..."
+                        ></textarea>
                       </div>
                       <div className="md:col-span-2 flex gap-3">
-                        <button type="submit" className="btn-primary">Simpan Lowongan</button>
-                        <button type="button" onClick={() => setShowJobForm(false)} className="btn-outline">Batal</button>
+                        <button type="submit" className="btn-primary" disabled={loading}>
+                          {loading ? 'Menyimpan...' : 'Simpan Lowongan'}
+                        </button>
+                        <button type="button" onClick={resetForm} className="btn-outline">Batal</button>
                       </div>
                     </form>
                   </div>
@@ -436,7 +535,7 @@ export const AdminCareer: React.FC<AdminCareerProps> = ({ onNavigate = () => {},
                                 <Briefcase className="w-5 h-5 text-[#1E4AB8]" />
                               </div>
                               <div>
-                                <p className="font-medium">{job.position}</p>
+                                <p className="font-medium">{job.title}</p>
                                 <p className="text-sm text-gray-500">{job.location}</p>
                               </div>
                             </div>
@@ -471,7 +570,11 @@ export const AdminCareer: React.FC<AdminCareerProps> = ({ onNavigate = () => {},
                                   <CheckCircle className="w-5 h-5 text-green-600" />
                                 )}
                               </button>
-                              <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Edit">
+                              <button 
+                                onClick={() => handleEditJob(job)}
+                                className="p-2 hover:bg-gray-100 rounded-lg transition-colors" 
+                                title="Edit"
+                              >
                                 <Edit className="w-5 h-5 text-blue-600" />
                               </button>
                               <button

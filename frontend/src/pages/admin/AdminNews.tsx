@@ -71,7 +71,7 @@ export const AdminNews: React.FC<AdminNewsProps> = ({ onNavigate = () => {}, emb
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
-  const categories = ['Semua', 'Akademik', 'Keagamaan', 'Prestasi', 'Kegiatan', 'Pengumuman'];
+  const categories = ['Semua', 'Akademik', 'Keagamaan', 'Prestasi', 'Kegiatan', 'Pengumuman', 'Event', 'Program'];
   const units = ['Semua Unit', 'TKIT', 'SDIT', 'SMPIT', 'SMAIT', 'SLBIT', 'Yayasan'];
   const statuses = ['Semua', 'Published', 'Draft'];
 
