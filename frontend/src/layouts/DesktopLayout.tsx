@@ -39,7 +39,7 @@ export const DesktopLayout: React.FC<LayoutProps> = ({
       <main className="flex-grow">
         {children}
       </main>
-      <Footer onNavigate={onNavigate} />
+      <Footer onNavigate={onNavigate} siteName={siteName} logo={logo} accentColor={accentColor} />
     </div>
   );
 };

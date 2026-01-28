@@ -19,10 +19,15 @@
       "guru": "Guru",
       "siswa": "Siswa",
       "default": "Pengguna"
+    },
+    "running_text": {
+      "info": "Informasi",
+      "achievement": "Prestasi",
+      "agenda": "Agenda"
     }
   },
   "site": {
-    "name": "Sekolah Islam Baitul Jannah",
+    "name": "Baitul Jannah Islamic School",
     "menu": {
       "home": "Beranda",
       "about": "Tentang",
@@ -52,7 +57,7 @@
     "footer": {
       "quick_links": "Quick Links",
       "contact": "Kontak",
-      "address": "Jl. Pendidikan Islam No. 123, Jakarta Selatan",
+      "address": "Jl. Pramuka No.43, Kemiling Permai, Kec. Kemiling, Kota Bandar Lampung, Lampung 35153",
       "links": {
         "about": "Tentang Kami",
         "programs": "Program",

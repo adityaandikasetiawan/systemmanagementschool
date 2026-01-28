@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Facebook, Instagram, Youtube, Mail, Phone, MapPin } from 'lucide-react';
-import { t } from '../i18n';
+import i18n, { t } from '../i18n';
 
 interface FooterProps {
   logo?: string;
@@ -10,6 +10,12 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ logo, siteName, accentColor = '#1E4AB8', onNavigate = () => {} }) => {
+  const [, setLocale] = useState(i18n.getLocale());
+
+  useEffect(() => {
+    return i18n.onLocaleChange((l) => setLocale(l));
+  }, []);
+
   return (
     <footer className="bg-gray-900 text-white mt-16">
       <div className="container-custom section-padding">
@@ -74,15 +80,24 @@ export const Footer: React.FC<FooterProps> = ({ logo, siteName, accentColor = '#
             <ul className="space-y-3">
               <li className="flex items-start gap-2">
                 <MapPin className="w-5 h-5 text-gray-400 flex-shrink-0 mt-1" />
-                <span className="text-gray-400 text-sm">{t('site.footer.address', 'Jl. Pendidikan Islam No. 123, Jakarta Selatan')}</span>
+                <span className="text-gray-400 text-sm">
+                  {t(
+                    'site.footer.address',
+                    'Jl. Pramuka No.43, Kemiling Permai, Kec. Kemiling, Kota Bandar Lampung, Lampung 35153'
+                  )}
+                </span>
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="w-5 h-5 text-gray-400" />
-                <span className="text-gray-400 text-sm">(021) 1234-5678</span>
+                <span className="text-gray-400 text-sm">(0721) 271 385</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Phone className="w-5 h-5 text-gray-400" />
+                <span className="text-gray-400 text-sm">WA: 082378537170</span>
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="w-5 h-5 text-gray-400" />
-                <span className="text-gray-400 text-sm">info@baituljannah.sch.id</span>
+                <span className="text-gray-400 text-sm">admyysn.baituljannah@gmail.com</span>
               </li>
             </ul>
           </div>
@@ -91,10 +106,10 @@ export const Footer: React.FC<FooterProps> = ({ logo, siteName, accentColor = '#
           <div>
             <h4 className="text-lg mb-4">{t('site.footer.follow_us', 'Follow Us')}</h4>
             <div className="flex gap-3">
-              <a href="#" className="w-10 h-10 rounded-full bg-gray-800 hover:bg-[var(--color-primary)] flex items-center justify-center transition-colors">
+              <a href="https://www.facebook.com/share/16dU59kVTJ/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-800 hover:bg-[var(--color-primary)] flex items-center justify-center transition-colors">
                 <Facebook className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-gray-800 hover:bg-[var(--color-primary)] flex items-center justify-center transition-colors">
+              <a href="https://www.instagram.com/baituljannahislamicschool?igsh=MWdyOTl0MWJicm42YQ==" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-800 hover:bg-[var(--color-primary)] flex items-center justify-center transition-colors">
                 <Instagram className="w-5 h-5" />
               </a>
               <a href="#" className="w-10 h-10 rounded-full bg-gray-800 hover:bg-[var(--color-primary)] flex items-center justify-center transition-colors">

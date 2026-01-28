@@ -1,5 +1,5 @@
 import React from 'react';
-import { UnitSchool } from '../../UnitSchool';
+import { UnitSchool } from '../UnitSchool';
 
 interface Props {
   onNavigate: (page: string) => void;

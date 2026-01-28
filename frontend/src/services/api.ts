@@ -801,15 +801,15 @@ export const api = {
         const id = list.length ? Math.max(...list.map((r: any) => Number(r.id) || 0)) + 1 : 1;
         const now = new Date().toISOString();
         const registration_number = `REG-${new Date().getFullYear()}-${String(id).padStart(4, '0')}`;
-        
-        const newItem = { 
-          id, 
+
+        const newItem = {
+          id,
           registration_number,
-          created_at: now, 
-          status: 'pending', 
-          ...registrationData 
+          created_at: now,
+          status: 'pending',
+          ...registrationData
         };
-        
+
         list.push(newItem);
         localStorage.setItem('dev_ppdb_registrations', JSON.stringify(list));
         return { success: true, data: newItem } as ApiResponse;
@@ -863,14 +863,14 @@ export const api = {
       if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
         const raw = localStorage.getItem('dev_ppdb_registrations');
         const list = raw ? JSON.parse(raw) : [];
-        return { 
-          success: true, 
+        return {
+          success: true,
           data: {
             total: list.length,
             pending: list.filter((r: any) => r.status === 'pending').length,
             verified: list.filter((r: any) => r.status === 'verified').length,
             rejected: list.filter((r: any) => r.status === 'rejected').length,
-          } 
+          }
         } as ApiResponse;
       }
       return request('/ppdb/statistics');
@@ -938,21 +938,21 @@ export const api = {
         const list = raw ? JSON.parse(raw) : [];
         const id = list.length ? Math.max(...list.map((a: any) => Number(a.id) || 0)) + 1 : 1;
         const now = new Date().toISOString();
-        
-        let newItem: any = { 
-          id, 
-          created_at: now, 
+
+        let newItem: any = {
+          id,
+          created_at: now,
           status: 'pending',
         };
 
         for (const [key, value] of applicationData.entries()) {
           if (value instanceof File) {
-             newItem[`${key}_url`] = URL.createObjectURL(value);
+            newItem[`${key}_url`] = URL.createObjectURL(value);
           } else {
-             newItem[key] = value;
+            newItem[key] = value;
           }
         }
-        
+
         list.push(newItem);
         localStorage.setItem('dev_applications', JSON.stringify(list));
         return { success: true, data: newItem } as ApiResponse;
@@ -1008,8 +1008,8 @@ export const api = {
         const start = (page - 1) * limit;
         const end = start + limit;
         const data = list.slice(start, end);
-        return { 
-          success: true, 
+        return {
+          success: true,
           data,
           pagination: {
             page,
@@ -1065,12 +1065,12 @@ export const api = {
         const list = raw ? JSON.parse(raw) : [];
         const id = list.length ? Math.max(...list.map((n: any) => Number(n.id) || 0)) + 1 : 1;
         const now = new Date().toISOString();
-        
-        let newItem: any = { 
-          id, 
-          created_at: now, 
+
+        let newItem: any = {
+          id,
+          created_at: now,
           updated_at: now,
-          slug: `news-${id}` 
+          slug: `news-${id}`
         };
 
         // Handle FormData
@@ -1086,9 +1086,9 @@ export const api = {
         } else {
           newItem = { ...newItem, ...newsData };
         }
-        
+
         if (!newItem.slug) newItem.slug = `news-${id}`;
-        
+
         list.push(newItem);
         localStorage.setItem('dev_news', JSON.stringify(list));
         return { success: true, data: newItem } as ApiResponse;
@@ -1169,10 +1169,10 @@ export const api = {
         const list = raw ? JSON.parse(raw) : [];
         const id = list.length ? Math.max(...list.map((g: any) => Number(g.id) || 0)) + 1 : 1;
         const now = new Date().toISOString();
-        
-        let newItem: any = { 
-          id, 
-          created_at: now, 
+
+        let newItem: any = {
+          id,
+          created_at: now,
           updated_at: now,
         };
 
@@ -1185,7 +1185,7 @@ export const api = {
             newItem.image_url = URL.createObjectURL(value);
           }
         }
-        
+
         list.push(newItem);
         localStorage.setItem('dev_gallery', JSON.stringify(list));
         return { success: true, data: newItem } as ApiResponse;
@@ -1242,106 +1242,6 @@ export const api = {
         return { success: true, data: {} } as ApiResponse;
       }
       return request(`/gallery/${id}`, {
-        method: 'DELETE',
-      });
-    },
-  },
-
-  achievements: {
-    getAll: async (params?: any) => {
-      const query = new URLSearchParams(params).toString();
-      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
-        const raw = localStorage.getItem('dev_achievements');
-        const list = raw ? JSON.parse(raw) : [];
-        return { success: true, data: list } as ApiResponse;
-      }
-      return request(`/achievements${query ? `?${query}` : ''}`);
-    },
-
-    create: async (achievementData: any) => {
-      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
-        const raw = localStorage.getItem('dev_achievements');
-        const list = raw ? JSON.parse(raw) : [];
-        const id = list.length ? Math.max(...list.map((a: any) => Number(a.id) || 0)) + 1 : 1;
-        const now = new Date().toISOString();
-        
-        let newItem: any = { 
-          id, 
-          created_at: now, 
-          updated_at: now,
-        };
-
-        // Handle FormData
-        if (achievementData instanceof FormData) {
-          for (const [key, value] of achievementData.entries()) {
-            if (key !== 'studentImage') {
-              newItem[key] = value;
-            } else if (value instanceof File) {
-              newItem.studentImage = URL.createObjectURL(value);
-            }
-          }
-        } else {
-          newItem = { ...newItem, ...achievementData };
-        }
-        
-        list.push(newItem);
-        localStorage.setItem('dev_achievements', JSON.stringify(list));
-        return { success: true, data: newItem } as ApiResponse;
-      }
-
-      const isFD = typeof FormData !== 'undefined' && achievementData instanceof FormData;
-      return request('/achievements', {
-        method: 'POST',
-        body: achievementData,
-        isFormData: !!isFD,
-      });
-    },
-
-    update: async (id: number, achievementData: any) => {
-      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
-        const raw = localStorage.getItem('dev_achievements');
-        const list = raw ? JSON.parse(raw) : [];
-        const idx = list.findIndex((a: any) => String(a.id) === String(id));
-        if (idx >= 0) {
-          const now = new Date().toISOString();
-          let updatedItem = { ...list[idx], updated_at: now };
-
-          if (achievementData instanceof FormData) {
-            for (const [key, value] of achievementData.entries()) {
-              if (key !== 'studentImage') {
-                updatedItem[key] = value;
-              } else if (value instanceof File) {
-                updatedItem.studentImage = URL.createObjectURL(value);
-              }
-            }
-          } else {
-            updatedItem = { ...updatedItem, ...achievementData };
-          }
-
-          list[idx] = updatedItem;
-          localStorage.setItem('dev_achievements', JSON.stringify(list));
-          return { success: true, data: updatedItem } as ApiResponse;
-        }
-        return { success: false, message: 'Achievement not found' } as ApiResponse;
-      }
-
-      const isFD = typeof FormData !== 'undefined' && achievementData instanceof FormData;
-      return request(`/achievements/${id}`, {
-        method: 'PUT',
-        body: achievementData,
-        isFormData: !!isFD,
-      });
-    },
-
-    delete: async (id: number) => {
-      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
-        const raw = localStorage.getItem('dev_achievements');
-        const list = raw ? JSON.parse(raw) : [];
-        const filtered = list.filter((a: any) => String(a.id) !== String(id));
-        localStorage.setItem('dev_achievements', JSON.stringify(filtered));
-        return { success: true, data: {} } as ApiResponse;
-      }
-      return request(`/achievements/${id}`, {
         method: 'DELETE',
       });
     },
@@ -1647,6 +1547,11 @@ export const api = {
   // ============================================
   // CONTACT
   // ============================================
+  // ============================================
+  // PUBLIC EVENTS (Calendar)
+  // ============================================
+
+
   contact: {
     submit: async (contactData: any) => {
       if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
@@ -1685,6 +1590,142 @@ export const api = {
 
     getStatistics: async () => {
       return request('/contact/statistics');
+    },
+  },
+
+  // ============================================
+  // ACHIEVEMENTS
+  // ============================================
+  achievements: {
+    getAll: async (params?: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        await new Promise(resolve => setTimeout(resolve, 300));
+        const stored = localStorage.getItem('bj_achievements');
+        const data = stored ? JSON.parse(stored) : [];
+        return { success: true, data } as ApiResponse<any[]>;
+      }
+      const query = params ? new URLSearchParams(params).toString() : '';
+      return request(`/achievements${query ? `?${query}` : ''}`);
+    },
+
+    getById: async (id: string | number) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        await new Promise(resolve => setTimeout(resolve, 200));
+        const stored = localStorage.getItem('bj_achievements');
+        const data = stored ? JSON.parse(stored) : [];
+        const item = data.find((a: any) => String(a.id) === String(id));
+        return { success: !!item, data: item } as ApiResponse<any>;
+      }
+      return request(`/achievements/${id}`);
+    },
+
+    create: async (achievementData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        await new Promise(resolve => setTimeout(resolve, 300));
+        const stored = localStorage.getItem('bj_achievements');
+        const data = stored ? JSON.parse(stored) : [];
+        const newItem = { ...achievementData, id: Date.now(), created_at: new Date().toISOString() };
+        data.push(newItem);
+        localStorage.setItem('bj_achievements', JSON.stringify(data));
+        return { success: true, data: newItem, message: 'Prestasi berhasil ditambahkan' } as ApiResponse<any>;
+      }
+      return request('/achievements', { method: 'POST', body: achievementData });
+    },
+
+    update: async (id: string | number, achievementData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        await new Promise(resolve => setTimeout(resolve, 300));
+        const stored = localStorage.getItem('bj_achievements');
+        const data = stored ? JSON.parse(stored) : [];
+        const idx = data.findIndex((a: any) => String(a.id) === String(id));
+        if (idx >= 0) {
+          data[idx] = { ...data[idx], ...achievementData, updated_at: new Date().toISOString() };
+          localStorage.setItem('bj_achievements', JSON.stringify(data));
+          return { success: true, data: data[idx], message: 'Prestasi berhasil diperbarui' } as ApiResponse<any>;
+        }
+        return { success: false, message: 'Prestasi tidak ditemukan' } as ApiResponse<any>;
+      }
+      return request(`/achievements/${id}`, { method: 'PUT', body: achievementData });
+    },
+
+    delete: async (id: string | number) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        await new Promise(resolve => setTimeout(resolve, 300));
+        const stored = localStorage.getItem('bj_achievements');
+        const data = stored ? JSON.parse(stored) : [];
+        const filtered = data.filter((a: any) => String(a.id) !== String(id));
+        localStorage.setItem('bj_achievements', JSON.stringify(filtered));
+        return { success: true, message: 'Prestasi berhasil dihapus' } as ApiResponse<any>;
+      }
+      return request(`/achievements/${id}`, { method: 'DELETE' });
+    },
+  },
+
+  // ============================================
+  // EVENTS / CALENDAR
+  // ============================================
+  events: {
+    getAll: async (params?: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        await new Promise(resolve => setTimeout(resolve, 300));
+        const stored = localStorage.getItem('bj_events');
+        const data = stored ? JSON.parse(stored) : [];
+        return { success: true, data } as ApiResponse<any[]>;
+      }
+      const query = params ? new URLSearchParams(params).toString() : '';
+      return request(`/events${query ? `?${query}` : ''}`);
+    },
+
+    getById: async (id: string | number) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        await new Promise(resolve => setTimeout(resolve, 200));
+        const stored = localStorage.getItem('bj_events');
+        const data = stored ? JSON.parse(stored) : [];
+        const item = data.find((e: any) => String(e.id) === String(id));
+        return { success: !!item, data: item } as ApiResponse<any>;
+      }
+      return request(`/events/${id}`);
+    },
+
+    create: async (eventData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        await new Promise(resolve => setTimeout(resolve, 300));
+        const stored = localStorage.getItem('bj_events');
+        const data = stored ? JSON.parse(stored) : [];
+        const newItem = { ...eventData, id: Date.now(), created_at: new Date().toISOString() };
+        data.push(newItem);
+        localStorage.setItem('bj_events', JSON.stringify(data));
+        return { success: true, data: newItem, message: 'Event berhasil ditambahkan' } as ApiResponse<any>;
+      }
+      return request('/events', { method: 'POST', body: eventData });
+    },
+
+    update: async (id: string | number, eventData: any) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        await new Promise(resolve => setTimeout(resolve, 300));
+        const stored = localStorage.getItem('bj_events');
+        const data = stored ? JSON.parse(stored) : [];
+        const idx = data.findIndex((e: any) => String(e.id) === String(id));
+        if (idx >= 0) {
+          data[idx] = { ...data[idx], ...eventData, updated_at: new Date().toISOString() };
+          localStorage.setItem('bj_events', JSON.stringify(data));
+          return { success: true, data: data[idx], message: 'Event berhasil diperbarui' } as ApiResponse<any>;
+        }
+        return { success: false, message: 'Event tidak ditemukan' } as ApiResponse<any>;
+      }
+      return request(`/events/${id}`, { method: 'PUT', body: eventData });
+    },
+
+    delete: async (id: string | number) => {
+      if (import.meta.env.DEV && !USE_BACKEND_IN_DEV) {
+        await new Promise(resolve => setTimeout(resolve, 300));
+        const stored = localStorage.getItem('bj_events');
+        const data = stored ? JSON.parse(stored) : [];
+        const filtered = data.filter((e: any) => String(e.id) !== String(id));
+        localStorage.setItem('bj_events', JSON.stringify(filtered));
+        return { success: true, message: 'Event berhasil dihapus' } as ApiResponse<any>;
+      }
+      return request(`/events/${id}`, { method: 'DELETE' });
     },
   },
 };

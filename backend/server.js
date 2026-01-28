@@ -213,7 +213,7 @@ const startServer = async () => {
           const hashAll = await bcrypt.hash('123', saltRounds);
           const { executeQuery } = require('./config/database');
           try {
-            await executeQuery('UPDATE users SET password_hash = ? WHERE 1=1', [hashAll]);
+            await executeQuery('UPDATE users SET password = ? WHERE 1=1', [hashAll]);
             console.log('🔒 All MySQL user passwords set to 123 (development)');
           } catch (e) {
             console.warn('⚠️ Could not update MySQL user passwords:', e.message);

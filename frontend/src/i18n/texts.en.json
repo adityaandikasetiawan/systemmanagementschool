@@ -19,6 +19,62 @@
       "guru": "Teacher",
       "siswa": "Student",
       "default": "User"
+    },
+    "running_text": {
+      "info": "Information",
+      "achievement": "Achievement",
+      "agenda": "Agenda"
+    }
+  },
+  "site": {
+    "name": "Baitul Jannah Islamic School",
+    "menu": {
+      "home": "Home",
+      "about": "About",
+      "profile": "Profile",
+      "info": "Information",
+      "career": "Career",
+      "admission": "Admission",
+      "contact": "Contact"
+    },
+    "submenu": {
+      "vision_mission": "Vision & Mission",
+      "curriculum": "Curriculum",
+      "facilities": "Facilities",
+      "management": "Management",
+      "foundation_profile": "Foundation Profile",
+      "history": "History",
+      "organization": "Organization Structure",
+      "news": "News",
+      "gallery": "Photo Gallery",
+      "achievement": "Achievements",
+      "programs": "Programs",
+      "admission_registration": "Registration",
+      "admission_schedule": "Schedule & Flow",
+      "admission_fee": "Tuition Fees"
+    },
+    "footer": {
+      "quick_links": "Quick Links",
+      "contact": "Contact",
+      "address": "Jl. Pramuka No.43, Kemiling Permai, Kec. Kemiling, Bandar Lampung City, Lampung 35153",
+      "links": {
+        "about": "About Us",
+        "programs": "Programs",
+        "news": "News",
+        "gallery": "Gallery",
+        "career": "Career",
+        "admission": "Admission"
+      },
+      "description": "Integrated Islamic education institution committed to forming Qur'anic generations with noble character and achievements.",
+      "follow_us": "Follow Us",
+      "newsletter": {
+        "title": "Newsletter",
+        "placeholder": "Your Email",
+        "button": "Subscribe"
+      },
+      "copyright": "© 2025 Baituljannah Foundation. All rights reserved.",
+      "privacy": "Privacy Policy",
+      "terms": "Terms & Conditions"
     }
   },
   "about": {
@@ -292,6 +348,10 @@
       "title": "Latest News",
       "subtitle": "Follow the latest developments, achievements, and activities at Baituljannah Foundation"
     },
+    "featured": {
+      "badge": "Top News",
+      "read_more": "Read More"
+    },
     "search": {
       "placeholder": "Search news...",
       "filter_active": "Active filters:"
@@ -453,68 +513,9 @@
       "button_programs": "View Our Programs"
     }
   },
-  "navbar": {
-    "tagline": "Islamic Education",
-    "ppdb_cta": "Admissions 2025",
-    "role": {
-      "super_admin": "Super Admin",
-      "admin_unit": "Unit Admin",
-      "guru": "Teacher",
-      "siswa": "Student",
-      "default": "User"
-    }
-  },
-  "site": {
-    "name": "Baitul Jannah Islamic School",
-    "menu": {
-      "home": "Home",
-      "about": "About",
-      "profile": "Profile",
-      "info": "Information",
-      "career": "Career",
-      "admission": "Admissions",
-      "contact": "Contact"
-    },
-    "submenu": {
-      "vision_mission": "Vision & Mission",
-      "curriculum": "Curriculum",
-      "facilities": "Facilities",
-      "management": "Management",
-      "foundation_profile": "Foundation Profile",
-      "history": "History",
-      "organization": "Organization Structure",
-      "news": "News",
-      "gallery": "Photo Gallery",
-      "achievement": "Achievements",
-      "programs": "Programs",
-      "admission_registration": "Registration",
-      "admission_schedule": "Schedule & Flow",
-      "admission_fee": "Tuition Fees"
-    }
-    ,
-    "footer": {
-      "quick_links": "Quick Links",
-      "contact": "Contact",
-      "address": "Jl. Pendidikan Islam No. 123, South Jakarta",
-      "links": {
-        "about": "About Us",
-        "programs": "Programs",
-        "news": "News",
-        "gallery": "Gallery",
-        "career": "Career",
-        "admission": "Admissions"
-      },
-      "description": "An integrated Islamic education institution committed to building Qur'anic generations with noble character and achievements.",
-      "follow_us": "Follow Us",
-      "newsletter": {
-        "title": "Newsletter",
-        "placeholder": "Your Email",
-        "button": "Subscribe"
-      },
-      "copyright": "© 2025 Yayasan Baituljannah. All rights reserved.",
-      "privacy": "Privacy Policy",
-      "terms": "Terms of Service"
-    }
+  "sidebar": {
+    "title": "Admin Panel",
+    "brand": "Baituljannah"
   },
   "admin": {
     "menu": {

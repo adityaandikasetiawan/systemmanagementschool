@@ -43,7 +43,7 @@ export const MobileLayout: React.FC<LayoutProps> = ({
         {children}
       </main>
       <div className="pb-safe">
-        <Footer onNavigate={onNavigate} />
+        <Footer onNavigate={onNavigate} siteName={siteName} logo={logo} accentColor={accentColor} />
       </div>
     </div>
   );
