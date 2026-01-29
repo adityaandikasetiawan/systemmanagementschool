@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb')
+const { MongoClient } = require('mongodb')
 require('dotenv').config()
 
 let client
@@ -10,9 +10,7 @@ const dbName = process.env.MONGO_DB_NAME || 'baituljannah_db'
 async function getDb() {
   if (db) return db
   if (!client) {
-    client = new MongoClient(uri, {
-      serverApi: ServerApiVersion.v1,
-    })
+    client = new MongoClient(uri)
   }
   await client.connect()
   db = client.db(dbName)
@@ -20,4 +18,3 @@ async function getDb() {
 }
 
 module.exports = { getDb }
-

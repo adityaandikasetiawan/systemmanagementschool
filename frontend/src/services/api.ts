@@ -207,23 +207,31 @@ export const api = {
   // AUTHENTICATION
   // ============================================
   auth: {
-    login: async (email: string, password: string) => {
+    login: async (emailOrUsername: string, password: string) => {
       if (import.meta.env.DEV && password === '123' && !USE_BACKEND_IN_DEV) {
-        const lower = email.toLowerCase();
+        const lower = emailOrUsername.toLowerCase();
         let role = 'student';
         if (lower.includes('admin.sdit')) role = 'admin_unit';
         else if (lower.includes('admin@baituljannah')) role = 'super_admin';
         else if (lower.includes('parent') || lower.includes('@parent.')) role = 'orang_tua';
         else if (lower.includes('student') || lower.includes('@student.')) role = 'siswa';
         else if (lower.includes('ahmad@baituljannah') || lower.includes('ustadz')) role = 'guru';
-        const mock = { success: true, data: { token: 'dev', refresh_token: 'dev', user: { id: 'dev', email, role } } } as ApiResponse;
+        const mock = { success: true, data: { token: 'dev', refresh_token: 'dev', user: { id: 'dev', email: emailOrUsername, role } } } as ApiResponse;
         setTokens('dev', 'dev');
         setStoredUser(mock.data!.user);
         return mock;
       }
+      
+      const body: any = { password };
+      if (emailOrUsername.includes('@')) {
+        body.email = emailOrUsername;
+      } else {
+        body.identifier = emailOrUsername;
+      }
+
       const response = await request('/auth/login', {
         method: 'POST',
-        body: { email, password },
+        body,
       });
       if (response.success && response.data) {
         setTokens(response.data.token, response.data.refresh_token);

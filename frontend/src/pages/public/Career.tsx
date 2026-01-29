@@ -269,7 +269,7 @@ export const Career: React.FC<CareerProps> = ({ onNavigate = () => { } }) => {
 
   return (
     <ResponsiveLayout
-      siteName="Sekolah Islam Baitul Jannah"
+      siteName="Baitul Jannah Islamic School"
       siteTagline="SEKOLAHNYA PARA JUARA"
       accentColor="#1E4AB8"
       menuItems={menuItems}

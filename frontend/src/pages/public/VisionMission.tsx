@@ -145,7 +145,7 @@ export const VisionMission: React.FC<VisionMissionProps> = ({ onNavigate = () =>
 
   return (
     <ResponsiveLayout
-      siteName="Sekolah Islam Baitul Jannah"
+      siteName="Baitul Jannah Islamic School"
       siteTagline="SEKOLAHNYA PARA JUARA"
       menuItems={menuItems}
       accentColor="#1E4AB8"

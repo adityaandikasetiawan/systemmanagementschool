@@ -1,25 +1,19 @@
-const express = require('express');
-const path = require('path');
-const helmet = require('helmet');
-const morgan = require('morgan');
-const cors = require('cors');
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-const port = process.env.PORT || 3000;
-const distPath = path.join(__dirname, 'dist');
+const PORT = process.env.PORT || 3000;
 
-app.use(helmet({ contentSecurityPolicy: false }));
-app.use(cors());
-app.use(morgan('combined'));
+app.use(express.static(path.join(__dirname, 'dist')));
 
-app.get('/health', (req, res) => res.json({ status: 'ok' }));
-
-app.use(express.static(distPath, { maxAge: '1y', etag: true, index: false }));
-
-app.use((req, res) => {
-  res.sendFile(path.join(distPath, 'index.html'));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+app.listen(PORT, () => {
+  console.log(`Frontend server running on port ${PORT}`);
 });

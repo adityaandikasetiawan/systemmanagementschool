@@ -12,6 +12,7 @@ module.exports = {
         PORT: 5000,
         // Update these with actual production values
         MONGO_URI: 'mongodb://localhost:27017',
+        USE_MONGO: 'true',
         MONGO_DB_NAME: 'baituljannah_db',
         JWT_SECRET: 'production_secret_key_change_this',
         FRONTEND_URL: 'https://baituljannah.sch.id' 

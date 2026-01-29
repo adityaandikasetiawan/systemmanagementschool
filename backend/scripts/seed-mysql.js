@@ -145,7 +145,7 @@ async function main() {
       await conn.query(
         'INSERT INTO hero_slides (image,title,description,badge,`order`,status) VALUES (?,?,?,?,?,"published"), (?,?,?,?,?,"published")',
         [
-          '/uploads/hero/sample1.jpg','Selamat Datang','Sekolah Islam Baitul Jannah','Informasi',0,
+          '/uploads/hero/sample1.jpg','Selamat Datang','Baitul Jannah Islamic School','Informasi',0,
           '/uploads/hero/sample2.jpg','PPDB Dibuka','Ayo daftar sekarang','PPDB',1
         ]
       );
